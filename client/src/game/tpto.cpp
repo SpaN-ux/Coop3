@@ -8,7 +8,7 @@
 
 #include <cmath>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -237,4 +237,4 @@ void TickCoopCheats() {
 		RunCoopCheat(hits[i]);
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

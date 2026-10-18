@@ -25,7 +25,7 @@
 // 3. **So the kill is what travels, as the engine's own three arguments.**
 //    The victim's model index, the weapon, and the headshot bit - read out of
 //    a detour on `RegisterKillByPlayer` itself, which means it is the
-//    engine's judgement of "a kill that counts" and not CoopIII's, including
+//    engine's judgement of "a kill that counts" and not CoopVC's, including
 //    the five callers of that function that are not `InflictDamage` (a car, a
 //    fire, a blast). A netId is deliberately *not* used: a player 200 m away
 //    has no replica of that pedestrian and must still be able to judge the
@@ -33,7 +33,7 @@
 //
 // 4. **Nothing here reimplements CDarkel.** Every machine's engine goes on
 //    running retail's own `Update` - its own countdown, its own tick sound,
-//    its own weapon restore, its own HUD. The only two things CoopIII writes
+//    its own weapon restore, its own HUD. The only two things CoopVC writes
 //    into CDarkel are a number the session agreed (`KillsNeeded` at the
 //    start) and a number the engine itself produced somewhere else (the same
 //    counter, one kill at a time).
@@ -54,11 +54,11 @@
 #include "addresses.h"
 #include "client.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // ---- the decision, as arithmetic ------------------------------------------
 
@@ -68,7 +68,7 @@ namespace coopiii::game {
 // to 0x00420FF9, and deliberately with no engine dependency so
 // tools/clienttest can put the awkward cases through it.
 //
-// The five weapon aliases are the engine's, not CoopIII's, and they are the
+// The five weapon aliases are the engine's, not CoopVC's, and they are the
 // reason this is a function rather than `weapon == frenzyWeapon`:
 //
 //   0x00420F84  cmp eax,12h                  an explosion counts for every
@@ -147,13 +147,13 @@ inline bool RampageCarCounts(const FrenzyTargets &f, int32_t model) {
 // killer is this machine's own player (0x004EAD1A). RegisterCarBlownUpByPlayer
 // is called by every CAutomobile::BlowUpCar, at 0x0053BF04, with no culprit
 // test in the function at all. So every machine that has a copy of a car
-// counts it when that copy blows up, including when CoopIII blows it up
+// counts it when that copy blows up, including when CoopVC blows it up
 // because the car's owner said so, and a machine without a copy never counts
 // it.
 //
 // So what counts is decided per wreck, on this machine:
 //
-//  - a replay - BlowUpCar run by CoopIII for a wreck another machine decided -
+//  - a replay - BlowUpCar run by CoopVC for a wreck another machine decided -
 //    goes through the register with the rampage branch kept out. The machine
 //    that decided it reports it and the relay counts it here.
 //  - a wreck our own engine decided is counted by the engine and reported.
@@ -388,4 +388,4 @@ struct RampageStats {
 };
 const RampageStats &GetRampageStats();
 
-} // namespace coopiii::game
+} // namespace coopvc::game

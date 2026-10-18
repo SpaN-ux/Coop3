@@ -12,7 +12,7 @@
 #include "addresses.h"
 #include "log.h"
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -91,4 +91,4 @@ void InstallWantedBridge(WorldBridge &b) {
 	b.WriteLocalWantedLevel  = &WriteLocalWantedLevel;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

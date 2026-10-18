@@ -31,11 +31,11 @@
 
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 struct RemotePlayer;
 }
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 inline bool IsCarHitCause(uint32_t method) {
 	return method == WEAPONTYPE_RAMMEDBYCAR || method == WEAPONTYPE_RUNOVERBYCAR;
@@ -212,4 +212,4 @@ void ApplyRunOverOnHostedPed(RemotePlayer *attacker, void *ped, uint16_t netId,
 bool InstallRunOverHooks();
 void RemoveRunOverHooks();
 
-} // namespace coopiii::game
+} // namespace coopvc::game

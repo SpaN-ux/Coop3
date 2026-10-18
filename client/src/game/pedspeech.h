@@ -4,7 +4,7 @@
 // and CPed::ServiceTalking plays it through DMAudio a frame or so later. An
 // observer's replica decides nothing, so it never says anything either, and a
 // remote player's copy is the same kind of ped. So the host notices the line
-// being played - CoopIII takes ServiceTalking's two calls from
+// being played - CoopVC takes ServiceTalking's two calls from
 // CPed::ProcessControl and looks at what changed across them - and says which
 // ped played which sound. The observer hands it to CPed::Say on its copy,
 // which applies the same priorities and waits the host's engine did.
@@ -13,11 +13,11 @@
 // tools/clienttest can walk it. game/pedspeech.cpp is the engine half.
 #pragma once
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Takes ServiceTalking's two call sites. Not fatal: without it nobody hears
 // anybody else's crowd, which is where this project was before. The rest of
@@ -74,4 +74,4 @@ inline bool SpokeAcross(uint32_t startBefore, uint32_t startAfter) {
 	return startAfter != startBefore;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

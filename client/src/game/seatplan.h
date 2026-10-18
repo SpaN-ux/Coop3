@@ -1,4 +1,4 @@
-// Who gets which seat when CoopIII puts somebody in a car.
+// Who gets which seat when CoopVC puts somebody in a car.
 //
 // Pure, so tools/clienttest covers every answer without a game. The engine
 // side is SeatPedInCar and BeginPedEnterCar in game/ped.cpp; the numbers are
@@ -7,7 +7,7 @@
 // Plus one decision about the local player: where a script of ours puts him
 // when another player already has the wheel (PlanScriptedWheel, below).
 //
-// Two kinds of ped get seated by CoopIII: another player's ped, where the
+// Two kinds of ped get seated by CoopVC: another player's ped, where the
 // session says they sit, and a copy of somebody else's pedestrian, where its
 // host says he sits (population.cpp). The mission's pedestrians are the
 // second kind: 8-Ball riding in the car a participant drives, Misty in the
@@ -41,7 +41,7 @@
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Who holds a seat on this machine.
 enum class SeatHolder : uint8_t {
@@ -287,4 +287,4 @@ inline constexpr bool DoorEntryMayTake(uint8_t seat, SeatHolder holder,
 	return holder == SeatHolder::RemotePlayer;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

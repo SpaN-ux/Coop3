@@ -12,7 +12,7 @@
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // The session's time right now, read off the wall clock at the moment of the
 // call. False when there is no server clock to follow - not connected, or not
@@ -30,4 +30,4 @@ bool SessionClockThisFrame(uint32_t &out);
 // the value is simply never read.
 void AddSessionClockToBridge(WorldBridge &bridge);
 
-} // namespace coopiii::game
+} // namespace coopvc::game

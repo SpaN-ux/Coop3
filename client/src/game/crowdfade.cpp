@@ -9,7 +9,7 @@
 #include "vehicle.h"
 #include "../client.h"
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -72,4 +72,4 @@ void AddCrowdFadeToBridge(WorldBridge &bridge) {
 	bridge.SetCrowdReplicaAlpha = &SetCrowdReplicaAlpha;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

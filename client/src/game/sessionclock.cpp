@@ -2,7 +2,7 @@
 
 #include "clock.h"
 
-namespace coopiii::game {
+namespace coopvc::game {
 namespace {
 
 // Set from PreFrame through the bridge, read inside CGame::Process a few
@@ -47,4 +47,4 @@ void AddSessionClockToBridge(WorldBridge &bridge) {
 	bridge.SetSessionClock = &SetSessionClock;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

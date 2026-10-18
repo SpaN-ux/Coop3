@@ -23,7 +23,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Two reports are the same car when they name the same car. The transform is
 // deliberately not compared: it is where the car was when it was seen, and a
@@ -82,4 +82,4 @@ private:
 	uint32_t     m_dropped  = 0;
 };
 
-} // namespace coopiii::game
+} // namespace coopvc::game

@@ -13,9 +13,9 @@
 
 #include "client.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Fills the WorldBridge with the functions below. Whatever is not yet
 // implemented is left null, which Client handles (tools/clienttest covers it).
@@ -140,8 +140,8 @@ int32_t StdAnimGroupCount();
 // Keep one clump inside the bound RpAnimBlendClumpUpdateAnimations does not
 // check. Registered as the moving-list sweep's entity inspector, so it runs
 // for every entity CWorld::Process is about to hand to that function - not
-// only for the peds CoopIII has a roster entry for, because a ped CoopIII
-// merely shot, seated, dismembered or replicated is a ped CoopIII changed.
+// only for the peds CoopVC has a roster entry for, because a ped CoopVC
+// merely shot, seated, dismembered or replicated is a ped CoopVC changed.
 // Does nothing to a clump that is inside the bound, which is all of them in
 // an ordinary frame.
 void ClampClumpAnimations(void *entity);
@@ -251,14 +251,14 @@ constexpr int VEHICLE_ANIM_FADED    = 1;
 constexpr int VEHICLE_ANIM_DANGLING = 2;
 int     ForgetVehicleAnim(void *ped);
 
-// Take the callbacks off a ped's car animations before CoopIII seats him,
+// Take the callbacks off a ped's car animations before CoopVC seats him,
 // unseats him or nils his m_pMyVehicle by hand, and fade those animations out
 // (game/animcb.h). A rolling door close still to finish is finished now, on
 // the car it was for. Call while m_pMyVehicle still names the car he was in.
 // How many there were.
 int     DropCarChainCallbacks(void *ped);
 
-// What every seat CoopIII changes by hand calls first: a ped halfway through
+// What every seat CoopVC changes by hand calls first: a ped halfway through
 // a door has the entry ended the engine's way (CancelCarEntry, whose
 // QuitEnteringCar gives the car its door and count back, then the above);
 // anybody else just has the callbacks dropped.
@@ -316,4 +316,4 @@ int     MovePassengerToSeat(void *car, void *ped, uint8_t seat);
 // PlanSettle). True when he moved.
 bool    SettleRemoteSeat(RemotePlayer &player, RemoteVehicle &vehicle, uint8_t seat);
 
-} // namespace coopiii::game
+} // namespace coopvc::game

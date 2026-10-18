@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 namespace {
 
 Detour g_update;
@@ -107,4 +107,4 @@ void RemoveLiftBridgeClock() {
 	g_onSessionClock = false;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

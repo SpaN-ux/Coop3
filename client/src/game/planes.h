@@ -8,11 +8,11 @@
 // clock for the length of the call (planetime.h says why).
 #pragma once
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Detours CPlane::UpdatePlanes. False if the detour couldn't be installed,
 // in which case every machine flies its own planes, as before.
 bool InstallPlaneClock();
 void RemovePlaneClock();
 
-} // namespace coopiii::game
+} // namespace coopvc::game

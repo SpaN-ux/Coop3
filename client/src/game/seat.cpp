@@ -15,7 +15,7 @@
 #include <cmath>
 #include <cstdio>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -450,7 +450,7 @@ int32_t PollLocalSeatEntry() {
 // game's own enter/exit inputs, a warped-in passenger stayed put. Whether the
 // engine refuses to let a passenger out or the synthetic input never reached
 // the handler, the answer is the same - a seat you cannot leave is worse than
-// no seat at all, so CoopIII provides the way out it can prove.
+// no seat at all, so CoopVC provides the way out it can prove.
 //
 // The teardown is UnseatRemotePed's, field for field, because that one is
 // already load-bearing for every remote player who ever gets out of a car.
@@ -591,11 +591,11 @@ bool ProbeLocalEntry(LocalEntryProbe &out) {
 	out.entering       = state == PEDSTATE_ENTER_CAR || state == PEDSTATE_CARJACK;
 	out.exiting        = state == PEDSTATE_EXIT_CAR || state == PEDSTATE_DRAG_FROM_CAR;
 	out.vehicleAnim    = Field<void *>(ped, offs::PED_VEHICLE_ANIM) != nullptr;
-	// The pad's lock, less CoopIII's own bit (chat, the pause): a script that
+	// The pad's lock, less CoopVC's own bit (chat, the pause): a script that
 	// took the controls away is driving the player, and may keep him at a
 	// door on purpose.
 	out.controlsOn = (Global<uint8_t>(CPad__Pads + pad::DISABLE_PLAYER_CONTROLS) &
-	                  ~pad::PLAYERCONTROL_COOPIII) == 0;
+	                  ~pad::PLAYERCONTROL_COOPVC) == 0;
 	// Only read while an entry is playing: the mark reads the association, and
 	// on a ped with no entry running m_pVehicleAnim may be the stale pointer
 	// this whole probe is here to find.
@@ -679,4 +679,4 @@ void AddSeatToBridge(WorldBridge &bridge) {
 	bridge.UnseatLocalPlayer    = &UnseatLocalPlayer;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

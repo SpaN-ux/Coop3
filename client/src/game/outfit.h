@@ -30,12 +30,12 @@
 #include "addresses.h"
 #include "look.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstdint>
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // The player ped, as far as a change of clothes cares.
 struct OutfitInputs {
@@ -182,4 +182,4 @@ inline bool LookFromLabel(const uint8_t *label, char (&look)[PLAYER_LOOK_LEN]) {
 	return CleanPlayerLook(look);
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

@@ -44,7 +44,7 @@
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Is the local player in this car, or on his way in or out of it? Not
 // m_pMyVehicle alone, which still names the last car he left: bInVehicle, or
@@ -95,4 +95,4 @@ constexpr bool ReleaseRowApplies(bool known, uint8_t copyOwner, uint8_t releasin
 	return known && copyOwner == releasingOwner;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

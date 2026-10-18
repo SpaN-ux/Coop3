@@ -8,7 +8,7 @@
 #include <cstring>
 #include <vector>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -212,4 +212,4 @@ void AddSkinsToBridge(WorldBridge &bridge) {
 	b.PlaceRemoteSkins  = &PlaceRemoteSkins;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

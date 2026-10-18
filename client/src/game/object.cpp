@@ -11,10 +11,10 @@
 #include <cmath>
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 namespace {
 
-namespace obj = ::coopiii::game::object;
+namespace obj = ::coopvc::game::object;
 
 ObjectCallbacks g_cb;
 // The session's mission's objects (mission-audit.md R3), game/mission.cpp's.
@@ -198,7 +198,7 @@ BreakCause CauseOf(void *object) {
 
 	const uint8_t type = Field<uint8_t>(cause, offs::ENTITY_FLAGS) & 0x07;
 
-	if (type == ::coopiii::game::ENTITY_TYPE_VEHICLE) {
+	if (type == ::coopvc::game::ENTITY_TYPE_VEHICLE) {
 		const ObjectPoolView pool =
 		    ViewPool(CPools__ms_pVehiclePool, offs::SIZEOF_AUTOMOBILE);
 		if (SlotIndexOf(pool, cause) < 0)
@@ -938,4 +938,4 @@ void AddObjectsToBridge(WorldBridge &bridge) {
 	bridge.ObjectSettled = &OnObjectSettledElsewhere;
 }
 
-}  // namespace coopiii::game
+}  // namespace coopvc::game

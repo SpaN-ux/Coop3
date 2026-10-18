@@ -21,12 +21,12 @@
 
 #include "addresses.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cmath>
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // A group index is about to become a subscript into ms_aAnimAssocGroups, so
 // it gets bounded before use - including the one read out of the ped's own
@@ -114,7 +114,7 @@ inline uint16_t PlanDeathAnim(uint16_t wire, int stdGroupCount) {
 	return wire;
 }
 
-// How many animations CoopIII will leave on a remote ped's clump.
+// How many animations CoopVC will leave on a remote ped's clump.
 //
 // The hard limit is the engine's, and it is not a soft one: past
 // MAX_CLUMP_ANIM_ASSOCS, RpAnimBlendClumpUpdateAnimations writes its node
@@ -238,7 +238,7 @@ inline bool FiniteOr(float value, float fallback, float &out) {
 //   wantBurning  what the owner said in their last snapshot (PF_ON_FIRE).
 //                Their machine is where their fire actually is, so this is
 //                the only authority on whether that player is alight.
-//   ours         the fire currently on that ped is the one CoopIII lit for
+//   ours         the fire currently on that ped is the one CoopVC lit for
 //                them. Any other fire on it came from the local engine, and
 //                that fire arrives with SetFlee and PED_ON_FIRE attached,
 //                which is the one thing this whole feature is built to keep
@@ -277,7 +277,7 @@ inline FireAction PlanRemoteFire(bool wantBurning, bool haveFire, bool ours,
 	// Not ours, whatever the owner says. Putting it out is also how the
 	// engine's own burning-ped logic gets unwound: CFire::Extinguish calls
 	// CPed::RestorePreviousState, which pops the state CPed::SetFlee stored
-	// on the way in. CoopIII restores nothing by hand.
+	// on the way in. CoopVC restores nothing by hand.
 	if (!ours)
 		return FireAction::EXTINGUISH;
 
@@ -358,4 +358,4 @@ inline bool InsideWorld(float x, float y, float z) {
 	       ClampToWorld(y) == y;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

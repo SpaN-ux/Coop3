@@ -19,11 +19,11 @@
 
 #include "pedanim.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Straight up or straight down. The engine clamps harder than this on its own
 // - the torso stops at 45 degrees and the upper arm at 70 either side of its
@@ -142,4 +142,4 @@ private:
 	Entry m_entries[MAX_PLAYERS];
 };
 
-} // namespace coopiii::game
+} // namespace coopvc::game

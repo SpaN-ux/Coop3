@@ -19,7 +19,7 @@
 
 #include "addresses.h"
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 struct MovingListAudit {
 	uint32_t  walked        = 0;    // nodes visited
@@ -47,7 +47,7 @@ constexpr uint32_t MOVING_LIST_MAX_NODES = 8192;
 // Walk the list at `head`, unlink anything CWorld::Process would fault on,
 // and hand every surviving entity to `onSane`.
 //
-// A node it takes out is leaked rather than freed. CoopIII does not know
+// A node it takes out is leaked rather than freed. CoopVC does not know
 // whose 12 bytes those are any more, and handing a block it cannot identify
 // back to CPools::ms_pPtrNodePool is how one bad node becomes two.
 //
@@ -116,4 +116,4 @@ inline MovingListAudit SweepMovingList(uintptr_t *head, EntityInspectFn onSane) 
 	return out;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

@@ -9,7 +9,7 @@
 
 #include <cmath>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -342,4 +342,4 @@ void ForgetCranes() {
 	g_endPending = 0;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

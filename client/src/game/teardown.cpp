@@ -5,7 +5,7 @@
 #include "ped.h"
 #include "../log.h"
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -297,4 +297,4 @@ bool DestroyObject(void *object, const char *who) {
 	return true;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

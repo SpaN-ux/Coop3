@@ -9,7 +9,7 @@
 
 #include <windows.h>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -76,4 +76,4 @@ void RemoveSideJobKey() {
 		g_installed = false;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

@@ -10,10 +10,10 @@
 
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 namespace {
 
-namespace obj = ::coopiii::game::object;
+namespace obj = ::coopvc::game::object;
 
 GlassCallbacks g_cb;
 GlassStats     g_stats;
@@ -277,4 +277,4 @@ void AddGlassToBridge(WorldBridge &bridge) {
 	bridge.GlassLatched = &OnGlassRecord;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

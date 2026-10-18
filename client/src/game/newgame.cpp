@@ -7,7 +7,7 @@
 #include <atomic>
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -56,4 +56,4 @@ bool StartedNewGameFromMenu() {
 	return g_started.load(std::memory_order_relaxed);
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

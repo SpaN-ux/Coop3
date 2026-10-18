@@ -28,7 +28,7 @@
 #include <cstring>
 #include <windows.h>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -74,7 +74,7 @@ void *AnimClumpData(void *clump) {
 // and treat that as reassurance. It is true and it was the wrong thing to be
 // reassured by: the engine breaks at thirteen, not at sixty-four.
 // RpAnimBlendClumpUpdateAnimations has room for twelve and bounds-checks
-// nothing, so a clump CoopIII has overfilled makes it write over its own
+// nothing, so a clump CoopVC has overfilled makes it write over its own
 // return address. MAX_REMOTE_ANIM_ASSOCS in pedanim.h is the number that
 // matters; this one only stops a runaway walk.
 template <class Fn>
@@ -580,7 +580,7 @@ bool LookupRemotePed(const void *ped, uint16_t &netId) {
 //
 // The vtable check below is the second net: for a slot that somehow still
 // resolves but no longer holds our ped.
-// Destroy a ped CoopIII created, the way COMMAND_DELETE_CHAR does, plus the
+// Destroy a ped CoopVC created, the way COMMAND_DELETE_CHAR does, plus the
 // one thing the engine's own teardown is allowed to skip.
 //
 // DELETE_CHAR's whole teardown is three steps - RemoveReferencesToDeletedObject,
@@ -626,7 +626,7 @@ void *ResolveRemote(RemotePlayer &player) {
 	if (ped && Field<uintptr_t>(ped, offs::VTABLE) == CCivilianPed__vtable) {
 		// The engine has decided this ped has to go. bRemoveFromWorld is the
 		// only flag that lets it delete a ped from inside CWorld::Process's
-		// own walk over the moving list, and CoopIII would find out a frame
+		// own walk over the moving list, and CoopVC would find out a frame
 		// later, from a node pointing at freed memory.
 		//
 		// It gets set by things that have nothing to do with us:
@@ -965,7 +965,7 @@ void DespawnRemote(RemotePlayer &player) {
 // instead of writing the result directly. Not a style choice -
 // docs/protocol.md §1.8.3 explains why it's the only thing that actually
 // works: CWorld::Process rewrites every moving entity's bone matrices from
-// its animations, and only then runs ProcessControl. CoopIII's inbound hook
+// its animations, and only then runs ProcessControl. CoopVC's inbound hook
 // sits before both, so a bone matrix written here is gone before the frame
 // draws. A bIsAimingGun written here, on the other hand, is exactly what the
 // engine reads on its way past.
@@ -1084,11 +1084,11 @@ void FadeOutPartial(void *clump, uint16_t animId) {
 
 // Fade out every partial on a clump, without needing to know their ids.
 //
-// A seated ped carries partials CoopIII never added and has no record of.
+// A seated ped carries partials CoopVC never added and has no record of.
 // CPed::ProcessControl blends ANIM_STD_CAR_DRIVE_LEFT and its siblings off
 // the car's own m_fSteerAngle (re3 Ped.cpp:2880-2945), and those are
 // ASSOC_PARTIAL. Once the ped is out of the car, nothing maintains them and
-// nothing removes them: FadeOutPartial only knows the id CoopIII applied, so
+// nothing removes them: FadeOutPartial only knows the id CoopVC applied, so
 // the steering pose stays on a ped standing in the street at whatever weight
 // it had. It used to clear itself when the player jumped, because a change
 // of move state makes CPed::SetMoveAnim purge the partials for its own
@@ -1140,14 +1140,14 @@ void DropAnimNow(void *assoc) {
 //
 // "Weakest" is lowest blendAmount, which is the engine's own idea of what is
 // least visible: RpAnimBlendClumpGetMainAssociation picks the highest. The
-// two animations CoopIII is currently driving are never dropped, because
+// two animations CoopVC is currently driving are never dropped, because
 // dropping them would just have the next frame add them again and we would
 // be back here.
 //
 // Returns how many were dropped.
 // `keepAssoc`, when non-null, is one more that must survive whatever its
 // blend weight is: the ped's m_pVehicleAnim. That association is not one
-// CoopIII applied and has no id here to spare it by, and it is the only
+// CoopVC applied and has no id here to spare it by, and it is the only
 // thing holding the finish callback that ends a door-opening chain. Drop it
 // and the ped stays in PED_ENTER_CAR with nothing left to finish - a remote
 // player frozen half inside a car, which is precisely the failure the seat
@@ -1202,7 +1202,7 @@ int PruneAnims(void *clump, uint16_t keepA, uint16_t keepB, void *keepAssoc,
 // and one more association writes past the end of it.
 // Keep a clump inside the engine's limit whatever put the animations there.
 //
-// MakeAnimRoom only runs when CoopIII wants to add one, and CoopIII is not
+// MakeAnimRoom only runs when CoopVC wants to add one, and CoopVC is not
 // the only thing adding. The engine's two contributors are now known by
 // name rather than guessed at (docs/protocol.md §1.13.5): CPed::Idle blends
 // ANIM_STD_IDLE_BIGGUN on a 3000-8500 ms random timer while the ped is
@@ -1213,7 +1213,7 @@ int PruneAnims(void *clump, uint16_t keepA, uint16_t keepB, void *keepAssoc,
 // before CGame::Process gets the chance to walk the clump.
 //
 // It is the last line of defence for a crash that has no symptoms until it
-// happens, so it is deliberately not conditional on anything CoopIII knows.
+// happens, so it is deliberately not conditional on anything CoopVC knows.
 void EnforceAnimLimit(RemotePlayer &player, void *ped, void *clump) {
 	const int count = CountAnims(clump);
 	const int surplus = AnimClumpSurplus(count + 1);   // +1: room to still add one
@@ -1537,7 +1537,7 @@ void ApplyAnimGroup(RemotePlayer &player, void *ped, void *clump) {
 	// arms ask the ped's group for ANIM_STD_WALK, _RUN, _RUNFAST and _IDLE,
 	// ids 0 to 3, and it doesn't check either. This value came off a socket,
 	// so a group that can't answer those four hands the *engine* an
-	// out-of-range lookup on a later frame, somewhere CoopIII has no hook.
+	// out-of-range lookup on a later frame, somewhere CoopVC has no hook.
 	constexpr int SETMOVEANIM_NEEDS = 4;
 	if (count < SETMOVEANIM_NEEDS)
 		return;
@@ -1547,7 +1547,7 @@ void ApplyAnimGroup(RemotePlayer &player, void *ped, void *clump) {
 
 	Field<int32_t>(ped, offs::PED_ANIM_GROUP) = wanted;
 
-	// Five at once is the biggest single thing CoopIII does to a clump, and
+	// Five at once is the biggest single thing CoopVC does to a clump, and
 	// the engine's node array only holds twelve. Each one replaces an
 	// animation that is already there, but the replacement and the original
 	// both exist until the original's fade completes, so a group change
@@ -1907,7 +1907,7 @@ void *WeaponInfo(uint8_t weaponType) {
 // spawn half and the steady half of the same job.
 void WriteSlotAmmo(void *ped, uint8_t slot, uint16_t clip, uint32_t total);
 
-// The engine half of GiveWeaponTo, for any ped CoopIII drives: a remote
+// The engine half of GiveWeaponTo, for any ped CoopVC drives: a remote
 // player's, or a replica of somebody else's pedestrian.
 bool PutWeaponInHand(void *ped, uint8_t want) {
 	void *info = WeaponInfo(want);
@@ -1979,7 +1979,7 @@ bool GiveWeaponTo(RemotePlayer &player, void *ped, uint8_t want) {
 //   schedule and refills the clip out of the total.
 //
 // Neither is wrong to do it - they are the engine behaving normally - but
-// the owner is authoritative for their own ped everywhere else in CoopIII
+// the owner is authoritative for their own ped everywhere else in CoopVC
 // and there is no reason for ammunition to be the exception. So the wire
 // wins, restated often enough that nothing local can accumulate.
 void WriteSlotAmmo(void *ped, uint8_t slot, uint16_t clip, uint32_t total) {
@@ -2091,7 +2091,7 @@ void ApplyFiring(RemotePlayer &player, void *ped) {
 // Aim through CPed::SetAimFlag / ClearAimFlag, not by writing bIsAimingGun
 // directly - SetAimFlag also works out AIMS_WITH_ARM from the current
 // weapon's flags, so a pistol aims with the arm and a rifle with the torso
-// without CoopIII having to know which is which.
+// without CoopVC having to know which is which.
 //
 // Yaw goes in through SetAimFlag. Pitch can't: CPed::AimGun passes a hard
 // zero for anything that isn't PEDTYPE_PLAYER1..4, so it goes into
@@ -2129,12 +2129,12 @@ void ApplyAim(RemotePlayer &player, void *ped) {
 // The part §5.7 was worried about is the part that turned out not to exist.
 // Its objection was that CFireManager::StartFire's ped arm runs SetFlee,
 // SetMoveState(PEDMOVE_SPRINT), SetMoveAnim() and SetPedState(PED_ON_FIRE)
-// straight into the pose stream CoopIII overwrites every frame. All four are
+// straight into the pose stream CoopVC overwrites every frame. All four are
 // real, and all four sit inside a branch the engine takes only for a ped
 // that is not FindPlayerPed() - for the player it jumps the lot and lands on
 // the shared tail (addresses.h has the six instructions). So the engine
 // already has a way to burn a ped whose movement is not its to decide, and
-// CoopIII does not have to invent one: LightRemoteFire below is that shared
+// CoopVC does not have to invent one: LightRemoteFire below is that shared
 // tail, transcribed in its order, with the branch not taken.
 //
 // That is also the answer to "which way does the information travel". One
@@ -2723,7 +2723,7 @@ int UnseatPedFromCar(void *ped) {
 	// next frame (game/animcb.h).
 	LetGoOfCarChain(ped);
 
-	// Every vehicle CoopIII creates is a CAutomobile or a CBoat (vehicle.cpp,
+	// Every vehicle CoopVC creates is a CAutomobile or a CBoat (vehicle.cpp,
 	// game/boat.h), so this vtable check is the same net ResolveRemote uses on
 	// peds - a slot that still resolves while no longer holding what we think
 	// it does. Everything written below is CVehicle's or CPhysical's, so it is
@@ -2796,7 +2796,7 @@ int UnseatPedFromCar(void *ped) {
 
 	// The objective goes with the seat, and this is a part the handler does
 	// *not* do - the script always follows the warp with something that sets
-	// one, so it can afford to leave ENTER_CAR_AS_DRIVER standing. CoopIII
+	// one, so it can afford to leave ENTER_CAR_AS_DRIVER standing. CoopVC
 	// can't afford that: a CCivilianPed left holding that objective and a car
 	// pointer walks back to the car and tries to get back in, fighting the
 	// pose stream the whole way. Written directly rather than routed through
@@ -3096,7 +3096,7 @@ int AbandonPedEnterCar(void *ped) {
 	ClearPedObjective(ped);
 
 	// The same wholesale partial fade the exit does, for the same reason:
-	// the door-opening chain is not made of animations CoopIII applied, so
+	// the door-opening chain is not made of animations CoopVC applied, so
 	// there is no id to fade and nothing else would remove one that is left
 	// over. Cheap, and this is the path that runs when something has already
 	// gone differently from the plan.
@@ -3136,7 +3136,7 @@ bool BeginPedEnterCar(void *ped, void *car, uint8_t seat, uint8_t doorSeat,
 	// the enter key on the passenger side, and a replica told only the seat
 	// opens the wrong door and gets dragged round the car to it. The caller
 	// says which door; it defaults to the seat's own, which is what every
-	// entry CoopIII starts by itself uses.
+	// entry CoopVC starts by itself uses.
 	const uint16_t door = DoorForSeat(doorSeat);
 	const uint8_t  flag = DoorFlag(door);
 	if (!door || !flag)
@@ -3877,7 +3877,7 @@ void ApplyRemotePose(RemotePlayer &player, const Pose &pose) {
 	ApplyRemoteSceneVisibility(player, ped);
 
 	// Before anything else, and before every early return below, because it
-	// is not about what CoopIII is applying this frame. A clump with more
+	// is not about what CoopVC is applying this frame. A clump with more
 	// than twelve animations on it makes RpAnimBlendClumpUpdateAnimations
 	// write its node array over its own return address, and the ped being
 	// seated or dead does not make that any less true.
@@ -4405,7 +4405,7 @@ uint32_t CarEntryMark(void *ped) { return ped ? EntryProgressMark(ped) : 0; }
 // it that the engine never cleans up for anybody else: every exit of its own
 // nils it (PedSetOutCarCB, QuitEnteringCar, the warp-out handler), and
 // SetEnterCar refuses a ped who still has one (addresses.h,
-// PEDSTATE_SEEK_CAR). A seat left by CoopIII's own hand without it is a
+// PEDSTATE_SEEK_CAR). A seat left by CoopVC's own hand without it is a
 // player who walks up to every car afterwards and never gets in.
 
 bool ClumpHoldsAnim(void *clump, void *assoc) {
@@ -4505,7 +4505,7 @@ int DropCarChainCallbacks(void *ped) {
 	if (dropped != 0 && !g_saidDroppedCarCallbacks) {
 		g_saidDroppedCarCallbacks = true;
 		Log("animcb: a ped had %d car animation(s) with a callback still to come when "
-		    "CoopIII changed his seat (state %u); taken off and faded out, so none "
+		    "CoopVC changed his seat (state %u); taken off and faded out, so none "
 		    "fires on a car he has left (said once)",
 		    dropped, Field<uint32_t>(ped, offs::PED_STATE));
 	}
@@ -4824,13 +4824,13 @@ int32_t StdAnimGroupCount() { return AnimGroupCount(ASSOCGRP_STD); }
 //
 // The same twelve-slot bound MakeAnimRoom and EnforceAnimLimit enforce, but
 // applied to *every* clump on the moving list rather than only to the peds
-// CoopIII drives - which is the difference between a rule about CoopIII's
+// CoopVC drives - which is the difference between a rule about CoopVC's
 // peds and a rule about the engine's array.
 //
-// It has to be this wide. CoopIII changes what the engine's own pedestrians
+// It has to be this wide. CoopVC changes what the engine's own pedestrians
 // do: it replicates them, it seats them, it takes limbs off them, it kills
 // them from the wire and it keeps them alive past a death their host already
-// ran. Any of that can leave a ped CoopIII does not have a roster entry for
+// ran. Any of that can leave a ped CoopVC does not have a roster entry for
 // carrying more associations than the engine can index, and the engine's
 // reaction is not a wrong pose, it is
 // RpAnimBlendClumpUpdateAnimations writing its node array over its own saved
@@ -4855,7 +4855,7 @@ void ClampClumpAnimations(void *entity) {
 		return;
 
 	// One association is kept back whatever its weight: a ped's
-	// m_pVehicleAnim. It is not one CoopIII applied, so there is no id to
+	// m_pVehicleAnim. It is not one CoopVC applied, so there is no id to
 	// spare it by, and it carries the callback that finishes a door-opening
 	// chain - drop it and the ped stays in PED_ENTER_CAR with nothing left
 	// to end it. The type test is what makes reading +0x1D8 legal: this
@@ -5260,4 +5260,4 @@ WorldBridge MakeWorldBridge() {
 	return b;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

@@ -29,12 +29,12 @@
 #include "addresses.h"
 #include "leadcheck.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cmath>
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // A drive-by round that ends on anything but a ped or a car goes to
 // CGlass::WasGlassHitByBullet in FireInstantHitFromCar's `other` arm, as a
@@ -175,4 +175,4 @@ inline float DriveByTrailLength(float wire) {
 	return wire;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

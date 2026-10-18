@@ -11,11 +11,11 @@
 // only applies it.
 #pragma once
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Detours CTrain::UpdateTrains. False if the detour couldn't be installed,
 // in which case every machine runs its own trains, as before.
 bool InstallTrainClock();
 void RemoveTrainClock();
 
-} // namespace coopiii::game
+} // namespace coopvc::game

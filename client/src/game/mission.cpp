@@ -43,7 +43,7 @@
 
 #include <windows.h>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -5957,7 +5957,7 @@ bool RunHere(const uint8_t *code, size_t length, int32_t *local0) {
 	if (length < 2 || length > MISSION_EFFECT_CODE)
 		return false;
 	std::memset(g_runner, 0, sizeof g_runner);
-	std::memcpy(g_runner + layout::SCRIPT_NAME, "coopiii", 8);
+	std::memcpy(g_runner + layout::SCRIPT_NAME, "coopvc", 8);
 	std::memset(g_runnerCode, 0, sizeof g_runnerCode);
 	std::memcpy(g_runnerCode, code, length);
 	At<uint32_t>(g_runner, layout::SCRIPT_IP) =
@@ -8173,7 +8173,7 @@ void MissionKillRegistered(void *victim) {
 bool InstallMissionHooks(bool enabled, Client &client) {
 	if (!enabled) {
 		Log("missions: off. Every mission is this machine's own; `missions = on` in "
-		    "CoopIII.ini shares them (docs/missions.md)");
+		    "CoopVC.ini shares them (docs/missions.md)");
 		return false;
 	}
 	if (g_installed)
@@ -8597,4 +8597,4 @@ bool SessionPassedKey(char key[9]) {
 	return g_client->Missions().LastPassedKey(ScriptHash(), key);
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

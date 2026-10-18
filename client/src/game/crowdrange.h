@@ -23,15 +23,15 @@
 // Nothing here reads a game global or calls a game function.
 #pragma once
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 struct WorldBridge;
 }
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // The engine half, game/crowdrange.cpp. Takes GenerateRandomCars' two calls
 // into GenerateOneRandomCar; not fatal, the log says what is lost. Remove
@@ -188,4 +188,4 @@ inline bool UnbuiltWorthNoting(bool car, float dx, float dy) {
 	return dx * dx + dy * dy <= limit * limit;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

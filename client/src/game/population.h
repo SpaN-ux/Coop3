@@ -30,11 +30,11 @@
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Installs the CWorld::Add / CWorld::Remove detours. Safe to call twice.
 // A failure is recorded through the usual hook diagnostics and is not fatal:
-// with no hooks, CoopIII simply never notices an ambient ped, which is where
+// with no hooks, CoopVC simply never notices an ambient ped, which is where
 // this project was before any of it existed.
 bool InstallPopulationHooks();
 void RemovePopulationHooks();
@@ -231,14 +231,14 @@ uint32_t AmbientCarReplicaCount();
 // While one of these is alive, the CWorld::Add and CWorld::Remove detours
 // ignore whatever walks through them.
 //
-// Exists because CoopIII calls both functions itself, to put replicas into
+// Exists because CoopVC calls both functions itself, to put replicas into
 // the world and take them out again, and without the suppression the Add
 // detour would hand a replica straight back as an entity this machine
 // created - announcing somebody else's pedestrian, or somebody else's car,
 // to the session as one of ours. The failure is loud (an entity that exists
 // twice on every other screen) but only after it has been on the wire.
 //
-// A plain flag rather than a thread_local: every call CoopIII makes is on the
+// A plain flag rather than a thread_local: every call CoopVC makes is on the
 // game thread inside the frame pump, and the engine has no other thread that
 // adds entities.
 //
@@ -439,4 +439,4 @@ struct HostDeathScope {
 	HostDeathScope &operator=(const HostDeathScope &) = delete;
 };
 
-} // namespace coopiii::game
+} // namespace coopvc::game

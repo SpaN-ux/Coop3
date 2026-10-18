@@ -2,7 +2,7 @@
 // side, docs/missions.md the design, and missionaddr.h every address and
 // offset this reaches, with why none of it lives in addresses.h.
 //
-// Off unless CoopIII.ini says `missions = on`: InstallMissionHooks refuses
+// Off unless CoopVC.ini says `missions = on`: InstallMissionHooks refuses
 // otherwise, and with nothing installed every mission is this machine's own,
 // as it always was.
 //
@@ -50,7 +50,7 @@
 #include "missionaddr.h"
 #include "replay.h"
 
-#include <coopiii/mission.h>
+#include <coopvc/mission.h>
 
 #include <cmath>
 #include <cstddef>
@@ -58,12 +58,12 @@
 #include <cstring>
 #include <initializer_list>
 
-namespace coopiii {
+namespace coopvc {
 class Client;
 struct WorldBridge;
 }
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // ---- pure, for tools/clienttest ---------------------------------------------------
 
@@ -1902,7 +1902,7 @@ private:
 
 // ---- the engine half ---------------------------------------------------------------
 
-// Every detour and the checks behind them, when CoopIII.ini says so. False,
+// Every detour and the checks behind them, when CoopVC.ini says so. False,
 // with nothing installed, when it does not or when a range handler does not
 // look like one (missionaddr.h); the log says which.
 bool InstallMissionHooks(bool enabled, Client &client);
@@ -1961,4 +1961,4 @@ void DrawMissionWait();
 // owner's blue markers, on a participant's screen.
 void DrawMissionMarkers();
 
-} // namespace coopiii::game
+} // namespace coopvc::game

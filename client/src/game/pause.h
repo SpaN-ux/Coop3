@@ -91,7 +91,7 @@
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // WinMain's `call [WaitMessage]` in the ForegroundApp == 0 arm, and the IAT
 // slot it reads. dumpbin /imports puts WaitMessage at 0x0061D558 (USER32's
@@ -191,4 +191,4 @@ bool CloseMenuForTheSession(const char *why);
 // closing the menu mid-sentence does not hand the keys back.
 void HoldControlsForChat(bool hold);
 
-} // namespace coopiii::game
+} // namespace coopvc::game

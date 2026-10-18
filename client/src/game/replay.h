@@ -22,7 +22,7 @@
 #include <cstdint>
 #include <cstring>
 
-namespace coopiii::game::replay {
+namespace coopvc::game::replay {
 
 // What each operand of an instruction on the replay list is.
 enum class Arg : uint8_t {
@@ -1125,9 +1125,9 @@ inline bool EntitiesLive(const uint8_t *code, size_t length, Fn live) {
 	return walked && ok;
 }
 
-} // namespace coopiii::game::replay
+} // namespace coopvc::game::replay
 
-namespace coopiii::game::replay {
+namespace coopvc::game::replay {
 
 inline bool SoundGlobalOf(const uint8_t *code, size_t length, uint16_t *out, bool *makes) {
 	if (length < 2)
@@ -1152,9 +1152,9 @@ inline bool SoundGlobalOf(const uint8_t *code, size_t length, uint16_t *out, boo
 	return false;
 }
 
-} // namespace coopiii::game::replay
+} // namespace coopvc::game::replay
 
-namespace coopiii::game::replay {
+namespace coopvc::game::replay {
 
 // ---- an instruction off the wire ------------------------------------------------
 //
@@ -1350,9 +1350,9 @@ constexpr bool BuildsFromModel(uint16_t opcode) {
 	return opcode == 0x0107 || opcode == 0x029B;
 }
 
-} // namespace coopiii::game::replay
+} // namespace coopvc::game::replay
 
-namespace coopiii::game::replay {
+namespace coopvc::game::replay {
 
 // ---- The Exchange's Catalina helicopter (mission-audit.md R7) -----------------------
 //
@@ -1458,4 +1458,4 @@ inline bool ReadPillCode(const uint8_t *code, size_t length, uint16_t *slot, Pil
 	return true;
 }
 
-} // namespace coopiii::game::replay
+} // namespace coopvc::game::replay

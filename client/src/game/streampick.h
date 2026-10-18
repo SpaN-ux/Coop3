@@ -27,13 +27,13 @@
 #include "horn.h"
 #include "pedanim.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Both batches go out at this rate (Client::SendHostedPedStates and
 // SendHostedCarStates). A deadline below is counted in these.
@@ -179,4 +179,4 @@ inline uint32_t PickStreamRows(StreamCandidate *c, uint32_t n, uint32_t slots) {
 	return picked;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

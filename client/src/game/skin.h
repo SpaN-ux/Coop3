@@ -16,9 +16,9 @@
 
 #include "client.h"
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // SkinBridge's four entries.
 void AddSkinsToBridge(WorldBridge &bridge);
 
-} // namespace coopiii::game
+} // namespace coopvc::game

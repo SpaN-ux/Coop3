@@ -12,7 +12,7 @@
 #include <cmath>
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -247,7 +247,7 @@ void TickPassengerExit(uint32_t nowMs) {
 	// controls with our own bit (game/pause.h), nor one pressed in another
 	// window: the enter key sends a chat line and picks a menu item too.
 	const bool elsewhere =
-	    (Global<uint8_t>(CPad__Pads + pad::DISABLE_PLAYER_CONTROLS) & pad::PLAYERCONTROL_COOPIII) != 0 ||
+	    (Global<uint8_t>(CPad__Pads + pad::DISABLE_PLAYER_CONTROLS) & pad::PLAYERCONTROL_COOPVC) != 0 ||
 	    Global<uint8_t>(CMenuManager__m_bMenuActive) != 0 || !GameWindowInFront();
 	if (elsewhere || nowMs - g_keyElsewhereMs < PASSENGER_EXIT_WAIT_MS) {
 		if (elsewhere)
@@ -311,4 +311,4 @@ void ExitCarByOwnDoor(void *ped, void *car, bool player) {
 	Func<ExitFn>(CPed__SetExitCar)(ped, car, 0);
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

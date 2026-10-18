@@ -14,7 +14,7 @@
 
 #include <windows.h>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -392,4 +392,4 @@ void RemoveRunOverHooks() {
 	}
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

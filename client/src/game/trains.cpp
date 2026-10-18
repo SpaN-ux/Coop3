@@ -6,7 +6,7 @@
 #include "sessionclock.h"
 #include "traintime.h"
 
-namespace coopiii::game {
+namespace coopvc::game {
 namespace {
 
 Detour g_update;
@@ -73,4 +73,4 @@ void RemoveTrainClock() {
 	g_onSessionClock = false;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

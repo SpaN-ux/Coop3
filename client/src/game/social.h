@@ -6,7 +6,7 @@
 //
 // Every address below was read out of the retail 1.0 gta3.exe, with the
 // witness beside it, and tools/clienttest/social.cpp checks each one against
-// the image when COOPIII_GTA3_EXE names one. The decisions are the inline
+// the image when COOPVC_GAME_EXE names one. The decisions are the inline
 // functions at the bottom, which clienttest runs without a game.
 #pragma once
 
@@ -15,12 +15,12 @@
 
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 class Client;
 struct WorldBridge;
-} // namespace coopiii
+} // namespace coopvc
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // ---- the lock-on ----------------------------------------------------------------
 //
@@ -199,4 +199,4 @@ uint32_t EverydayGangThreat(void *ped, uint32_t found);
 // alone, and game/population.cpp hands on what another player stands beside.
 bool RespawnClearing();
 
-} // namespace coopiii::game
+} // namespace coopvc::game

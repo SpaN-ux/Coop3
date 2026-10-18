@@ -11,7 +11,7 @@
 
 #include <windows.h>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -233,4 +233,4 @@ void AddRideCameraToBridge(WorldBridge &bridge) {
 	bridge.EndStuntShot  = &EndStuntShot;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

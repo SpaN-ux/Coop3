@@ -10,7 +10,7 @@
 
 #include <windows.h>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -345,7 +345,7 @@ bool InstallSocialHooks(Client &client) {
 	if (!g_hornPatched) {
 		g_hornPatched = PatchHorn();
 		if (!g_hornPatched)
-			Log("social: 0x%08X is not the car scan's status test CoopIII has on record; a "
+			Log("social: 0x%08X is not the car scan's status test CoopVC has on record; a "
 			    "remote player's honk does not scatter our pedestrians",
 			    static_cast<unsigned>(SlowCarDown_StatusTest));
 		ok &= g_hornPatched;
@@ -384,4 +384,4 @@ void TickSocial() {
 
 void AddSocialToBridge(WorldBridge &bridge) { bridge.LocalMenuUp = &MenuUp; }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

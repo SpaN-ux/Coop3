@@ -34,7 +34,7 @@
 #include <cmath>
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // ---- decisions ------------------------------------------------------------
 
@@ -183,4 +183,4 @@ void PassengerAimBeforeCamera();
 // the length of it.
 void *PassengerRoundCar();
 
-} // namespace coopiii::game
+} // namespace coopvc::game

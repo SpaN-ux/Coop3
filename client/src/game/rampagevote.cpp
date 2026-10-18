@@ -13,7 +13,7 @@
 #include <cmath>
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -192,14 +192,14 @@ bool GameHasTheKeyboard() {
 	return owner == GetCurrentProcessId();
 }
 
-// The chat line holds the controls with CoopIII's own bit, and so does the
+// The chat line holds the controls with CoopVC's own bit, and so does the
 // menu (game/pause.h), so one test answers both. The menu flag too, for a
 // build where the pause policy didn't install.
 bool KeysAreSomebodyElses() {
 	if (Global<uint8_t>(CMenuManager__m_bMenuActive) != 0)
 		return true;
 	const uint8_t controls = Global<uint8_t>(CPad__Pads + pad::DISABLE_PLAYER_CONTROLS);
-	return (controls & pad::PLAYERCONTROL_COOPIII) != 0;
+	return (controls & pad::PLAYERCONTROL_COOPVC) != 0;
 }
 
 void TickKeys(const RampageVoteView &v) {
@@ -684,4 +684,4 @@ void TickRampageVote() {
 	TickKeys(v);
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

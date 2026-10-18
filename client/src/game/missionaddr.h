@@ -12,7 +12,7 @@
 // 016E (016C adds a hospital restart point). tools/clienttest/missions.cpp
 // checks the lot against the exe when it has one.
 //
-// Nothing here is touched unless CoopIII.ini says `missions = on`.
+// Nothing here is touched unless CoopVC.ini says `missions = on`.
 #pragma once
 
 #include "addresses.h"
@@ -20,7 +20,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii::game::scripts {
+namespace coopvc::game::scripts {
 
 // ---- CTheScripts ---------------------------------------------------------------
 
@@ -390,4 +390,4 @@ using game::CHud__m_ItemToFlash;
 using game::HUD_ITEM_NONE;
 using game::HUD_ITEM_RADAR;
 
-} // namespace coopiii::game::scripts
+} // namespace coopvc::game::scripts

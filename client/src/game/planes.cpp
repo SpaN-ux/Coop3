@@ -6,7 +6,7 @@
 #include "planetime.h"
 #include "sessionclock.h"
 
-namespace coopiii::game {
+namespace coopvc::game {
 namespace {
 
 Detour g_update;
@@ -78,4 +78,4 @@ void RemovePlaneClock() {
 	g_onSessionClock = false;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

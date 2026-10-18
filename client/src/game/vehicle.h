@@ -22,11 +22,11 @@
 #include "client.h"
 #include "combat.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cmath>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // True when the local player is sitting in a vehicle (driving or riding).
 bool LocalPlayerInVehicle();
@@ -103,7 +103,7 @@ void RestoreTrafficCap();
 // same kind of car.
 void MakeCopyAMissionCar(void *vehicle);
 
-// A copy stops being CoopIII's: RANDOM_VEHICLE, unlocked, not collision-proof,
+// A copy stops being CoopVC's: RANDOM_VEHICLE, unlocked, not collision-proof,
 // off the copy list. Counters moved through UpdateCarCount.
 void HandCopyToEngine(void *vehicle);
 
@@ -356,7 +356,7 @@ bool DetonateRemoteVehicleBomb(RemoteVehicle &vehicle, bool blameUs, RemotePlaye
 //   false - a spawn or a backfill. A car that has been missing its boot for
 //           ten minutes simply arrives without one, rather than greeting a
 //           late joiner with a shower of doors out of the object pool. This is
-//           the case CReplay passes `true` for, and the reason CoopIII does
+//           the case CReplay passes `true` for, and the reason CoopVC does
 //           not use CAutomobile::SetupDamageAfterLoad, which is the one-call
 //           version and passes `false` unconditionally.
 //
@@ -415,7 +415,7 @@ void *CopyOfCar(uint16_t netId);
 // damage transition, a bomb timer and a five-second fire timer. addresses.h
 // has all three transcribed under "a car's destruction".
 //
-// So it travels as its own event, and the rule is CoopIII's usual one: the
+// So it travels as its own event, and the rule is CoopVC's usual one: the
 // machine that owns the entity decides. A car's owner is its driver, so the
 // driver's machine announces the blast and every observer replays it through
 // the same engine function, at the transform the owner sends. One call gives
@@ -581,7 +581,7 @@ bool WreckAmbientCarQuietly(RemoteAmbientCar &car);
 // It is not the pedestrian bug with different nouns, and the difference is
 // what makes it worse. A replica ped is bullet-, fire-, melee- and
 // explosion-proof, so a shot at one was refused and nothing happened at all.
-// CoopIII sets one proof flag on a replica car (bCollisionProof, below) and
+// CoopVC sets one proof flag on a replica car (bCollisionProof, below) and
 // cannot set the rest - bExplosionProof would stop a replayed blast reaching a
 // car it must reach identically everywhere - and the engine's remaining flags
 // sit inside a switch with four arms that check nothing. So a shot at a replica
@@ -659,7 +659,7 @@ uint8_t DrainLocalCarHits(VehicleHitBody *out, uint8_t max);
 void ApplyHostedCarHit(uint16_t netId, RemotePlayer *attacker,
                        const VehicleHitBody &body);
 
-// Run a car's own BlowUpCar through its vtable with CoopIII's say-so, so the
+// Run a car's own BlowUpCar through its vtable with CoopVC's say-so, so the
 // detour lets it through. For the replays that the owner of a car asked for.
 // False when the object has no vtable or no slot 29.
 bool BlowUpCarAsOwnerSaid(void *vehicle);
@@ -668,7 +668,7 @@ bool BlowUpCarAsOwnerSaid(void *vehicle);
 // inside BlowUpCar (0x0053BF04), and the rampage needs to know two things
 // about the car going up at that moment.
 //
-// `replay` is true while CoopIII is running BlowUpCar for a wreck another
+// `replay` is true while CoopVC is running BlowUpCar for a wreck another
 // machine decided: BlowUpRemoteVehicle, BlowUpCarAsOwnerSaid and
 // WreckUnownedVehicle. `key` names the car when more than one machine can
 // decide its wreck, with the names C_UnownedBlowUp already uses:
@@ -706,7 +706,7 @@ private:
 // tools/clienttest can walk every case; vehicle.cpp fills the inputs from the
 // Observed table, the replica table, CVehicle::m_pDriver and the culprit.
 enum class CarOwner : uint8_t {
-	// This engine decides. The local player is at the wheel, CoopIII is
+	// This engine decides. The local player is at the wheel, CoopVC is
 	// applying a hit or a wreck somebody else reported, or no other machine
 	// has a claim on the car: traffic we host, a parked car, a session car
 	// nobody is driving.
@@ -1004,4 +1004,4 @@ void AddVehicleBlastToBridge(WorldBridge &bridge);
 // subscript that makes a wire value dangerous are in addresses.h under
 // "a vehicle's extra components".
 
-} // namespace coopiii::game
+} // namespace coopvc::game

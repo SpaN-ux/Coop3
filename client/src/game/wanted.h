@@ -5,7 +5,7 @@
 //
 // 1. **There is one CWanted and it is the local player's.** It hangs off
 //    CPlayerPed at +0x53C, which is the end of CPed, and every remote player
-//    and every replica in CoopIII is a CCivilianPed - exactly SIZEOF_PED
+//    and every replica in CoopVC is a CCivilianPed - exactly SIZEOF_PED
 //    bytes, with nowhere to put a second one. So a player's stars are their
 //    own machine's to decide, and an observer is only ever told the number.
 //
@@ -24,7 +24,7 @@
 //    so M3 replaying somebody else's shot here cannot move this machine's
 //    stars. addresses.h carries the four instructions.
 //
-// 4. **All CoopIII does is write one number into that CWanted, sometimes.**
+// 4. **All CoopVC does is write one number into that CWanted, sometimes.**
 //    PlanWanted below is the whole decision, as arithmetic, deliberately with
 //    no engine dependency so tools/clienttest can put the awkward cases
 //    through it without a running game.
@@ -32,13 +32,13 @@
 
 #include "client.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Adds this file's two entries to the bridge ped.cpp built. Kept separate
 // because it touches a different class and its absence is survivable: a build
@@ -80,10 +80,10 @@ inline bool WantedPeerRaisesFloor(uint8_t rule, uint16_t ourCarNetId,
 	}
 }
 
-// What CoopIII should do with the local player's stars this tick.
+// What CoopVC should do with the local player's stars this tick.
 //
 //   engine   what the engine's m_nWantedLevel reads right now
-//   applied  what CoopIII last left it at (or last observed, when it wrote
+//   applied  what CoopVC last left it at (or last observed, when it wrote
 //            nothing - the two are the same thing, see below)
 //   own      the level this player reached without help
 //   floor    the maximum over peers that WantedPeerRaisesFloor accepted
@@ -92,8 +92,8 @@ inline bool WantedPeerRaisesFloor(uint8_t rule, uint16_t ourCarNetId,
 //
 // **`own` is only re-read from the engine when the engine has moved on its
 // own.** That one comparison is the whole of the earned-versus-granted
-// bookkeeping, and it needs no hook: if the level is exactly where CoopIII
-// left it, CoopIII learned nothing this tick and must not overwrite what it
+// bookkeeping, and it needs no hook: if the level is exactly where CoopVC
+// left it, CoopVC learned nothing this tick and must not overwrite what it
 // knows. If it is higher, the engine moved it with a crime and the new number
 // is this player's own. If it is lower - a death, a bust, a bribe pickup, a
 // Pay'n'Spray - `own` can only come down with it, never up to it
@@ -360,4 +360,4 @@ inline int CopTypeForCarModel(uint16_t model) {
 	}
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

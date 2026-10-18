@@ -2,7 +2,7 @@
 //
 // **A frame behind.** TheCamera.Process is called from inside CGame::Process
 // (0x0048C9B5), after CWorld::Process has run the frame's physics and put
-// every ped sitting in a car on its seat. CoopIII corrects a car somebody
+// every ped sitting in a car on its seat. CoopVC corrects a car somebody
 // else drives after CGame::Process returns, so for a rider the camera had
 // already aimed at his car where this machine's physics left it, and the
 // frame then drew the car where its driver's stream said. Every frame, the
@@ -31,12 +31,12 @@
 #include <cctype>
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 class Client;
 struct WorldBridge;
-} // namespace coopiii
+} // namespace coopvc
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Whether a script's name (CRunningScript's eight bytes, lowered by
 // NAME_THREAD but compared either way) is the unique jumps' thread.
@@ -59,4 +59,4 @@ bool RideCameraOrderTaken();
 
 void AddRideCameraToBridge(WorldBridge &bridge);
 
-} // namespace coopiii::game
+} // namespace coopvc::game

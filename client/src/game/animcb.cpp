@@ -9,7 +9,7 @@
 
 #include <windows.h>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -142,4 +142,4 @@ void RemoveCarCallbackGuards() {
 	}
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

@@ -31,7 +31,7 @@
 
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -166,7 +166,7 @@ VehicleBuild VehicleBuildForModel(uint32_t model) {
 // The BlowUpCar detour gets a bare CVehicle* and has to answer two questions
 // about it: is this one of ours to decide, and if not, whose is it. Nothing on
 // the object itself says so - bIsLocked and VehicleCreatedBy are shared with
-// every mission car the campaign ever made - so CoopIII keeps its own table,
+// every mission car the campaign ever made - so CoopVC keeps its own table,
 // filled at the two moments a remote car definitely starts and stops existing.
 //
 // A row holds a pool HANDLE, never a pointer, and the lookup resolves it. That
@@ -283,7 +283,7 @@ void RememberReplica(int32_t handle, uint16_t netId) {
 	}
 }
 
-// Set while CoopIII is driving BlowUpCar rather than the engine. Same shape
+// Set while CoopVC is driving BlowUpCar rather than the engine. Same shape
 // and same job as combat.cpp's g_replaying: it is what lets the one blast
 // that *is* authorised through the rule written to stop all the others.
 bool g_replayingBlast = false;
@@ -682,7 +682,7 @@ void BlowUpCarCommon(Detour &detour, void *self, void *culprit) {
 		key.pad = 0;
 		// A synced car with no driver takes precedence over a generator
 		// match, and in practice only one of the two is ever set: a claimed
-		// car is CoopIII's own object and no generator's, and the engine
+		// car is CoopVC's own object and no generator's, and the engine
 		// releases a generator's car the moment somebody gets into it. The
 		// order is written down anyway, because "whichever matched" is not a
 		// rule anybody can check later.
@@ -744,7 +744,7 @@ void __fastcall HookedBlowUpBoat(void *self, void * /*edx*/, void *culprit) {
 // This detour is to a car what combat.cpp's CPed::InflictDamage detour is to a
 // pedestrian, and it exists for a reason that is sharper here than there.
 //
-// **The proof flags were never going to be the mechanism.** CoopIII sets
+// **The proof flags were never going to be the mechanism.** CoopVC sets
 // exactly one on an observed car - bCollisionProof, in SetVehicleObserved
 // below - and it cannot set the rest: bExplosionProof would stop a replayed
 // blast reaching a car it is supposed to reach identically on every machine.
@@ -1118,7 +1118,7 @@ void TakeOverParkedCar(uint16_t parkedSlot) {
 		if (ours || session || Field<void *>(car, offs::VEH_DRIVER) != nullptr)
 			return;
 
-		// CoopIII deleting a car the engine made, so the same teardown as a
+		// CoopVC deleting a car the engine made, so the same teardown as a
 		// copy's (game/teardown.h).
 		DestroyVehicle(car, "a parked car somebody else took");
 	}
@@ -1154,7 +1154,7 @@ void *ResolveRemoteVehicle(RemoteVehicle &vehicle) {
 		vehicle.appliedFlags = 0xFF;
 		// Whatever this row was, it is not "one of our own engine's cars
 		// that we are keeping a record of" any more - that car is gone. Any
-		// replacement is a replica CoopIII built, which is ours to destroy
+		// replacement is a replica CoopVC built, which is ours to destroy
 		// when the session ends. Clearing this with the handle keeps the two
 		// facts from drifting apart. See RemoteVehicle::ours.
 		vehicle.ours         = false;
@@ -1162,7 +1162,7 @@ void *ResolveRemoteVehicle(RemoteVehicle &vehicle) {
 		// A wreck is meant to go. CCarCtrl::PossiblyRemoveVehicle deletes any
 		// STATUS_WRECKED vehicle a minute after it died, and that branch is
 		// the one reaping site in the engine that tests neither bIsLocked nor
-		// CanBeDeleted (addresses.h) - so CoopIII's two registration gates do
+		// CanBeDeleted (addresses.h) - so CoopVC's two registration gates do
 		// not hold against it and were never meant to. Respawning here would
 		// put a brand new, undamaged car where a burnt one had just been
 		// cleared away.
@@ -1576,7 +1576,7 @@ void AdoptPromotedCar(RemoteVehicle &vehicle, bool weHostedIt) {
 	// SpawnRemoteVehicle builds: MISSION_VEHICLE and on the copy list, which
 	// keeps it out of the traffic budget, the save and a hideout garage like
 	// every other copy (game/carlife.h). Our own engine's car is left as it
-	// is; it was never CoopIII's.
+	// is; it was never CoopVC's.
 	// Somebody took its wheel, so its initial lock is over wherever it is.
 	ReleaseInitialDoorLock(v);
 
@@ -3039,7 +3039,7 @@ bool InstallVehicleHooks() {
 	// the car generator array is the map's and nothing else's. Measured at
 	// the first parked car to explode instead, a mission that had already
 	// created generators of its own would have baked them into the range
-	// CoopIII considers shared, and only on the host. Zero here just means
+	// CoopVC considers shared, and only on the host. Zero here just means
 	// the world is not up yet; MapCarGeneratorCount tries again.
 	g_cargenBaseline = 0;
 	MapCarGeneratorCount();
@@ -3695,7 +3695,7 @@ bool BlowUpRemoteVehicle(RemoteVehicle &vehicle, const Vec3 &pos, const Quat &ro
 		// Through the object's own vtable, the way CAutomobile::ProcessControl
 		// itself calls it (`call dword [ebx+74h]`). A CBoat has its own
 		// BlowUpCar at a different address, and this is what gets it right
-		// without CoopIII having to know which it is holding.
+		// without CoopVC having to know which it is holding.
 		const uintptr_t slot =
 		    reinterpret_cast<uintptr_t *>(vtable)[VTABLE_BLOW_UP_CAR];
 		if (!slot)
@@ -4106,7 +4106,7 @@ bool SpawnAmbientCarReplica(RemoteAmbientCar &car) {
 		Func<AddFn>(CWorld__Add)(mem);
 	}
 
-	// LEVEL_IGNORE, same reason as everything else CoopIII creates: the
+	// LEVEL_IGNORE, same reason as everything else CoopVC creates: the
 	// engine culls entities whose m_nZoneLevel disagrees with
 	// CGame::currLevel, and a session spans islands.
 	Field<int8_t>(mem, offs::ZONE_LEVEL) = LEVEL_IGNORE;
@@ -4439,4 +4439,4 @@ bool SampleAmbientCarIdentity(void *vehicle, AmbientCarBody &out) {
 void *AmbientCarFromRef(int32_t poolHandle) { return VehicleFromRef(poolHandle); }
 int32_t AmbientCarRef(void *vehicle) { return VehicleRef(vehicle); }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

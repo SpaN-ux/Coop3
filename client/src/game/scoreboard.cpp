@@ -13,7 +13,7 @@
 #include <cstdio>
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -473,7 +473,7 @@ void Draw(const Client &client, float screenW, float screenH) {
 	Font(FONT_HEADING, BOARD_TITLE_SX, BOARD_TITLE_SY, b);
 	const float titleY = b.TextTop(b.titleTop, BOARD_TITLE_H, BOARD_TITLE_SY);
 	// Capitals: this face's lowercase is another style (nametag.h, TagGlyph).
-	Print(b.X(BOARD_PAD + 2.0f), titleY, "COOPIII", HUD_ORANGE);
+	Print(b.X(BOARD_PAD + 2.0f), titleY, "COOPVC", HUD_ORANGE);
 	// FONT_HEADING has no '/' (it came out as "2x8"), so the count is in the
 	// bank face, a little larger than the rest of the small text.
 	char line[96];
@@ -550,4 +550,4 @@ void DrawScoreboard(const Client &client) {
 	Draw(client, screenW, screenH);
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

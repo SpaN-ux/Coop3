@@ -25,7 +25,7 @@
 // 3. **An explosion is already agreed and says nothing.** The object arm of
 //    CWorld::TriggerExplosionSectorList computes its damage as
 //    `300 * min((radius - distance) * 2 / radius, 1)` - two positions and a
-//    radius, no RNG and no physics - and CoopIII already replays every
+//    radius, no RNG and no physics - and CoopVC already replays every
 //    explosion at a position every machine agrees on. So objects blown up by
 //    a blast break identically everywhere for free, and this file
 //    deliberately stays quiet inside CWorld::TriggerExplosion rather than
@@ -89,12 +89,12 @@
 
 #include "client.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // ---------------------------------------------------------------------------
 // Identity
@@ -257,7 +257,7 @@ void *FindObjectByIdent(const ObjectPoolView &pool, const ObjectIdent &want,
 // Who reports
 // ---------------------------------------------------------------------------
 
-// What CoopIII knows about the entity that caused a break.
+// What CoopVC knows about the entity that caused a break.
 enum class BreakCause : uint8_t {
 	// An entity this machine owns: the local player, their car, or an
 	// ambient ped or car this engine generated and hosts
@@ -385,7 +385,7 @@ struct ObjectCallbacks {
 	// should give.
 	bool (*InReplayedShot)() = nullptr;
 
-	// Is this ped / vehicle one CoopIII built as somebody else's? Takes the
+	// Is this ped / vehicle one CoopVC built as somebody else's? Takes the
 	// engine's own pool reference rather than a pointer, for the same reason
 	// the pickup seam does: a pool slot is reused the moment it is freed.
 	bool (*IsReplicatedPed)(int32_t pedRef)     = nullptr;
@@ -576,4 +576,4 @@ struct ObjectStats {
 
 const ObjectStats &GetObjectStats();
 
-} // namespace coopiii::game
+} // namespace coopvc::game

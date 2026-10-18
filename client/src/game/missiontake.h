@@ -29,11 +29,11 @@
 // tools/clienttest/missiontake.cpp walks it.
 #pragma once
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // What an entity added to the world inside one of the session's mission's
 // instructions is, for hosting.
@@ -76,4 +76,4 @@ inline bool MissionCarIsSessionCar(uint16_t missionModel, const Vec3 &missionAt,
 	       MISSION_CAR_SAME_AS_SESSION_M * MISSION_CAR_SAME_AS_SESSION_M;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

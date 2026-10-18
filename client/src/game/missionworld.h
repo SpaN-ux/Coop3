@@ -6,7 +6,7 @@
 //
 // Every address and layout here was read out of the retail 1.0 gta3.exe
 // (reference/bin, 2026-09-25), and tools/clienttest/missions.cpp checks each
-// one against the image when COOPIII_GTA3_EXE names one. The witness is beside
+// one against the image when COOPVC_GAME_EXE names one. The witness is beside
 // each.
 #pragma once
 
@@ -15,7 +15,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii::game::world {
+namespace coopvc::game::world {
 
 // ---- the instructions ----------------------------------------------------------------
 
@@ -146,4 +146,4 @@ constexpr uintptr_t CLEAR_CAN_BE_DELETED_CALL   = 0x004B4FC4;
 constexpr uintptr_t CVehicle__CanBeDeleted      = 0x005511B0;
 using FindGroundZFn = float(__cdecl *)(float x, float y);
 
-} // namespace coopiii::game::world
+} // namespace coopvc::game::world

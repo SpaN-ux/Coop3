@@ -11,7 +11,7 @@
 #include <cmath>
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -45,7 +45,7 @@ bool HaveSession() {
 	return g_cb.HaveSession == nullptr || g_cb.HaveSession();
 }
 
-// Idents CoopIII removed because somebody else collected them, of the types
+// Idents CoopVC removed because somebody else collected them, of the types
 // the engine never brings back. See kRemovedRingSize for why this is a list
 // of idents and not a flag on the slot.
 struct RemovedIdent {
@@ -565,7 +565,7 @@ void AnnounceWhatTheEngineMade(const char *what) {
 	}
 }
 
-// Is this ped one CoopIII built to stand in for somebody else's?
+// Is this ped one CoopVC built to stand in for somebody else's?
 //
 // Nothing in the pool can answer it. A remote player's ped and an ambient
 // replica are both CCivilianPed and both MISSION_CHAR, which is exactly what
@@ -676,14 +676,14 @@ void __cdecl HookedPickupsUpdate() {
 	// The connection test is the load-bearing half and it was missing. With
 	// the callbacks wired and the socket down, every pickup in the world was
 	// hidden from the engine and claimed into nothing - a player with
-	// CoopIII.asi installed and no server running could not collect
+	// CoopVC.asi installed and no server running could not collect
 	// anything. Measured in a live game, where it printed the claim-timeout
 	// line once and then sat there.
 	if (g_cb.Claim == nullptr || !HaveSession()) {
 		// Clear the gates once per transition, not every frame, so nothing
 		// is left half-claimed and nothing is pointlessly rewritten sixty
 		// times a second. The engine's own table is untouched either way -
-		// all g_slots holds is CoopIII's gate.
+		// all g_slots holds is CoopVC's gate.
 		if (g_seamActive) {
 			g_seamActive = false;
 			for (PickupSlot &s : g_slots)
@@ -853,7 +853,7 @@ void __cdecl HookedPickupsUpdate() {
 
 	// What became of the reservations we were holding.
 	//
-	// This is where CoopIII finds out whether a pickup was collected, and it
+	// This is where CoopVC finds out whether a pickup was collected, and it
 	// finds out by *reading* rather than by deciding: the engine ran its own
 	// touch test, its own CanBePickedUp and its own award switch on an
 	// unblocked pickup, and an empty slot afterwards is what it did.
@@ -1245,7 +1245,7 @@ void OnPickupDenied(const PickupIdent &ident) {
 }
 
 void ReleaseAllPickups() {
-	// Nothing to undo in the engine: the only lasting change CoopIII makes to
+	// Nothing to undo in the engine: the only lasting change CoopVC makes to
 	// the pickup table is the removal in OnPickupTakenByOther, which is what
 	// the collecting machine's own engine did too and which the game will
 	// respawn on its own. What this clears is the gate, so that with no
@@ -1352,4 +1352,4 @@ void AddPickupsToBridge(WorldBridge &bridge) {
 	bridge.PickupDropped      = &OnPickupDroppedElsewhere;
 }
 
-}  // namespace coopiii::game
+}  // namespace coopvc::game

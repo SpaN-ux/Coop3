@@ -15,7 +15,7 @@
 //    free, and if the game takes the box while ours is up, ours steps aside.
 //
 // 2. **The keys.** Y and N by default, voteYesKey and voteNoKey in
-//    CoopIII.ini. Read with GetAsyncKeyState, the way the seat key is, so
+//    CoopVC.ini. Read with GetAsyncKeyState, the way the seat key is, so
 //    nothing is taken from the game: GTA III binds neither, and a key that is
 //    only polled can't be swallowed. Only while a vote is open, only with the
 //    game's window in front, never while the chat line is open or the menu is
@@ -37,17 +37,17 @@
 //    point of the vote is to be together - but the log says so.
 #pragma once
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 class Client;
 }
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // ---------------------------------------------------------------------------
 // The ring
@@ -295,7 +295,7 @@ inline bool MayLoadIslandUnder(int32_t wanted, int32_t here) {
 // The game half
 // ---------------------------------------------------------------------------
 
-// Keys from CoopIII.ini, as virtual-key codes. Y and N if never called.
+// Keys from CoopVC.ini, as virtual-key codes. Y and N if never called.
 void SetRampageVoteKeys(int yesKey, int noKey);
 
 // Remembers the client. Nothing is hooked.
@@ -336,4 +336,4 @@ float CarSpeedMps(void *car);
 int32_t IslandAt(float x, float y, float z);
 int32_t IslandLoaded();
 
-} // namespace coopiii::game
+} // namespace coopvc::game

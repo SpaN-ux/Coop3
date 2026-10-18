@@ -30,7 +30,7 @@
 #include <cstdlib>
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -54,7 +54,7 @@ Detour g_bodyPartDetour;
 // announce somebody else's pedestrian to them as one of ours.
 //
 // A plain bool rather than a thread_local: every call to CWorld::Add that
-// CoopIII makes happens on the game thread, in the frame pump, and the engine
+// CoopVC makes happens on the game thread, in the frame pump, and the engine
 // has no other thread that adds entities. If that ever stops being true the
 // failure is a replica announced as ours, which is loud - it would show up as
 // a ped that exists twice on every other screen.
@@ -174,16 +174,16 @@ void ForgetReplica(uint16_t netId) {
 // CPed pointer is on every line: it is the only thing that identifies one
 // pedestrian across a claim it loses and a claim it gains.
 //
-// Off unless COOPIII_POPDEBUG is set in the environment. A pedestrian
+// Off unless COOPVC_POPDEBUG is set in the environment. A pedestrian
 // generator produces a line or two a second even when nothing is wrong, and
 // this file's other reports are deliberately once-only for that reason. The
-// environment rather than CoopIII.ini for the same reason COOPIII_NICK is
+// environment rather than CoopVC.ini for the same reason COOPVC_NICK is
 // there: two instances out of one game folder, one of them being watched.
 bool PopTrace() {
 	static const bool on = [] {
 		size_t len = 0;
 		char   buf[8]{};
-		return getenv_s(&len, buf, sizeof(buf), "COOPIII_POPDEBUG") == 0 &&
+		return getenv_s(&len, buf, sizeof(buf), "COOPVC_POPDEBUG") == 0 &&
 		       len != 0 && buf[0] != '0';
 	}();
 	return on;
@@ -500,7 +500,7 @@ void QueueLost(HostedPed &h, const char *why) {
 //   - not the player. FindPlayerPed is cheap and the player is the one ped
 //     that is never ambient.
 //
-// A CoopIII replica passes none of them: it is created as MISSION_CHAR, and
+// A CoopVC replica passes none of them: it is created as MISSION_CHAR, and
 // the Add that registers it is wrapped in g_creatingReplica anyway.
 //
 // **And one mission ped does pass: the session's own** (docs/missions.md
@@ -1352,14 +1352,14 @@ void ForgetMissionEntity(const void *entity) {
 //     added one never is, but the test costs nothing and closes the case
 //     where the engine adds a car back into the world under a driver.
 //
-// A CoopIII replica of somebody else's traffic is also RANDOM_VEHICLE, on
+// A CoopVC replica of somebody else's traffic is also RANDOM_VEHICLE, on
 // purpose (game/vehicle.cpp, SpawnAmbientCarReplica) - so the Add that
 // registers one *would* pass all three. What keeps it out is the
 // ReplicaScope around that Add, which is the same guard the ped side uses and
 // the reason that guard is a shared type rather than a local flag.
 //
 // **And a fourth test, which is the one the wreck report rests on.**
-// ReplicaScope only covers the moment CoopIII calls CWorld::Add; it says
+// ReplicaScope only covers the moment CoopVC calls CWorld::Add; it says
 // nothing about a later Add on the same object. A replica that ever got
 // adopted into g_hostedCars would be announced to the session as this
 // machine's own traffic *and* would get to report its own destruction - a
@@ -1617,7 +1617,7 @@ void NoteCarAdded(void *entity) {
 //
 // That second test is what happens when the local player gets into a car this
 // machine was hosting as traffic. From that moment two different parts of
-// CoopIII believe they own it: this seam, which is streaming its transform to
+// CoopVC believe they own it: this seam, which is streaming its transform to
 // everybody, and the M2 claim path, which is about to introduce the same car
 // to the session under a netId of its own. Retiring it from ambient hosting
 // is the cheap half of that argument and the right one - the claim path is
@@ -1780,7 +1780,7 @@ uint8_t DrainAmbientWrecks(UnownedBlast *out, uint8_t max) {
 // Through the engine's own BlowUpCar, off the object's own vtable, for the
 // reason every other replay in this codebase goes that way - the blast, the
 // burnt shell, the flagged occupants and the sound are decided in one
-// function, and CoopIII inventing any of them separately gets them subtly
+// function, and CoopVC inventing any of them separately gets them subtly
 // wrong. No health is written into the car first: writing health destroys
 // nothing, and a low one arms the five-second fire timer, which is an
 // observer deciding to destroy somebody else's car later.
@@ -2442,7 +2442,7 @@ HostDeathScope::~HostDeathScope() { g_applyingHostDeath = false; }
 // every ped that is not the local player.
 //
 // **Why this is a refusal and not a report**, which is the decision the whole
-// change turns on. CoopIII is host-authoritative: an entity's own machine
+// change turns on. CoopVC is host-authoritative: an entity's own machine
 // decides what happens to it and everybody else is written to. A replica
 // reaching CPed::SetDie on an observer is that rule being broken, not a fact
 // the observer has discovered - the host's copy of that pedestrian is alive
@@ -3033,7 +3033,7 @@ uint32_t DrainAmbientPedDeaths(PedDeathBody *out, uint32_t max) {
 
 // The observer's half: kill a replica because the machine hosting it did.
 //
-// The engine decides the death, not CoopIII. CPed::SetDie is what picks the
+// The engine decides the death, not CoopVC. CPed::SetDie is what picks the
 // stored state, clears the ped's tasks, zeroes the health, blends the fall
 // and leaves the body where CPed::ProcessControl can play it out - the same
 // argument BlowUpRemoteVehicle makes for going through the engine's own
@@ -3425,7 +3425,7 @@ uint32_t SampleHostedPeds(AmbientPedState *out, uint32_t max, const Vec3 *viewer
 // position, a facing and an animation that somebody else chose.
 // Is the replica this row names still the object this row made?
 //
-// **The bug this closes.** Every other recovery in CoopIII re-arms itself:
+// **The bug this closes.** Every other recovery in CoopVC re-arms itself:
 // `ResolveRemote` takes a player's ped back when the engine flags it,
 // `CorrectAmbientCarReplica` clears the handle and sets `spawnPending` when a
 // car has gone from the pool, and the spawn pass then builds a new one.
@@ -4977,4 +4977,4 @@ uint32_t AmbientCarReplicaCount() { return g_carReplicas; }
 ReplicaScope::ReplicaScope() { g_creatingReplica = true; }
 ReplicaScope::~ReplicaScope() { g_creatingReplica = false; }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

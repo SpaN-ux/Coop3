@@ -3,10 +3,10 @@
 // ENV_NEW_GAME).
 #pragma once
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Hooks the frontend's own frame, so that once the menu has been up a moment
-// it starts a new game the way its New Game item does. The one hook CoopIII
+// it starts a new game the way its New Game item does. The one hook CoopVC
 // puts in before the game runs, and only for this; it needs HookInit. False
 // when it could not go in, and the player picks New Game themselves.
 bool ArmNewGameFromMenu();
@@ -14,4 +14,4 @@ bool ArmNewGameFromMenu();
 // Whether it has started one yet.
 bool StartedNewGameFromMenu();
 
-} // namespace coopiii::game
+} // namespace coopvc::game

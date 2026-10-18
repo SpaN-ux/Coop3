@@ -5,7 +5,7 @@
 #include "pedanim.h"
 #include "vehicle.h"
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -123,4 +123,4 @@ bool TrainRideFrame(uint8_t track, uint16_t wagon, RideFrame &out) {
 	return false;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

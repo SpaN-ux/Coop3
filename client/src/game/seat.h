@@ -2,12 +2,12 @@
 
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 struct WorldBridge;
 struct LocalEntryProbe;
 }
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Riding in somebody else's car.
 //
@@ -15,12 +15,12 @@ namespace coopiii::game {
 // a driver in it and the enter key jacks them; there is no seat to ask for,
 // because in single player nobody is ever driving a car you would want to
 // ride in. A co-op mod is the first thing that wants one, so this is the one
-// place CoopIII adds a control the original game does not have.
+// place CoopVC adds a control the original game does not have.
 //
 // The seating itself is the engine's, not ours. CPed::WarpPedIntoCar branches
 // on the ped's objective: OBJECTIVE_ENTER_CAR_AS_DRIVER takes the driver's
 // seat, and anything on the other arm takes *the first free passenger slot*,
-// which the engine picks itself. So CoopIII does not choose a seat - it asks,
+// which the engine picks itself. So CoopVC does not choose a seat - it asks,
 // and then reads back which one it got, because that number is what the rest
 // of the session needs.
 //
@@ -33,7 +33,7 @@ namespace coopiii::game {
 // what that costs.
 
 // Which key asks for a seat. A virtual-key code; 'G' by default, settable
-// from CoopIII.ini before the feature is installed.
+// from CoopVC.ini before the feature is installed.
 void SetSeatKey(int virtualKey);
 
 // True once per press, never while held. Called from the client's own tick,
@@ -110,4 +110,4 @@ void ResetLocalEntry(uint8_t what);
 
 void AddSeatToBridge(WorldBridge &bridge);
 
-} // namespace coopiii::game
+} // namespace coopvc::game

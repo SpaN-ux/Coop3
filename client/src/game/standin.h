@@ -104,7 +104,7 @@
 
 #include "nearchar.h"
 
-namespace coopiii::game::standin {
+namespace coopvc::game::standin {
 
 // ---- escort ------------------------------------------------------------------------
 
@@ -550,4 +550,4 @@ inline bool ClearSparesRiders(uint16_t mission) {
 	return mission == TWO_FACED_TANNER;
 }
 
-} // namespace coopiii::game::standin
+} // namespace coopvc::game::standin

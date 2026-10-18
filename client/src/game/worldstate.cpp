@@ -3,7 +3,7 @@
 #include "addresses.h"
 #include "log.h"
 
-namespace coopiii::game {
+namespace coopvc::game {
 namespace {
 
 using SetGameClockFn = void(__cdecl *)(int hour, int minute);
@@ -11,7 +11,7 @@ using SetGameClockFn = void(__cdecl *)(int hour, int minute);
 // Whether there is a world to read at all.
 //
 // gGameState is the variable WinMain switches on, and GS_PLAYING_GAME is the
-// only state where CGame::Process runs a full frame. CoopIII's frame pump
+// only state where CGame::Process runs a full frame. CoopVC's frame pump
 // already only fires from inside CGame::Process, so this is belt and braces
 // - but the clock globals hold stale values from the previous session
 // through a load, and reporting one of those as the session's time of day
@@ -113,4 +113,4 @@ void AddWorldToBridge(WorldBridge &bridge) {
 	    "session's mission while it runs");
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

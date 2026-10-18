@@ -12,7 +12,7 @@
 
 #include "client.h"
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Adds the four world functions to a bridge that has already been built.
 // Called from dllmain so this stays independent of ped.cpp's MakeWorldBridge.
@@ -38,4 +38,4 @@ void ReleaseWorldWeather();
 // game/carlife.cpp keeps it out of a save.
 bool SessionPinsWeather();
 
-} // namespace coopiii::game
+} // namespace coopvc::game

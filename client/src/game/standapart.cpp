@@ -9,7 +9,7 @@
 
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -248,4 +248,4 @@ void TickStandApart() {
 	}
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

@@ -6,7 +6,7 @@
 #include "../hook/hook.h"
 #include "../log.h"
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -20,13 +20,13 @@ uint32_t g_heldMask = 0;
 // What this machine's own state machine says, which is what goes on the wire.
 uint32_t g_localMask = 0;
 
-// Garages whose state byte was CoopIII's rather than the engine's on the
-// previous frame - because CoopIII was holding it, or because the release
+// Garages whose state byte was CoopVC's rather than the engine's on the
+// previous frame - because CoopVC was holding it, or because the release
 // wrote it.
 //
 // This exists to keep g_localMask honest, and without it the feature
 // oscillates. The local bit is read back out of m_eGarageState after the
-// engine's own arm has run; on a held garage that byte is CoopIII's own
+// engine's own arm has run; on a held garage that byte is CoopVC's own
 // writing, or the arm that would have changed it was suppressed, so reading
 // it back has this machine report a deviation it invented. It then stops
 // being held, the engine's completion arm fires on the wrong car, and the
@@ -127,7 +127,7 @@ void PushRespray(uint8_t garage, uint8_t colour1, uint8_t colour2) {
 // already fixed the car, chosen the colours and put them on it (addresses.h,
 // "the Pay'n'Spray, which is three things and not one"). So the colours are
 // read back off the car the owner's engine actually painted, rather than
-// CoopIII rolling its own - which is the whole point, since
+// CoopVC rolling its own - which is the whole point, since
 // ChooseVehicleColour is a per-machine round robin and two machines calling it
 // produce two different cars.
 void NoteLocalRespray(size_t index) {
@@ -297,8 +297,8 @@ void __fastcall HookedGarageUpdate(void *self, void * /*edx*/) {
 	// it honest.
 	//
 	// The bit is read back out of m_eGarageState, which is only this
-	// machine's own opinion while CoopIII is not the one deciding it. On a
-	// held garage it is not: either CoopIII wrote the byte, or it suppressed
+	// machine's own opinion while CoopVC is not the one deciding it. On a
+	// held garage it is not: either CoopVC wrote the byte, or it suppressed
 	// the arm that would have moved it. Reading it back there would have this
 	// machine report a deviation it invented - and two machines doing that to
 	// each other hold a door in a state neither of them ever decided and
@@ -318,7 +318,7 @@ void __fastcall HookedGarageUpdate(void *self, void * /*edx*/) {
 	}
 
 	// True for the next frame if we are holding it now; the two writes below
-	// set it for the frames where CoopIII moves the byte without holding.
+	// set it for the frames where CoopVC moves the byte without holding.
 	WriteBit(g_ownedLastFrame, index, held);
 
 	if (!held) {
@@ -396,7 +396,7 @@ bool SampleLocalGaragesImpl(uint32_t &mask) {
 	// No separate sweep over aGarages. The detour has already read every
 	// garage the engine updated this frame, and it read them at the one
 	// moment the state byte is the engine's own opinion rather than partly
-	// CoopIII's. A sweep from PreFrame would be sampling the byte after the
+	// CoopVC's. A sweep from PreFrame would be sampling the byte after the
 	// hold had written it.
 	//
 	// The consequence is that this returns false until the detour has run at
@@ -434,7 +434,7 @@ void ApplyRemoteResprayImpl(RemoteVehicle *vehicle, const ResprayBody &body) {
 	// answered in Client::OnRespray and carried out in Client::TickWanted
 	// (docs/wanted.md §4.9). Never by letting our own garage arm run, which
 	// would also repaint and bill our own player, and never by a
-	// CWanted::Reset of CoopIII's own here.
+	// CWanted::Reset of CoopVC's own here.
 
 	if (!vehicle || vehicle->poolHandle < 0)
 		return;
@@ -446,7 +446,7 @@ void ApplyRemoteResprayImpl(RemoteVehicle *vehicle, const ResprayBody &body) {
 	// The engine's own three writes, in the engine's own order, straight out
 	// of the arm at 0x00422767. Fix() is a CAutomobile method and the retail
 	// arm reaches it without an IsCar() check - that is a retail bug that only
-	// fires when a player parks a boat in a spray shop, and CoopIII is not
+	// fires when a player parks a boat in a spray shop, and CoopVC is not
 	// going to reproduce it on somebody else's boat.
 	if (Field<int32_t>(car, offs::VEH_TYPE) != VEHICLE_TYPE_CAR)
 		return;
@@ -561,4 +561,4 @@ void AddGaragesToBridge(WorldBridge &bridge) {
 	bridge.ApplyRemoteRespray  = &ApplyRemoteResprayImpl;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

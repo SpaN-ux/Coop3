@@ -11,11 +11,11 @@
 
 #include "addresses.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // ---- the fire timer of a car nobody holds -----------------------------------
 //
@@ -177,4 +177,4 @@ constexpr WreckPart WRECK_DOORS[6] = {
     {CAR_DOOR_LR, DOOR_REAR_LEFT},   {CAR_DOOR_RR, DOOR_REAR_RIGHT},
 };
 
-} // namespace coopiii::game
+} // namespace coopvc::game

@@ -51,7 +51,7 @@
 // and that CRadar::RadarSprites[4] really is CRadar::CentreSprite - which is
 // one pointer compare that catches the image having moved, another mod having
 // rebuilt the sprite table, and this file's own addresses being wrong, all at
-// once. Either failing means CoopIII says so in the log and draws nothing,
+// once. Either failing means CoopVC says so in the log and draws nothing,
 // rather than hooking a function that is not DrawBlips.
 #include "radar.h"
 
@@ -64,7 +64,7 @@
 #include <cstdint>
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -193,7 +193,7 @@ struct Arrow {
 // disagree with the ped standing under the nametag.
 //
 // The wire otherwise. A player whose ped has not streamed in, or who is
-// outside whatever streaming radius CoopIII eventually grows, still has a
+// outside whatever streaming radius CoopVC eventually grows, still has a
 // position and a heading arriving twenty-five times a second, and an arrow
 // needs nothing else. docs/roadmap.md §5.3.
 bool ResolveArrow(const RemotePlayer &player, Arrow &out) {
@@ -698,4 +698,4 @@ bool RadarArrowsInstalled() {
 	return g_drawBlips.IsInstalled();
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

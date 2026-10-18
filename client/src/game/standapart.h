@@ -24,24 +24,24 @@
 //     ahead of it is clear.
 //
 // Neither happens before they have overlapped for STAND_HOLD_MS, so brushing
-// past somebody is left to the engine. Nothing puts a player back: CoopIII
+// past somebody is left to the engine. Nothing puts a player back: CoopVC
 // never writes the local player's position from the wire.
 #pragma once
 
 #include "mission.h"
 
-#include <coopiii/mission.h>
-#include <coopiii/protocol.h>
+#include <coopvc/mission.h>
+#include <coopvc/protocol.h>
 
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 class Client;
 }
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // ---- pure, for tools/clienttest ---------------------------------------------------
 
@@ -214,4 +214,4 @@ void TickStandApart();
 // that lives for the whole run.
 void NoteStandPlacement(const char *what);
 
-} // namespace coopiii::game
+} // namespace coopvc::game

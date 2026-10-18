@@ -5,7 +5,7 @@
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // CPed::SetEvasiveStep(CEntity *reason, uint8 animType), __thiscall, ret 8.
 // It opens `cmp [esi+224h],1Fh` (already PED_STEP_AWAY), then IsPedInControl
@@ -46,4 +46,4 @@ constexpr uintptr_t LOOK_CARS_SITE        = 0x004CB57B;
 bool InstallReplicaCalm();
 void RemoveReplicaCalm();
 
-} // namespace coopiii::game
+} // namespace coopvc::game

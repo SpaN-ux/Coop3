@@ -10,7 +10,7 @@
 #include "population.h"
 #include "../log.h"
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -59,4 +59,4 @@ void RemovePedSpeech() {
 			g_taken[i] = false;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

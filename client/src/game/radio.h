@@ -22,7 +22,7 @@
 
 #include "client.h"
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Points the three calls at us. False if any would not go - it no longer
 // calls what it did - and says in the log what that costs; the ones that
@@ -33,4 +33,4 @@ void RemoveRadioSync();
 // Wires WorldBridge's four radio entries.
 void AddRadioToBridge(WorldBridge &bridge);
 
-} // namespace coopiii::game
+} // namespace coopvc::game

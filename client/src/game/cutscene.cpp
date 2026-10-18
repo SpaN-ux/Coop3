@@ -5,7 +5,7 @@
 #include <cstdio>
 #include <vector>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -151,4 +151,4 @@ void DescribeSpecialModels(char *out, size_t size) {
 	}
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

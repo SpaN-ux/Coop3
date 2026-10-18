@@ -23,9 +23,9 @@
 #include <cstdint>
 #include <string>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
-// From CoopIII.ini (config.h): the key held to show it, and the server it
+// From CoopVC.ini (config.h): the key held to show it, and the server it
 // names in its second line.
 void SetScoreboardKey(int vk);
 void SetScoreboardServer(const std::string &host, uint16_t port);
@@ -36,4 +36,4 @@ void ToggleScoreboardPin();
 // From the CHud::Draw detour, after the original.
 void DrawScoreboard(const Client &client);
 
-} // namespace coopiii::game
+} // namespace coopvc::game

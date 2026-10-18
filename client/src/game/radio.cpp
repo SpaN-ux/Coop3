@@ -11,7 +11,7 @@
 
 #include <windows.h>
 
-namespace coopiii::game {
+namespace coopvc::game {
 namespace {
 
 using ServiceFn     = void(__thiscall *)(void *music);
@@ -328,4 +328,4 @@ void AddRadioToBridge(WorldBridge &bridge) {
 	bridge.RadioUserTracksHere   = &RadioUserTracksHere;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

@@ -1,4 +1,4 @@
-// TPTO<n>, the first of CoopIII's own typed cheats (cheats.h, COOP_CHEATS):
+// TPTO<n>, the first of CoopVC's own typed cheats (cheats.h, COOP_CHEATS):
 // typed in play the way the game's cheats are, it puts this player beside
 // player n, n being the number the Tab list puts before a
 // name (chatfeed.h, ListNumber: the slot plus one). docs/cheats.md 7.
@@ -27,14 +27,14 @@
 #include "rampagevote.h"
 #include "../chatfeed.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // What TPTO does, or why it does nothing.
 enum class Tpto : uint8_t {
@@ -182,8 +182,8 @@ void InstallTpto(Client &client);
 void RemoveTpto();
 
 // Once a frame, from the frame pump before CGame::Process and before the
-// vote's move is ticked: CoopIII's typed cheats since the last frame
+// vote's move is ticked: CoopVC's typed cheats since the last frame
 // (cheats.h, DrainCoopCheats), each one done or refused.
 void TickCoopCheats();
 
-} // namespace coopiii::game
+} // namespace coopvc::game

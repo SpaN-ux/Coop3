@@ -30,7 +30,7 @@
 
 #include "vehicle.h"
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 inline bool AirborneCounts(bool engineSaysAirborne, CarOwner owner, bool passenger = false) {
 	return engineSaysAirborne && owner == CarOwner::Local && !passenger;
@@ -41,4 +41,4 @@ inline bool AirborneCounts(bool engineSaysAirborne, CarOwner owner, bool passeng
 bool InstallStuntGuard();
 void RemoveStuntGuard();
 
-} // namespace coopiii::game
+} // namespace coopvc::game

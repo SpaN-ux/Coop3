@@ -226,6 +226,49 @@ constexpr uintptr_t CTimer__TimeInMilliseconds = 0x00974B2C;
 constexpr uintptr_t CTimer__PreviousTimeMs     = 0x00978D8C;
 constexpr uintptr_t CTimer__TimeStep           = 0x00975424;
 
+// ---- entity layout ----------------------------------------------------------
+
+// Proven against the exe, each by a site the check script reads. Where a
+// number agrees with the III client's it is still proven again here: the
+// classes grew between the games.
+//
+//   model index   int16 at entity+0x5C. 270 sites read it as `movsx r,
+//                 word [r+0x5C]` and then index one table, [idx*4+0x0092D4C8],
+//                 e.g. 0x0040654F..0x00406557 (a model-name comparison: the
+//                 loaded pointer plus 4 is pushed as a string). That table is
+//                 CModelInfo::ms_modelInfoPtrs.
+//   ped health    float at ped+0x354, armour at +0x358. 0x0050DC85 stores
+//                 100.0f to +0x354 and 0x0 to +0x358 side by side, a freshly
+//                 made ped; 0x004ED857 stores 100.0f to +0x358 alone (the
+//                 armour cheat).
+//   vehicle health float at vehicle+0x204. 0x00431237: FindPlayerVehicle()
+//                 then `mov dword [eax+0x204], 0x447A0000` (1000.0f), the
+//                 fix-the-car cheat; two more such stores at 0x004ABE7B and
+//                 0x005BAE69 (the latter right after a car is made).
+constexpr uint32_t  ENTITY_OFF_MODEL_INDEX   = 0x5C;    // int16
+constexpr uintptr_t CModelInfo__ms_modelInfoPtrs = 0x0092D4C8;
+constexpr uint32_t  PED_OFF_HEALTH           = 0x354;   // float
+constexpr uint32_t  PED_OFF_ARMOUR           = 0x358;   // float
+constexpr uint32_t  VEHICLE_OFF_HEALTH       = 0x204;   // float
+
+// The flag bytes and the scan code. One function walks a world sector list and
+// shows all of them in a row (0x004BC324..0x004BC355):
+//
+//   mov dx,[ebx+0x58] / mov ax,[0x00A1098E] / cmp dx,ax    scan code: skip an
+//                                                          entity already seen
+//   mov al,[ebx+0x51] / and al,1 / je skip                 bUsesCollision, bit 0
+//   mov al,[ebx+0x50] / and al,7 / cmp al,2 / jne skip     m_type, bits 0-2
+//   mov ax,[0x00A1098E] / mov [ebx+0x58],ax                mark it seen
+//   mov al,[ebx+0x50] / shr al,3 / cmp ecx,5 / cmp ecx,6   m_status, bits 3-7
+//
+// which is the III layout (m_type in the low three bits of +0x50, m_status in
+// the rest, bUsesCollision bit 0 of +0x51, scan code at +0x58).
+constexpr uint32_t  ENTITY_OFF_FLAGS      = 0x50;   // m_type bits 0-2, m_status bits 3-7
+constexpr uint32_t  ENTITY_OFF_FLAGS_A    = 0x51;   // bit 0 bUsesCollision
+constexpr uint32_t  ENTITY_OFF_SCAN_CODE  = 0x58;   // uint16
+constexpr uintptr_t CWorld__ms_nCurrentScanCode = 0x00A1098E;   // uint16
+constexpr uint32_t  ENTITY_USES_COLLISION = 0x01;   // bit in the byte at +0x51
+
 // ---- not yet found --------------------------------------------------------
 //
 // Spawning a ped, giving a ped a task, the weapon and animation state, and the

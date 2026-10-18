@@ -8,7 +8,7 @@
 #include <cstring>
 #include <windows.h>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -113,4 +113,4 @@ void RemoveReplicaCalm() {
 			s.done = false;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

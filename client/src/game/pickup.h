@@ -3,7 +3,7 @@
 // docs/pickups.md is the investigation and the design. What a reader of this
 // file needs is the three sentences the whole thing rests on:
 //
-// 1. **Nobody has to spawn anything.** CoopIII does not suppress the main
+// 1. **Nobody has to spawn anything.** CoopVC does not suppress the main
 //    script on clients (that is M5 Tier 2, not built), so every machine runs
 //    main.scm and creates all 448 script pickups itself, from literal
 //    coordinates, through a CPickups::GenerateNewOne that never calls the
@@ -24,10 +24,10 @@
 // 3. **The lever is m_pObject, and nothing here re-implements the engine.**
 //    CPickup::Update returns false immediately when m_pObject is nil
 //    (0x00430880), *below* the m_bRemoved respawn branch and *above* the
-//    mine switch, the touch test and the whole award switch. So CoopIII
+//    mine switch, the touch test and the whole award switch. So CoopVC
 //    stashes and nils m_pObject for every pickup it has not been granted,
 //    calls the engine's own CPickups::Update, and puts them back. The engine
-//    physically cannot award a pickup CoopIII has not unblocked, and every
+//    physically cannot award a pickup CoopVC has not unblocked, and every
 //    pickup it *does* unblock goes through the engine's own detection, its
 //    own CanBePickedUp, its own per-type award switch and its own removal.
 //
@@ -48,16 +48,16 @@
 //   CreateDeadPedWeaponPickups and CreateDeadPedMoney for any ped that is not
 //   the local player. On a replica of somebody else's ped both come to
 //   nothing - the money creator's fourth gate is
-//   `CharCreatedBy == MISSION_CHAR` and every replica CoopIII builds is one,
+//   `CharCreatedBy == MISSION_CHAR` and every replica CoopVC builds is one,
 //   and the weapon creator walks an inventory a replica has never been given.
 //   So the machine that hosts the pedestrian is the only one that rolls
-//   anything, which is CoopIII's ownership rule holding by construction
+//   anything, which is CoopVC's ownership rule holding by construction
 //   rather than by a lock. There is no race to close and no double roll to
 //   suppress. What was missing is that nobody else heard about it.
 //
 // - **Except for a remote player's ped, where the same code was a bug.**
 //   An observer's copy of a player *is* given a weapon (game/ped.cpp, with
-//   CoopIII's own invented 1000 rounds), CreateDeadPedWeaponPickups has no
+//   CoopVC's own invented 1000 rounds), CreateDeadPedWeaponPickups has no
 //   CharCreatedBy gate at all, and the dying player's own machine skips the
 //   whole thing because there the ped is FindPlayerPed(). So a death put a
 //   gun on the pavement of every machine except the one that mattered. The
@@ -73,7 +73,7 @@
 //   and so could not re-derive the deterministic half either.
 //
 // So a drop rides a new packet, it carries what the engine actually created
-// rather than what CoopIII predicts it would, and the observers replay it
+// rather than what CoopVC predicts it would, and the observers replay it
 // through CPickups::GenerateNewOne. From the next frame it is an ordinary
 // pickup and the exclusivity above owns it.
 //
@@ -84,7 +84,7 @@
 // - It does not decide whether a pickup was collected. The engine does.
 // - It does not apply a reward. The engine does, on the machine that won.
 // - It does not re-implement the touch test or CanBePickedUp. The 4 m
-//   proximity test below is CoopIII's own network heuristic: it decides when
+//   proximity test below is CoopVC's own network heuristic: it decides when
 //   to *ask*, never whether something was collected. Getting it wrong costs
 //   a wasted packet or a late grant, never a wrong award.
 // - It does not touch mines (types 8..13). They are script-only, retail III
@@ -94,12 +94,12 @@
 
 #include "client.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // ---------------------------------------------------------------------------
 // Identity
@@ -121,7 +121,7 @@ namespace coopiii::game {
 constexpr float kIdentTolerance   = 0.25f;
 constexpr float kIdentToleranceSq = kIdentTolerance * kIdentTolerance;
 
-// How near the local player has to be before CoopIII claims.
+// How near the local player has to be before CoopVC claims.
 //
 // The engine collects at |dz| < 2.0 and dx*dx + dy*dy < 1.8, i.e. about
 // 1.34 m flat. Four metres is roughly half a second of walking of slack,
@@ -295,13 +295,13 @@ enum class DropDecision : uint8_t {
 //
 // `charCreatedBy` is CPed::CharCreatedBy at +0x160.
 // CHAR_CREATED_BY_RANDOM is written by the population generator and by
-// nothing else: every ped CoopIII builds is set to MISSION_CHAR on purpose
+// nothing else: every ped CoopVC builds is set to MISSION_CHAR on purpose
 // (it is what stops the engine reaping it) and so is every ped the script
 // creates.
 constexpr DropDecision DecideDrop(bool replicaOfSomebodyElses, bool haveSession,
                                   uint8_t charCreatedBy) {
 	// First, and unconditionally. A replica is refused whether or not there
-	// is still a session: a ped CoopIII built for somebody else must not drop
+	// is still a session: a ped CoopVC built for somebody else must not drop
 	// their weapons on our pavement even while the connection is going down.
 	if (replicaOfSomebodyElses)
 		return DropDecision::REFUSE;
@@ -311,7 +311,7 @@ constexpr DropDecision DecideDrop(bool replicaOfSomebodyElses, bool haveSession,
 }
 
 // ---------------------------------------------------------------------------
-// The per-slot state CoopIII keeps beside the engine's array
+// The per-slot state CoopVC keeps beside the engine's array
 // ---------------------------------------------------------------------------
 
 enum class PickupGate : uint8_t {
@@ -364,12 +364,12 @@ constexpr bool SkullTouched(bool inVehicle, float dx, float dy, float dz) {
 constexpr uint32_t kSkullClaimTimeoutFrames = 20 * 60;
 // How long after a no before the same skull can be asked for again.
 constexpr uint32_t kSkullRetryFrames = 4 * 60;
-// How long the engine gets to take a voted skull itself before CoopIII takes
+// How long the engine gets to take a voted skull itself before CoopVC takes
 // it for it. CPickups::Update visits the first 320 slots a sixth at a time
 // (`imul edi,35h` at 0x00430409), so a slot can wait six frames for its turn.
 constexpr uint32_t kSkullEngineGraceFrames = 8;
 
-// Pickups CoopIII removed on somebody else's behalf that the engine will
+// Pickups CoopVC removed on somebody else's behalf that the engine will
 // never bring back by itself, and that the script may therefore re-create.
 //
 // Kept as a list of *idents* rather than as a flag on the slot, and that is
@@ -426,7 +426,7 @@ struct PickupCallbacks {
 	// that says nothing when it works. This one says which.
 	bool (*Dropped)(const PickupDropBody &drop) = nullptr;
 
-	// Is this ped one CoopIII built as somebody else's? The roster knows and
+	// Is this ped one CoopVC built as somebody else's? The roster knows and
 	// the engine does not, so the answer has to come from the client half:
 	// a remote player's ped and an ambient replica are both CCivilianPed,
 	// both MISSION_CHAR and indistinguishable from a script ped by anything
@@ -504,7 +504,7 @@ bool PedDropHooksInstalled();
 // the next CPickups::Update that reaches its slot.
 //
 // Returns false when the pickup is no longer there to take, in which case it
-// has already called Release - CoopIII never sits on a grant it cannot use.
+// has already called Release - CoopVC never sits on a grant it cannot use.
 bool OnPickupGrantedToUs(const PickupIdent &ident);
 
 // Somebody else got it. Replays the engine's own removal on our copy, and
@@ -531,7 +531,7 @@ void OnPickupDenied(const PickupIdent &ident);
 // on the floor rather than made twice.
 void OnPickupDroppedElsewhere(const PickupDropBody &drop);
 
-// Everything CoopIII has done to the pickup table, undone. Called on
+// Everything CoopVC has done to the pickup table, undone. Called on
 // disconnect: with no session there is nobody to arbitrate, so every pickup
 // goes back to being the local engine's own business and single player
 // behaves exactly as it always did.
@@ -666,4 +666,4 @@ inline bool OnHideoutRack(float x, float y, float z) {
 // stays independent of ped.cpp's MakeWorldBridge.
 void AddPickupsToBridge(WorldBridge &bridge);
 
-} // namespace coopiii::game
+} // namespace coopvc::game

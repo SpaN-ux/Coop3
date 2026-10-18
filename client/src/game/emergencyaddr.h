@@ -11,7 +11,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // ---- the medic ---------------------------------------------------------------
 //
@@ -49,7 +49,7 @@ constexpr size_t EMERGENCY_STATE       = 0x540;   // EmergencyPedState
 //
 // The call at 0x004C3B33 is the only one of CPed::SetGetUp's five callers
 // inside MedicAI, and the only place in the image a medic stands anybody up:
-// the call site CoopIII takes to learn that a revive happened.
+// the call site CoopVC takes to learn that a revive happened.
 constexpr uintptr_t MEDIC_REVIVE_GETUP_CALL = 0x004C3B33;
 
 namespace offs {
@@ -95,7 +95,7 @@ constexpr uintptr_t CAccidentManager__ReportAccident = 0x004565D0;
 // (0x004567B2). Five callers: CCarAI's ambulance stop (0x00414C45),
 // CCarCtrl's ambulance dispatch (0x0041FCEA), and MedicAI three times - the
 // medic in the ambulance deciding to get out, and the READY and
-// DETERMINE_NEXT_STATE arms choosing a patient. Only MedicAI's are CoopIII's.
+// DETERMINE_NEXT_STATE arms choosing a patient. Only MedicAI's are CoopVC's.
 constexpr uintptr_t CAccidentManager__FindNearestAccident = 0x00456760;
 constexpr uintptr_t MEDIC_FIND_ACCIDENT_CALLS[3] = {0x004C3192, 0x004C336C, 0x004C3545};
 
@@ -162,7 +162,7 @@ constexpr uintptr_t CWaterCannon__PushPeds            = 0x005220B0;
 //   005223D0  call CFire::Extinguish on [ebp+4B4h], if the ped burns
 //
 // Four calls, each the only one of its kind in PushPeds, so each is a call
-// site CoopIII can take for a ped this machine does not own.
+// site CoopVC can take for a ped this machine does not own.
 constexpr uintptr_t PUSH_PEDS_SIDE_CALL       = 0x00522343;
 constexpr uintptr_t PUSH_PEDS_FORCE_CALL      = 0x00522378;
 constexpr uintptr_t PUSH_PEDS_FALL_CALL       = 0x005223C1;
@@ -178,4 +178,4 @@ constexpr uintptr_t PUSH_PEDS_EXTINGUISH_CALL = 0x005223D0;
 // to the fire and stands there. His run and his stand are his host's ped rows
 // like any pedestrian's.
 
-} // namespace coopiii::game
+} // namespace coopvc::game

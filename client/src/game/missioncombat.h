@@ -42,7 +42,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace mcombat {
 
@@ -429,4 +429,4 @@ inline EnemyHold ClassifyRammer(uint8_t mission, bool targetCarGone) {
 	return mission == mcombat::CARMISSION_NONE ? EnemyHold::Lost : EnemyHold::Foreign;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

@@ -1,4 +1,4 @@
-// Taking an engine entity out of the world on CoopIII's own initiative, in one
+// Taking an engine entity out of the world on CoopVC's own initiative, in one
 // place, and only when it is still there to take.
 //
 // **The crash this exists for.** A participant's game died at 0x004AEA77, the
@@ -9,17 +9,17 @@
 // address is where it would have come back to.
 //
 // What handed it over was the participant's own garage. The mission ran
-// SET_TARGET_CAR_FOR_MISSION_GARAGE (021B) on the owner's machine, CoopIII
+// SET_TARGET_CAR_FOR_MISSION_GARAGE (021B) on the owner's machine, CoopVC
 // replayed it on the participant with the participant's copy of the car, and
 // retail's CGarages::SetTargetCarForMissonGarage (0x00426BD0) stores the
 // pointer and nothing else - no RegisterReference, unlike re3's version of it.
 // So when the owner's garage shut on the car and the session ended it
-// everywhere, CoopIII deleted the copy and the participant's garage went on
+// everywhere, CoopVC deleted the copy and the participant's garage went on
 // holding a raw pointer to a freed slot. Its GARAGE_MISSION closing arm then
 // hands m_pTarget to DestroyVehicleAndDriverAndPassengers, which is the
 // CWorld::Remove above.
 //
-// **The rule.** Nothing CoopIII destroys may still be named by an engine
+// **The rule.** Nothing CoopVC destroys may still be named by an engine
 // container that the engine itself does not clean up. For vehicles the
 // garages' m_pTarget is that container: CWorld::RemoveReferencesToDeletedObject
 // walks the ped, vehicle and object pools and nothing else, and ~CEntity only
@@ -27,7 +27,7 @@
 // the camera's target until CCamera::Process registers it, and a boat's
 // m_pSetOnFireEntity, which nothing ever registers.
 //
-// **The helper.** DestroyVehicle and DestroyPed are the only way CoopIII
+// **The helper.** DestroyVehicle and DestroyPed are the only way CoopVC
 // takes an entity out of the world. Each one first proves the pointer is
 // still a live entity in its own pool - the slot's free bit clear, and a
 // vtable that is not the CPlaceable one a finished destructor leaves behind -
@@ -48,7 +48,7 @@
 
 #include "addresses.h"
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // ---- the parts that do not need a running game ----------------------------
 
@@ -289,16 +289,16 @@ size_t ForgetEngineRawPointersTo(void *entity);
 // last car he left, which m_pMyVehicle still names.
 bool LocalPlayerAboard(const void *vehicle);
 
-// The one way CoopIII takes a vehicle out of the world. False, having done
+// The one way CoopVC takes a vehicle out of the world. False, having done
 // nothing, for one that is not live (said once) or that the local player is
 // in. `who` names the caller in that line.
 bool DestroyVehicle(void *vehicle, const char *who);
 
-// The same for a pedestrian CoopIII made. `countedMissionPed` undoes
+// The same for a pedestrian CoopVC made. `countedMissionPed` undoes
 // CREATE_CHAR's ++ms_nTotalMissionPeds.
 bool DestroyPed(void *ped, bool countedMissionPed, const char *who);
 
-// The same for an object the engine made and CoopIII takes away on its
+// The same for an object the engine made and CoopVC takes away on its
 // behalf: a pickup somebody else collected, a mine somebody else's copy of
 // set off. What the engine's own pickup arms do (0x00430FAC, and
 // 0x004309F0..0x00430A15 for a mine) - CWorld::Remove and the deleting
@@ -309,4 +309,4 @@ bool DestroyObject(void *object, const char *who);
 // Whether `entity` is being taken apart by one of the three above right now.
 bool BeingRemovedByUs(const void *entity);
 
-} // namespace coopiii::game
+} // namespace coopvc::game

@@ -28,7 +28,7 @@
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Where a ped sits in a car, as SetExitCar reads it.
 constexpr int EXIT_SEAT_DRIVER = -2;   // CVehicle::pDriver
@@ -123,4 +123,4 @@ void RemovePassengerExit();
 // everybody else. What BeginPedExitCar calls.
 void ExitCarByOwnDoor(void *ped, void *car, bool player);
 
-} // namespace coopiii::game
+} // namespace coopvc::game

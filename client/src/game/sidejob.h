@@ -25,7 +25,7 @@
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Whether the script may hear a button the local player's pad reports as
 // down. Pure, so tools/clienttest walks it.
@@ -79,4 +79,4 @@ inline uint32_t GivenUpSequelLength(const uint8_t *space, uint32_t size, uint32_
 bool InstallSideJobKey();
 void RemoveSideJobKey();
 
-} // namespace coopiii::game
+} // namespace coopvc::game

@@ -56,7 +56,7 @@
 // and then CSprite2d::Draw, the four-corner overload, which is the one
 // DrawRotatingRadarSprite itself ends in.
 //
-// The last of those is the only place CoopIII does not call the engine
+// The last of those is the only place CoopVC does not call the engine
 // function whole. CRadar::DrawRotatingRadarSprite builds its colour in place
 // as CRGBA(255, 255, 255, alpha) - only the alpha is an argument - so calling
 // it gives a white arrow and nothing else, and two identical white arrows on
@@ -77,7 +77,7 @@
 // this change is a change of shape and nothing else. The actual RGBA is not
 // written down here either; it comes out of CRadar::GetRadarTraceColour, the
 // same lookup every blip on the same radar goes through, so a remote player
-// is the same green as a mission marker rather than a green of CoopIII's own.
+// is the same green as a mission marker rather than a green of CoopVC's own.
 //
 // White was available and is wrong. The local player is white, and the owner
 // will be looking at his own arrow and somebody else's at the same time; that
@@ -90,11 +90,11 @@
 //
 // nametag.h refuses to touch the HUD's 640x448 grid, because scaling x by
 // screenWidth/640 reinstates precisely the stretch ThirteenAG's fix exists to
-// remove, and a nametag is CoopIII's own element with no reason to inherit
+// remove, and a nametag is CoopVC's own element with no reason to inherit
 // the HUD's aspect handling.
 //
 // An arrow on the radar is the opposite case and gets the opposite answer. It
-// is not CoopIII's element. It is a copy of one of the game's, drawn on the
+// is not CoopVC's element. It is a copy of one of the game's, drawn on the
 // game's radar, an inch from the original - and if the two are scaled
 // differently they are visibly two different things. So this uses
 // SCREEN_SCALE_X/Y exactly as DrawRotatingRadarSprite does, down to retail's
@@ -126,17 +126,17 @@
 #include "addresses.h"
 #include "../chatfeed.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 class Client;
 }
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // ---- installing -----------------------------------------------------------
 
@@ -179,7 +179,7 @@ constexpr float RADAR_QUARTPI = RADAR_PI * 0.25f;
 // No lower clamp, deliberately. Below about 80 pixels of screen width the
 // truncation reaches zero and the arrow disappears - and so does the game's
 // own, in the same frame, for the same reason. A floor here would make
-// CoopIII's arrow visible on a radar that no longer has one.
+// CoopVC's arrow visible on a radar that no longer has one.
 inline float RadarSpriteHalf(int screenPixels, float recipRef) {
 	if (screenPixels <= 0 || !(recipRef > 0.0f))
 		return 0.0f;
@@ -201,7 +201,7 @@ inline float RadarSpriteHalf(int screenPixels, float recipRef) {
 // the point one radar range due north of the radar origin and x is 0 and y is
 // 1, so it hands back (s, c) exactly - and it does so having already taken
 // its own decision about top-down cameras, first person and looking behind,
-// which is four branches and three globals CoopIII then does not have to
+// which is four branches and three globals CoopVC then does not have to
 // find, read or keep right.
 //
 // It is also self-consistent by construction: the same function decides where
@@ -442,4 +442,4 @@ inline bool SamePlace(uint32_t spriteA, float ax, float ay, uint32_t spriteB, fl
 // sends (MissionBridge::ReadPlaceBlips).
 size_t ReadPlaceBlips(ContactMarker *out, size_t max);
 
-} // namespace coopiii::game
+} // namespace coopvc::game

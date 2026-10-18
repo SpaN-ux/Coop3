@@ -26,11 +26,11 @@
 
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 struct WorldBridge;
 }
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Who the engine names for this wreck: m_pSetOnFireEntity for the fire timer,
 // m_pBlowUpEntity for the bomb. A remote player's ped or a car they drive is
@@ -160,4 +160,4 @@ void RemoveMoneyHook();
 // with the detour in.
 void AddMoneyToBridge(WorldBridge &bridge);
 
-} // namespace coopiii::game
+} // namespace coopvc::game

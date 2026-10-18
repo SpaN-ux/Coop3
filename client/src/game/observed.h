@@ -17,7 +17,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 struct ObservedRow {
 	int32_t  handle         = -1;
@@ -146,4 +146,4 @@ private:
 	ObservedRow m_rows[N]{};
 };
 
-} // namespace coopiii::game
+} // namespace coopvc::game

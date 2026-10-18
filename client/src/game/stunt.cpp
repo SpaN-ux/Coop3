@@ -8,7 +8,7 @@
 
 #include <windows.h>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -105,4 +105,4 @@ void RemoveStuntGuard() {
 		g_installed = false;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

@@ -19,7 +19,7 @@
 //   0056C4C9  mov al,1 / ... / ret 4       ABANDONED: silence
 //
 // That's the engine keeping quiet a police car its driver walked away from.
-// This used to say every replica CoopIII builds is status 4, so the gate
+// This used to say every replica CoopVC builds is status 4, so the gate
 // silenced every remote player's siren, driver or no driver. That was only
 // true of a copy with nobody in it. A copy with its driver's ped in the seat
 // is PHYSICS (3), because seating a ped that isn't a player writes that
@@ -57,11 +57,11 @@
 
 #include "addresses.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // cVehicleParams::m_nIndex, the audio's name for a vehicle model: the model
 // index minus 90, from ProcessVehicle's `movsx eax,[ebx+5Ch] / add eax,
@@ -199,4 +199,4 @@ inline constexpr bool ReplicaTrafficSirenOn(bool onWire, bool destroyed) {
 	return onWire && !destroyed;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

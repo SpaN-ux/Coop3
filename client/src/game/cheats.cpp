@@ -11,7 +11,7 @@
 
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -37,7 +37,7 @@ bool g_saidPassengerHeal = false;
 // InstallCheatHooks reads it.
 TypedCheatTable g_typed = TableFromSites();
 
-// CoopIII's own cheats typed since the last drain, and the engine's buffer as
+// CoopVC's own cheats typed since the last drain, and the engine's buffer as
 // it was the last time it was looked at: a key the handler pushed nothing for
 // leaves it the same, and the same buffer is not the same cheat typed again.
 constexpr uint8_t MAX_COOP_PENDING = 4;
@@ -260,13 +260,13 @@ const char *FaultText(CheatImageFault f) {
 	case CheatImageFault::Shift:
 		return "the shift into the buffer is not retail's";
 	case CheatImageFault::Shape:
-		return "its rows are not in the shape CoopIII knows";
+		return "its rows are not in the shape CoopVC knows";
 	case CheatImageFault::Unreadable:
 		return "a row's string cannot be read";
 	case CheatImageFault::Length:
 		return "a row compares nothing, or more than the buffer has";
 	case CheatImageFault::Row:
-		return "a row is neither retail's nor a rewrite CoopIII knows";
+		return "a row is neither retail's nor a rewrite CoopVC knows";
 	case CheatImageFault::None:
 		break;
 	}
@@ -297,7 +297,7 @@ bool CheckRunningCode() {
 		    "by what is here", static_cast<unsigned>(id), RowName(id),
 		    static_cast<unsigned>(a.length), RetailName(id),
 		    c.rewritten[id] != 0 ? KNOWN_CHEAT_ROWS[c.rewritten[id] - 1].by
-		                         : "not a rewrite CoopIII knows");
+		                         : "not a rewrite CoopVC knows");
 	}
 
 	if (!c.MayHook()) {
@@ -309,7 +309,7 @@ bool CheckRunningCode() {
 		return false;
 	}
 	if (c.verdict == CheatImageVerdict::Known)
-		Log("cheats: CPad::AddToPCCheatString has rows rewritten the way CoopIII knows; "
+		Log("cheats: CPad::AddToPCCheatString has rows rewritten the way CoopVC knows; "
 		    "in a session cheats are matched as this game spells them");
 	return true;
 }
@@ -446,7 +446,7 @@ void NoticeTypedKeys() {
 	if (!MatchCoopCheat(buffer, &hit))
 		return;
 	if (g_coopCount == MAX_COOP_PENDING) {
-		Log("cheats: %s%c typed with %u of CoopIII's cheats already waiting; dropped",
+		Log("cheats: %s%c typed with %u of CoopVC's cheats already waiting; dropped",
 		    COOP_CHEATS[hit.id].word, hit.arg ? hit.arg : ' ',
 		    static_cast<unsigned>(MAX_COOP_PENDING));
 		return;
@@ -473,4 +473,4 @@ void AddCheatsToBridge(WorldBridge &bridge) {
 	Log("bridge: cheats run where what they change is owned");
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

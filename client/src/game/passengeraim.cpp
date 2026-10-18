@@ -10,7 +10,7 @@
 #include <cmath>
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -395,4 +395,4 @@ void PassengerAimBeforeCamera() {
 		FireIfDue(ped, car, weapon, hand, dir);
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

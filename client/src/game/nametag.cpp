@@ -39,7 +39,7 @@
 // and smoothed rather than asked every frame; nametag.h has the scheduling and
 // the reasoning, and it is arithmetic so tools/clienttest holds it to account.
 //
-// Plus the pause menu. CoopIII keeps the world running while the menu is up
+// Plus the pause menu. CoopVC keeps the world running while the menu is up
 // and lets only the presentation half of the engine see a pause, and
 // CHud::Draw is one of the four readers on that side of the split
 // (game/pause.h). A tag is presentation drawn from inside CHud::Draw, so it
@@ -72,11 +72,11 @@
 #include <cstdint>
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
-// Set once from CoopIII.ini before the hook goes in. See SetNametagScale.
+// Set once from CoopVC.ini before the hook goes in. See SetNametagScale.
 float g_userScale = 1.0f;
 
 // CVector / RwV3d, and CRGBA. CRect's member order is the one documented in
@@ -730,4 +730,4 @@ bool NametagsInstalled() {
 	return g_hud.IsInstalled();
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

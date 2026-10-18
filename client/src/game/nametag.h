@@ -27,11 +27,11 @@
 #include <cstdio>
 #include <cstring>
 
-namespace coopiii {
+namespace coopvc {
 class Client;
 }
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // ---- installing -----------------------------------------------------------
 
@@ -43,7 +43,7 @@ namespace coopiii::game {
 bool InstallNametags(const Client &client);
 
 // How prominent a nametag should be, as a multiple of the built-in size
-// (CoopIII.ini, nametagScale). Multiplies the one unit every length in
+// (CoopVC.ini, nametagScale). Multiplies the one unit every length in
 // MeasureTag is derived from, so the whole tag grows together and none of
 // its internal proportions move. Call before InstallNametags.
 void SetNametagScale(float scale);
@@ -613,4 +613,4 @@ inline float TagLift(const TagBox &box, const TagBox *placed, int count, float p
 	return lift;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

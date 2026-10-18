@@ -90,7 +90,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii::game::nearchar {
+namespace coopvc::game::nearchar {
 
 constexpr uint16_t FAREWELL_CHUNKY_LEE_CHONG = 25;
 constexpr uint16_t I_SCREAM_YOU_SCREAM       = 41;
@@ -310,4 +310,4 @@ inline bool InLocateBox(float dx, float dy, float dz, float rx, float ry, float 
 	return std::fabs(dx) <= rx && std::fabs(dy) <= ry && (!in3d || std::fabs(dz) <= rz);
 }
 
-} // namespace coopiii::game::nearchar
+} // namespace coopvc::game::nearchar

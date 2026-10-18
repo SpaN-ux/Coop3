@@ -11,7 +11,7 @@
 
 #include <windows.h>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -399,4 +399,4 @@ void AddMoneyToBridge(WorldBridge &bridge) {
 	}
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

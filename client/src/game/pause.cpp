@@ -8,7 +8,7 @@
 
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -74,8 +74,8 @@ bool InAGame() { return Global<int>(gGameState) == GS_PLAYING_GAME; }
 void LockPlayerControls(bool locked) {
 	uint8_t &mask = *reinterpret_cast<uint8_t *>(
 	    CPad__Pads + pad::DISABLE_PLAYER_CONTROLS);   // GetPad(0) is &Pads[0]
-	mask = static_cast<uint8_t>(locked ? (mask | pad::PLAYERCONTROL_COOPIII)
-	                                   : (mask & ~pad::PLAYERCONTROL_COOPIII));
+	mask = static_cast<uint8_t>(locked ? (mask | pad::PLAYERCONTROL_COOPVC)
+	                                   : (mask & ~pad::PLAYERCONTROL_COOPVC));
 }
 
 void __cdecl HookedTimerUpdate() {
@@ -256,4 +256,4 @@ void HoldControlsForChat(bool hold) {
 	LockPlayerControls(hold || (g_timer.IsInstalled() && InAGame() && MenuIsUp()));
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

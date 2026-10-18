@@ -14,7 +14,7 @@
 
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -97,7 +97,7 @@ using DestroyFn = void(__cdecl *)(void *);
 void DestroyFor(void *vehicle, uint8_t reason) {
 	// The garage's own pointer, which is raw: SetTargetCarForMissonGarage
 	// (0x00426BD0) registers no reference, so nothing tells a garage its car
-	// has gone. A car CoopIII already deleted is refused here rather than
+	// has gone. A car CoopVC already deleted is refused here rather than
 	// handed to CWorld::Remove, which would call through the vtable a
 	// finished destructor leaves behind (game/teardown.h). The engine nils
 	// the garage's target itself on the way back, so refusing is all it takes.
@@ -476,4 +476,4 @@ void AddCarRemovalToBridge(WorldBridge &bridge) {
 	AddCranesToBridge(bridge);
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game
