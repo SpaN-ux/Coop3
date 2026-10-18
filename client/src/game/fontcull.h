@@ -15,7 +15,7 @@
 #include <cstdint>
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // What PrintChar's cull block (0x00500C30..0x00500C95) holds right now.
 enum class FontCullBytes : uint8_t {
@@ -72,4 +72,4 @@ void FixFontCull();
 // TextCullLine for this screen, fixed if FixFontCull managed it.
 float CurrentTextCullLine(float screenW, float screenH);
 
-} // namespace coopiii::game
+} // namespace coopvc::game

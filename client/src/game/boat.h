@@ -15,10 +15,10 @@
 
 #include "addresses.h"
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 enum class VehicleBuild : uint8_t {
-	None,         // not something CoopIII will construct
+	None,         // not something CoopVC will construct
 	Automobile,
 	Boat,
 };
@@ -91,7 +91,7 @@ constexpr bool HasAutomobileBody(int32_t vehicleType) {
 	return vehicleType == VEHICLE_TYPE_CAR;
 }
 
-// Where this vehicle keeps the five-second fire timer, or 0 if CoopIII does
+// Where this vehicle keeps the five-second fire timer, or 0 if CoopVC does
 // not know of one. The two are different members at different offsets and
 // the car's is past the end of a boat.
 constexpr size_t FireBlowUpTimerOffset(int32_t vehicleType) {
@@ -122,7 +122,7 @@ constexpr bool SetObjectiveRefusesNonPlayer(int32_t vehicleType) {
 	return vehicleType == VEHICLE_TYPE_BOAT;
 }
 
-// The vehicles CoopIII builds, by their vtable. The unseat path uses this as
+// The vehicles CoopVC builds, by their vtable. The unseat path uses this as
 // its "is this slot still what we think it is" test, the way ResolveRemote
 // uses the ped vtable, so it has to name every class SpawnRemoteVehicle can
 // make and nothing else.
@@ -145,4 +145,4 @@ static_assert(offs::AUTO_FIRE_BLOWUP_TIMER >= offs::SIZEOF_BOAT,
 static_assert(offs::AUTO_DAMAGE_MANAGER == offs::SIZEOF_VEHICLE,
               "CAutomobile's first member is where CBoat's first member is too");
 
-} // namespace coopiii::game
+} // namespace coopvc::game

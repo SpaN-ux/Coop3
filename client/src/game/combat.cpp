@@ -21,15 +21,15 @@
 
 #include <cstdio>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
 // ---- the three detours ----------------------------------------------------
 //
-// One seam each for the three questions CoopIII needs answered, and every
+// One seam each for the three questions CoopVC needs answered, and every
 // one is a place the engine already funnels everything through - none of
-// these are places CoopIII invented:
+// these are places CoopVC invented:
 //
 //   CWeapon::Fire                     what did the local player just fire,
 //                                     and from where - also, on the way in,
@@ -96,7 +96,7 @@ Detour g_startFightDefend;
 // isn't in one.
 bool g_friendlyFire = false;
 
-// Set while CoopIII is driving the engine rather than the player.
+// Set while CoopVC is driving the engine rather than the player.
 //
 // Two jobs, both matter. First, it stops a replayed shot from being sampled
 // and sent straight back out - that'd be a feedback loop over the network.
@@ -124,7 +124,7 @@ void *g_passengerRoundCar = nullptr;
 bool  g_saidSameCarRefused = false;
 bool  g_saidPassengerReplayed = false;
 
-// Set while CoopIII is applying a hit that already came off the wire.
+// Set while CoopVC is applying a hit that already came off the wire.
 //
 // ApplyRemoteDamage credits the attacker's own ped as the culprit, so the
 // engine's blood, its threat entity and CDarkel's kill register all point at
@@ -364,7 +364,7 @@ uint32_t InUseMask() {
 	return mask;
 }
 
-// A projectile CoopIII created for a remote player - animated, not owned.
+// A projectile CoopVC created for a remote player - animated, not owned.
 // `source` is the ped it was created for, and it's the second net: for the
 // case where the engine frees a slot through a route that skips
 // RemoveProjectile (CProjectileInfo::RemoveAllProjectiles does exactly that
@@ -382,7 +382,7 @@ struct Tracked {
 
 Tracked g_tracked[NUM_PROJECTILES];
 
-// Set while CoopIII is ending a projectile on purpose, because its owner's
+// Set while CoopVC is ending a projectile on purpose, because its owner's
 // explosion arrived. Every other removal is this machine's engine deciding,
 // and the two have to read differently in the log.
 bool g_endingOurs = false;
@@ -446,7 +446,7 @@ void EndTracked(int slot) {
 //   - the same function removes it outright if bHasCollided is set
 //     (0x0055B89E, byte B bit 3), which is what a CObject born inside a ped's
 //     collision gets on its first physics step;
-//   - and CoopIII's own RemoveProjectile detour blanks the weapon type on the
+//   - and CoopVC's own RemoveProjectile detour blanks the weapon type on the
 //     way past, so that removal makes no explosion and no sound. It vanishes.
 //
 // The owner's C_Explosion still arrives a second later and still plays in the
@@ -639,7 +639,7 @@ bool __cdecl HookedProcessLineOfSight(const float *point1, const float *point2,
 // __thiscall void CWeapon::DoBulletImpact(CEntity *shooter, CEntity *victim,
 //     CVector *source, CVector *target, CColPoint *point, CVector2D ahead).
 //
-// Here for one reason, and it is a retail bug rather than a CoopIII one.
+// Here for one reason, and it is a retail bug rather than a CoopVC one.
 //
 // FireInstantHit's 3rd-person-mouse-camera branch traces its ray through its
 // own `src`/`trgt` locals and never writes the `target` local. The shared
@@ -2002,7 +2002,7 @@ void __cdecl HookedRemoveProjectile(void *info, void *projectile) {
 		// and the original still frees the slot, removes the object from the
 		// world, and runs its deleting destructor - every last thing it
 		// normally does - but never reaches CExplosion::AddExplosion. The
-		// engine cleans up its own object; CoopIII just declines to decide
+		// engine cleans up its own object; CoopVC just declines to decide
 		// where it went off.
 		Field<uint32_t>(info, PROJINFO_WEAPON_TYPE) = WEAPONTYPE_UNARMED;
 		g_tracked[slot] = Tracked{};
@@ -2125,7 +2125,7 @@ using StartFireHookFn = void *(__fastcall *)(void *, void *, void *, void *, flo
 void *__fastcall HookedStartFire(void *self, void * /*edx*/, void *entity,
                                  void *fleeFrom, float strength, uint32_t propagation) {
 	// The car half. SetCarsOnFire has no bFireProof to stop it on a replica car
-	// - CoopIII sets only bCollisionProof on one - so the engine gets this far
+	// - CoopVC sets only bCollisionProof on one - so the engine gets this far
 	// and this is where it is caught.
 	//
 	// The engine still lights our copy afterwards, on purpose. Nothing tells
@@ -2696,7 +2696,7 @@ void __fastcall HookedSetDie(void *self, void * /*edx*/, uint32_t animId, float 
 // two constants picked by the widescreen menu toggle rather than the shape of
 // the window. With the toggle not matching what is being rendered, every shot
 // leaves the barrel about 0.8 degrees to one side of the crosshair - always the
-// same side, on every screen, with or without CoopIII.
+// same side, on every screen, with or without CoopVC.
 //
 // And this install has ThirteenAG's Widescreen Fix in `_ESSENTIALS`, whose
 // whole job is that class of problem. So rather than assume, read it: if the
@@ -2977,7 +2977,7 @@ void FireReplayedRound(void *ped, void *weapon, const ShotBody &shot, uint16_t n
 
 	// A ped with a gun target takes FireInstantHit's first branch, which aims
 	// at that target and never calls DoDoomAiming - so the correction above
-	// would silently do nothing. Nothing in CoopIII sets this on a remote ped;
+	// would silently do nothing. Nothing in CoopVC sets this on a remote ped;
 	// the engine's own logic can, and a remote player's shot is not the engine's
 	// to aim. Put back immediately afterwards, same value, so the reference
 	// the target registered on this field is untouched.
@@ -3160,7 +3160,7 @@ void ReplayRemoteShot(RemotePlayer &player, const ShotBody &shot) {
 	// as well (0x0055C7E9, taken whenever the total is under 25000). Both of
 	// those are this machine's opinion about somebody else's ammunition, and
 	// this machine does not get one - the owner is authoritative for their
-	// own ped, which is the rule everywhere else in CoopIII.
+	// own ped, which is the rule everywhere else in CoopVC.
 	//
 	// Restored to the last number their own engine reported for this exact
 	// slot, which is why RemotePlayer keeps a table per weapon rather than
@@ -3701,4 +3701,4 @@ void EndRemoteProjectilesOf(uint8_t playerId) {
 	EndTrackedFor(playerId);
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

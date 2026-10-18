@@ -34,14 +34,14 @@
 
 #include "replay.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
 
-namespace coopiii::game::shape {
+namespace coopvc::game::shape {
 
 // A blip moved goes to everybody at most this often.
 constexpr uint32_t BLIP_MOVE_MS = 500;
@@ -936,4 +936,4 @@ private:
 	size_t m_count = 0;
 };
 
-} // namespace coopiii::game::shape
+} // namespace coopvc::game::shape

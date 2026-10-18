@@ -14,7 +14,7 @@
 
 #include <windows.h>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -258,7 +258,7 @@ using RegisterKillFn = void(__cdecl *)(void *, int32_t, int32_t);
 
 void __cdecl HookedRegisterKillByPlayer(void *victim, int32_t weapon,
                                         int32_t headshot) {
-	// The occupants of a wreck CoopIII is replaying. BlowUpCar registers the
+	// The occupants of a wreck CoopVC is replaying. BlowUpCar registers the
 	// driver and every passenger as killed by the player (0x0053BDB6,
 	// 0x0053BE17) with no culprit test, so each machine holding the car used
 	// to count them and report them. The machine that decided the wreck has
@@ -405,7 +405,7 @@ void __cdecl HookedRegisterCarBlownUpByPlayer(void *vehicle) {
 // 0x00431543) and CDarkel::Update reads the global itself.
 //
 // So this is the one place where "what this machine's engine decided" and
-// "what the session decided" can be told apart without CoopIII owning any of
+// "what the session decided" can be told apart without CoopVC owning any of
 // the rampage. The engine keeps its HUD, its countdown, its tick sound and
 // its weapon restore; the *script* - the thing that hands out the reward,
 // prints RAMPAGE FAILED, puts the pickup back and clears $ONMISSION - is held
@@ -605,7 +605,7 @@ void ApplyRampageOpen(uint16_t killsNeeded, uint32_t elapsedMs) {
 	// has. The engine keeps the *start* rather than the remaining time
 	// (`FrameTime = TimeLimit - (CTimer::ms - TimeOfFrenzyStart)` at
 	// 0x0042067B), so moving the start backwards is how a clock is fast
-	// forwarded - and it is one store rather than a clock CoopIII would have
+	// forwarded - and it is one store rather than a clock CoopVC would have
 	// to keep running.
 	//
 	// A second of slack, because the ordinary case is a frenzy that started
@@ -854,7 +854,7 @@ bool InstallRampageHooks() {
 		    RedirectRelCall(KILL_NOT_BY_PLAYER_CALL, CDarkel__RegisterKillNotByPlayer,
 		                    reinterpret_cast<uintptr_t>(&HookedRegisterKillNotByPlayer));
 		if (!g_killNotRedirected)
-			Log("CoopIII: the call at 0x%08X is not CPed::InflictDamage's to "
+			Log("CoopVC: the call at 0x%08X is not CPed::InflictDamage's to "
 			    "CDarkel::RegisterKillNotByPlayer; a kill by somebody else's blast here counts "
 			    "for nobody",
 			    static_cast<unsigned>(KILL_NOT_BY_PLAYER_CALL));
@@ -866,23 +866,23 @@ bool InstallRampageHooks() {
 		    RedirectRelCall(SCRIPT_PROCESS_CALL, CRunningScript__Process,
 		                    reinterpret_cast<uintptr_t>(&HookedScriptProcess));
 		if (!g_scriptCallRedirected)
-			Log("CoopIII: the call at 0x%08X is not CTheScripts::Process's to "
+			Log("CoopVC: the call at 0x%08X is not CTheScripts::Process's to "
 			    "CRunningScript::Process; a rampage reward that lands in the same frame "
 			    "as other money may go into a shared wallet twice",
 			    static_cast<unsigned>(SCRIPT_PROCESS_CALL));
 	}
 
 	if (!start)
-		Log("CoopIII: the session will never hear that a rampage started, so "
+		Log("CoopVC: the session will never hear that a rampage started, so "
 		    "nobody's kills will be shared");
 	if (!kill)
-		Log("CoopIII: this machine's rampage kills stay on this machine");
+		Log("CoopVC: this machine's rampage kills stay on this machine");
 	if (!car)
-		Log("CoopIII: a vehicle rampage counts only the cars that blow up on "
+		Log("CoopVC: a vehicle rampage counts only the cars that blow up on "
 		    "this machine, and cars from the wire are ignored so none counts "
 		    "twice");
 	if (!status)
-		Log("CoopIII: a rampage can end differently on different machines - one "
+		Log("CoopVC: a rampage can end differently on different machines - one "
 		    "player gets the reward while another is told it failed");
 
 	return start && kill && status && car;
@@ -923,4 +923,4 @@ void InstallRampageBridge(WorldBridge &b) {
 	b.ResetRampage       = &ResetRampage;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

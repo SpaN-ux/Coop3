@@ -33,7 +33,7 @@
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // The police twin of a pedestrian event, or the event unchanged.
 constexpr int32_t CopEventFor(int32_t event) {
@@ -120,4 +120,4 @@ constexpr int32_t StarFloorForEvent(int32_t event) {
 bool InstallCopCrimeHook();
 void RemoveCopCrimeHook();
 
-} // namespace coopiii::game
+} // namespace coopvc::game

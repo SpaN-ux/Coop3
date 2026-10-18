@@ -35,7 +35,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii::game::fuzzball {
+namespace coopvc::game::fuzzball {
 
 constexpr uint16_t THE_FUZZ_BALL = 23;
 
@@ -105,4 +105,4 @@ inline size_t OperandBytes(uint8_t type) {
 	}
 }
 
-} // namespace coopiii::game::fuzzball
+} // namespace coopvc::game::fuzzball

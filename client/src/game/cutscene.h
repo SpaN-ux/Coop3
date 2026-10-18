@@ -28,7 +28,7 @@
 #include <cstdint>
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // CAnimBlendHierarchy::m_name is 24 bytes: SetName (0x004019C0), which
 // LoadAnimFile calls with each NAME chunk, is `push 18h` and a strncpy.
@@ -245,4 +245,4 @@ void DescribeSpecialModels(char *out, size_t size);
 bool ScriptOwnsModel(int32_t id);
 const char *NameOfModel(int32_t id);
 
-} // namespace coopiii::game
+} // namespace coopvc::game

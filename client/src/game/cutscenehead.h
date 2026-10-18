@@ -31,7 +31,7 @@
 #include <cstdint>
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // The two fields of an RpHAnimHierarchy that RpHAnimHierarchySetCurrentAnim
 // fills together and that the head's two calls read: the animation, whose
@@ -90,4 +90,4 @@ void RemoveCutsceneHeadGuard();
 // frame heartbeat.
 uint32_t CutsceneHeadsHeld();
 
-} // namespace coopiii::game
+} // namespace coopvc::game

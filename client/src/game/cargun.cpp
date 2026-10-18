@@ -8,7 +8,7 @@
 
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -93,4 +93,4 @@ void RemoveCarGunGate() {
 			s.taken = false;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

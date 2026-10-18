@@ -11,7 +11,7 @@
 
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -461,4 +461,4 @@ void AddEmergencyToBridge(WorldBridge &bridge) {
 	bridge.cannon.SprayCopy      = &SprayCopy;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

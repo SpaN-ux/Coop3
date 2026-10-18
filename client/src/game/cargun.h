@@ -19,7 +19,7 @@
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // The car whose gun the local pad works: the car FindPlayerVehicle gave,
 // when the local player is its driver. Null for a passenger in anybody's car,
@@ -40,4 +40,4 @@ bool LocalPlayerDrives(const void *car);
 bool InstallCarGunGate();
 void RemoveCarGunGate();
 
-} // namespace coopiii::game
+} // namespace coopvc::game

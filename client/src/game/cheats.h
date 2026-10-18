@@ -5,7 +5,7 @@
 //
 // 1. **There is one door.** Every cheat in retail 1.0 comes through
 //    CPad::AddToPCCheatString, which shifts the key into a 20-byte buffer
-//    and runs 23 strncmps over it (addresses.h, "cheats"). CoopIII detours it
+//    and runs 23 strncmps over it (addresses.h, "cheats"). CoopVC detours it
 //    and, in a session, does that shift and those compares itself, so it
 //    knows which cheat was typed before any of it has run.
 //
@@ -23,12 +23,12 @@
 //    was typed: the BlowUpCar detour already refuses every car somebody else
 //    owns, and the wrecks it is allowed travel.
 //
-// 4. **Nothing CoopIII built may act on the result.** A riot rewrites the
+// 4. **Nothing CoopVC built may act on the result.** A riot rewrites the
 //    table every pedestrian built afterwards copies its fears from, replicas
 //    and remote players included. ScanForThreats is detoured to answer
 //    "nothing" for those.
 //
-// CoopIII has typed cheats of its own as well (COOP_CHEATS below, TPTO first;
+// CoopVC has typed cheats of its own as well (COOP_CHEATS below, TPTO first;
 // game/tpto.h does them), read off the same buffer after the game has had
 // each key.
 //
@@ -39,12 +39,12 @@
 #include "addresses.h"
 #include "client.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // ---- the typed buffer, as arithmetic ----------------------------------------
 
@@ -419,7 +419,7 @@ inline CheatImageCheck CheckCheatImage(ImageByteFn read, ImageReadableFn readabl
 	return c;
 }
 
-// ---- CoopIII's own cheats ----------------------------------------------------------
+// ---- CoopVC's own cheats ----------------------------------------------------------
 //
 // Typed the way the game's are, anywhere in play, and matched against the same
 // buffer once the engine has pushed the key: a word in capitals and, for one
@@ -531,7 +531,7 @@ inline TypedMatch MatchTyped(const TypedCheatTable &t, const char *buffer) {
 // Opening the line swallows that T and every key after it, so TURTOISE could
 // never be typed in a session. Two rules give it back, and neither lets chat
 // text start a cheat of its own. Both take the table the running game has
-// (TypedCheatTable), and CoopIII's own cheats with it.
+// (TypedCheatTable), and CoopVC's own cheats with it.
 //
 // 1. **A chat key that finishes a cheat is the game's.** GESUNDHEIT's last
 //    letter goes to the engine the way it always has, and the line does not
@@ -613,7 +613,7 @@ inline bool CheatFinishedInChatLine(const TypedCheatTable &t, const char *buffer
 struct CheatContext {
 	bool    inSession = false;   // welcomed, and still connected
 	// Holds the session's sky: the host, or the running mission's owner
-	// (coopiii/sky.h). The only thing it decides is where a sky cheat runs.
+	// (coopvc/sky.h). The only thing it decides is where a sky cheat runs.
 	bool    isHost    = false;
 	uint8_t rule      = CHEAT_RULE_SHARED;
 };
@@ -781,7 +781,7 @@ inline bool HealthCheatMayRepairCar(bool inSession, bool inVehicle, bool weDrive
 	return !inSession || !inVehicle || weDrive;
 }
 
-// ScanForThreats for a ped CoopIII built answers "nothing". Such a ped is a
+// ScanForThreats for a ped CoopVC built answers "nothing". Such a ped is a
 // copy of somebody the session owns elsewhere, and whatever it would do about
 // a threat - flee, fight - its owner's machine decides and the stream shows.
 inline bool MayScanForThreats(bool isRemotePlayer, bool isAmbientReplica) {
@@ -812,7 +812,7 @@ bool ChatKeyWouldFinishCheat(char key);
 // exactly as to one typed with the line shut - and returns true.
 bool FinishCheatFromChatLine(char key, const char *line);
 
-// CoopIII's own cheats. The engine's buffer is looked at after every key the
+// CoopVC's own cheats. The engine's buffer is looked at after every key the
 // game's key handler has had (game/chat.cpp, straight after the window
 // procedure), and after the keys FinishCheatFromChatLine hands it: one that
 // has changed and now ends in one of COOP_CHEATS is queued for
@@ -824,4 +824,4 @@ uint8_t DrainCoopCheats(CoopCheatHit *out, uint8_t max);
 // SetCheatSession, DrainLocalCheats and ApplyRoutedCheat.
 void AddCheatsToBridge(WorldBridge &bridge);
 
-} // namespace coopiii::game
+} // namespace coopvc::game

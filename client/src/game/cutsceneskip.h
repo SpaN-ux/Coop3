@@ -30,11 +30,11 @@
 //    while the scene can be skipped and somebody else is in it.
 #pragma once
 
-namespace coopiii {
+namespace coopvc {
 class Client;
 }
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // The two call sites. False when the skip input's could not be taken, which
 // leaves every skip local, as before, and the participant's buttons held
@@ -52,4 +52,4 @@ void TickCutsceneSkip();
 // From the CHud::Draw detour.
 void DrawCutsceneSkip();
 
-} // namespace coopiii::game
+} // namespace coopvc::game

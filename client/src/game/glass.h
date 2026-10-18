@@ -46,16 +46,16 @@
 
 #include "game/addresses.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 struct WorldBridge;
 }
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // ---------------------------------------------------------------------------
 // The decisions
@@ -243,4 +243,4 @@ struct GlassStats {
 
 const GlassStats &GetGlassStats();
 
-} // namespace coopiii::game
+} // namespace coopvc::game

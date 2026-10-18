@@ -8,7 +8,7 @@
 
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -183,4 +183,4 @@ void RemoveCarCamera() {
 
 bool CarCameraModInstalled() { return g_modFound; }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

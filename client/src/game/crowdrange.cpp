@@ -16,7 +16,7 @@
 
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -414,4 +414,4 @@ void AddCrowdRangeToBridge(WorldBridge &bridge) {
 	bridge.HoldAdrenalineClock  = &HoldAdrenalineClock;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

@@ -19,7 +19,7 @@
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Wires WorldBridge's four alarm and gun entries.
 void AddCarExtrasToBridge(WorldBridge &bridge);
@@ -34,4 +34,4 @@ uint8_t SampleCarStateFlags(void *vehicle);
 // drives keeps whatever its own status arm writes there.
 void ApplyCarStateFlags(void *vehicle, uint8_t flags, bool driven);
 
-} // namespace coopiii::game
+} // namespace coopvc::game

@@ -7,7 +7,7 @@
 #include <cmath>
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -53,7 +53,7 @@ DoorState g_doors[HIDEOUT_DOOR_COUNT];
 // through untouched.
 bool      g_driving = false;
 
-// A script of CoopIII's, run once over a single instruction, the way
+// A script of CoopVC's, run once over a single instruction, the way
 // game/mission.cpp runs the owner's: the engine then does exactly what it
 // does for its own scripts. Named like mission.cpp's so either module can
 // tell its own apart from main.scm's threads.
@@ -61,7 +61,7 @@ alignas(16) uint8_t g_runner[0x100];
 uint8_t             g_runnerCode[48];
 
 bool IsOurRunner(const void *script) {
-	return std::memcmp(static_cast<const uint8_t *>(script) + offs::SCRIPT_NAME, "coopiii", 8) == 0;
+	return std::memcmp(static_cast<const uint8_t *>(script) + offs::SCRIPT_NAME, "coopvc", 8) == 0;
 }
 
 void PutFloat(uint8_t *&at, float value) {
@@ -81,7 +81,7 @@ void PutGlobal(uint8_t *&at, uint16_t op, uint16_t global) {
 
 void RunOurRunner() {
 	std::memset(g_runner, 0, sizeof g_runner);
-	std::memcpy(g_runner + offs::SCRIPT_NAME, "coopiii", 8);
+	std::memcpy(g_runner + offs::SCRIPT_NAME, "coopvc", 8);
 	Field<uint32_t>(g_runner, offs::SCRIPT_IP) =
 	    static_cast<uint32_t>(reinterpret_cast<uintptr_t>(g_runnerCode) - CTheScripts__ScriptSpace);
 	Func<OneFn>(CRunningScript__ProcessCommands)(g_runner);
@@ -494,4 +494,4 @@ void AddGatesToBridge(WorldBridge &bridge) {
 	bridge.ApplyRemoteGates = &ApplyRemoteGatesImpl;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

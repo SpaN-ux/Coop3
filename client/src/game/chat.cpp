@@ -14,7 +14,7 @@
 #include <cstdio>
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -214,7 +214,7 @@ LRESULT CALLBACK ChatWndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
 	const LRESULT result = g_wide ? CallWindowProcW(g_prevProc, hwnd, msg, wp, lp)
 	                              : CallWindowProcA(g_prevProc, hwnd, msg, wp, lp);
 	// The game's key handler has had the key and pushed it into its cheat
-	// buffer, or not: one of CoopIII's own cheats is read off that buffer
+	// buffer, or not: one of CoopVC's own cheats is read off that buffer
 	// (cheats.h, NoticeTypedKeys).
 	if (msg == WM_KEYDOWN)
 		NoticeTypedKeys();
@@ -564,4 +564,4 @@ void AddChatToBridge(WorldBridge &bridge) {
 	};
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

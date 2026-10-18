@@ -15,11 +15,11 @@
 
 #include "addresses.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 enum class AdoptPlan : uint8_t {
 	Convert,        // take it over
@@ -163,4 +163,4 @@ inline AdoptCarBytes CarBytesAfterAdoption(AdoptCarBytes b, bool driven) {
 	return b;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

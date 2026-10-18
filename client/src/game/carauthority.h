@@ -35,11 +35,11 @@
 // every frame.
 #pragma once
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 enum class CarSim : uint8_t {
 	Here,        // this machine's engine: nothing corrects it here
@@ -96,4 +96,4 @@ inline constexpr CarWordTo WhereTheWreckGoes(CarSimulator sim) {
 	return sim.where == CarSim::Player ? CarWordTo::OnePlayer : CarWordTo::Nobody;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

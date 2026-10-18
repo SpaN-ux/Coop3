@@ -4,8 +4,8 @@
 // replace the car camera by pointing CCam::Process's call for
 // MODE_CAM_ON_A_STRING at their own function, and MODE_BEHINDBOAT's too
 // (addresses.h, "the car camera's call"). They do it from DllMain, so by the
-// time CoopIII installs, on the first game frame (docs/compat.md 2.2), those
-// calls already lead out of gta3.exe. Nothing CoopIII hooks or redirects is on
+// time CoopVC installs, on the first game frame (docs/compat.md 2.2), those
+// calls already lead out of gta3.exe. Nothing CoopVC hooks or redirects is on
 // any site such a mod patches, so the two load together as they are;
 // docs/compat.md 2.7 has both lists.
 //
@@ -28,7 +28,7 @@
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Where the code a call leads to lives.
 enum class CodeHome : uint8_t {
@@ -69,4 +69,4 @@ void RemoveCarCamera();
 // Whether a car camera mod owns the car camera call. For the log.
 bool CarCameraModInstalled();
 
-} // namespace coopiii::game
+} // namespace coopvc::game

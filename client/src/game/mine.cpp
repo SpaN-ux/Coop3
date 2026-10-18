@@ -10,7 +10,7 @@
 
 #include <windows.h>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -186,4 +186,4 @@ void AddMinesToBridge(WorldBridge &bridge) {
 		bridge.DrainLocalMineBlasts = &DrainLocalMineBlasts;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

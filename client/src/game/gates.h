@@ -25,9 +25,9 @@
 //     without moving anything, so its loop ends as it would have and the
 //     gate stays up. What moves it open, on a machine whose own thread may
 //     not be running at all (its player is across the city), is the engine's
-//     own SLIDE_OBJECT, run once a frame on a script of CoopIII's with the
+//     own SLIDE_OBJECT, run once a frame on a script of CoopVC's with the
 //     same operands gates.sc uses.
-//   - Released, a gate CoopIII opened is slid shut again the same way, with
+//   - Released, a gate CoopVC opened is slid shut again the same way, with
 //     the engine's collision check on as the script's own close has it - but
 //     only while the local thread is not looking after it itself.
 //
@@ -45,12 +45,12 @@
 
 #include "../client.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 struct GateDef {
 	const char *name;
@@ -126,8 +126,8 @@ constexpr bool SwallowGateSlide(bool heldByOthers, bool toOpen) {
 
 enum class GateDrive : uint8_t { None, Open, Shut };
 
-// What CoopIII does to a gate this frame. `held` is the union of the others'
-// bits, `localOpen` this machine's own, `driven` that CoopIII opened it and
+// What CoopVC does to a gate this frame. `held` is the union of the others'
+// bits, `localOpen` this machine's own, `driven` that CoopVC opened it and
 // has not seen it shut since, `localActive` that the local thread touched it
 // within kGateLocalActiveMs and so is closing it itself.
 constexpr GateDrive DecideGateDrive(bool held, bool localOpen, bool driven, bool localActive) {
@@ -208,13 +208,13 @@ bool GateSlide(void *script, int8_t *result);
 // asked for the open end in the last 2.5 s and not for the shut one since";
 // held by anybody else, the local thread's move to the shut end is answered
 // done without moving it, and the door is moved open on a script of
-// CoopIII's with save.sc's own operands. Released, a door CoopIII opened is
+// CoopVC's with save.sc's own operands. Released, a door CoopVC opened is
 // moved back to the shut end.
 //
 // Found by its object, not its target: a move is a door's when its handle is
 // the one the door's global holds. A mission script moving a door
 // (19_8ball.sc turns Portland's, both ways) is never touched, and while one
-// has moved it in the last kDoorMissionHoldMs CoopIII leaves that door alone
+// has moved it in the last kDoorMissionHoldMs CoopVC leaves that door alone
 // - two machines moving it opposite ways every frame would hold a mission's
 // `while not rotate_object` loop open for ever.
 enum : uint8_t {
@@ -301,7 +301,7 @@ inline bool DoorHeadingAt(float heading, float target) {
 	return d < 0.5f && d > -0.5f;
 }
 
-// Whether CoopIII keeps its hands off a door a mission moved at
+// Whether CoopVC keeps its hands off a door a mission moved at
 // `missionMs` (0 for never).
 constexpr bool DoorLeftToMission(uint32_t missionMs, uint32_t nowMs) {
 	return missionMs != 0 && nowMs - missionMs < kDoorMissionHoldMs;
@@ -312,4 +312,4 @@ bool GateRotate(void *script, int8_t *result);
 
 void AddGatesToBridge(WorldBridge &bridge);
 
-} // namespace coopiii::game
+} // namespace coopvc::game

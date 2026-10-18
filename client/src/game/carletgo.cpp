@@ -10,7 +10,7 @@
 
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -113,4 +113,4 @@ void *CarBeingReaped() { return g_reaping; }
 
 void *PedBeingReaped() { return g_pedReaping; }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

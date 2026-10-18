@@ -20,12 +20,12 @@
 
 #include "client.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cmath>
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // ---- decisions ------------------------------------------------------------
 
@@ -328,7 +328,7 @@ inline bool ReplayedProjectileVelocity(const Vec3 &forward, float speed, Vec3 &o
 
 // The eExplosionType a projectile of this weapon produces, or -1.
 //
-// Not a table CoopIII invented - it's the three-way switch at the top of
+// Not a table CoopVC invented - it's the three-way switch at the top of
 // CProjectileInfo::RemoveProjectile, transcribed. Used to bound an explosion
 // type arriving off the wire against the weapon that supposedly caused it.
 // On the way out it's never even needed, since the type gets sampled from
@@ -684,7 +684,7 @@ struct FlameReportThrottle {
 
 // ---- damage decisions -----------------------------------------------------
 
-// The largest single hit CoopIII will apply from a packet.
+// The largest single hit CoopVC will apply from a packet.
 //
 // Not an attempt at anti-cheat - docs/protocol.md §2.1 says plainly that a
 // malicious client can cheat and that's a deliberate trade. This is a bound,
@@ -986,7 +986,7 @@ inline Vec3 TowardShooter(const Vec3 &flatForward, uint32_t direction) {
 //
 // Written for one report - "me subí a un auto y me morí" - and kept because
 // that report could not be answered from the log. `client: we died (killer net
-// 0, anim 173)` was everything CoopIII had to say about it, and anim 173 alone
+// 0, anim 173)` was everything CoopVC had to say about it, and anim 173 alone
 // is genuinely ambiguous. This turns it into a sentence.
 //
 // **ANIM_STD_NUM is a fingerprint, and it has exactly two sources.** 0ADh is
@@ -1034,7 +1034,7 @@ inline Vec3 TowardShooter(const Vec3 &flatForward, uint32_t direction) {
 //
 // What that buys the next session: a death "getting into a car" is either the
 // car being in water, or the player being on foot with a car on top of them -
-// and those two are a very long way apart. The second one is the one CoopIII
+// and those two are a very long way apart. The second one is the one CoopVC
 // can cause: a replica car is placed by the network, not driven there.
 enum class DeathCause : uint8_t {
 	UNKNOWN,     // no damage reached us recently; the engine decided alone
@@ -1209,7 +1209,7 @@ bool IsRemotePlayersProjectile(const void *info);
 // machine was still animating.
 //
 // A player who disconnects mid-throw needs no cleanup here: the projectile
-// CoopIII was animating still reaches CProjectileInfo::Update's deadline,
+// CoopVC was animating still reaches CProjectileInfo::Update's deadline,
 // and the detour turns that removal into a silent one. It just vanishes
 // instead of exploding somewhere nobody actually decided.
 void PlayRemoteExplosion(RemotePlayer &player, const ExplosionBody &body);
@@ -1284,4 +1284,4 @@ bool FriendlyFireOn();
 // goes (ped.cpp, DespawnRemote).
 void EndRemoteProjectilesOf(uint8_t playerId);
 
-} // namespace coopiii::game
+} // namespace coopvc::game

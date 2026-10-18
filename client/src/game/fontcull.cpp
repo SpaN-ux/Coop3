@@ -13,7 +13,7 @@
 
 #include <windows.h>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -83,4 +83,4 @@ float CurrentTextCullLine(float screenW, float screenH) {
 	return TextCullLine(screenW, screenH, g_fixed);
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

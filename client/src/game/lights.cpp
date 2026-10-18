@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 namespace {
 
 // Static, no arguments, the answer in al.
@@ -104,4 +104,4 @@ void RemoveLightClock() {
 	g_onSessionClock = false;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

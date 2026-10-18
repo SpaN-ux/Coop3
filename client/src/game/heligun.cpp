@@ -8,7 +8,7 @@
 
 #include <intrin.h>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -260,4 +260,4 @@ void AddHeliGunToBridge(WorldBridge &bridge) {
 	b.DrawHeliShot = &DrawHeliShot;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

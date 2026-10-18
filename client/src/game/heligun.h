@@ -19,11 +19,11 @@
 
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 struct WorldBridge;
 }
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Which police slot fired a round from `source`. ProcessControl puts the
 // source exactly HELI_SHOT_MUZZLE_OFFSET (3 m) out from the helicopter's own
@@ -99,4 +99,4 @@ void RemoveHeliGunHook();
 // needs nothing hooked.
 void AddHeliGunToBridge(WorldBridge &bridge);
 
-} // namespace coopiii::game
+} // namespace coopvc::game

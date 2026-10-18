@@ -4,7 +4,7 @@
 #include "boat.h"
 #include "carextrasync.h"
 
-namespace coopiii::game {
+namespace coopvc::game {
 namespace {
 
 using GetCarFn = void *(__cdecl *)(int32_t handle);
@@ -109,4 +109,4 @@ void ApplyCarStateFlags(void *vehicle, uint8_t flags, bool driven) {
 	}
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

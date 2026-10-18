@@ -12,12 +12,12 @@
 #include "../bumpsync.h"
 #include "../interp.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // One frame's notes, by car. Open addressing over a fixed table, where a slot
 // from an earlier frame counts as free, so nothing is ever cleared: a car is
@@ -92,4 +92,4 @@ bool    ReadVehiclePose(int32_t poolHandle, VehicleTransform &out);
 bool    ApplyVehicleBump(int32_t target, int32_t by, const Vec3 &move, const Vec3 &turn,
                          float impulse, uint8_t piece);
 
-} // namespace coopiii::game
+} // namespace coopvc::game

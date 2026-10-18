@@ -33,7 +33,7 @@
 
 #include "addresses.h"
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // ---- the traffic budget ------------------------------------------------------
 
@@ -105,7 +105,7 @@ inline bool RetailSaveWrites(bool hasDriver, bool hasPassenger, int32_t vehType,
 // A car this machine's own engine made is never touched, whoever has driven
 // it since. If the campaign left a mission car in the street and the local
 // player took it for a spin in the session, it belongs in his save exactly as
-// much as it would have without CoopIII.
+// much as it would have without CoopVC.
 inline uint8_t CreatedByDuringSave(bool sessionCopy, uint8_t createdBy) {
 	if (sessionCopy && createdBy == VEHICLE_CREATED_BY_MISSION)
 		return static_cast<uint8_t>(VEHICLE_CREATED_BY_PERMANENT);
@@ -160,7 +160,7 @@ enum class CopyEnd : uint8_t {
 	// the engine instead: RANDOM_VEHICLE, unlocked, counted like any other
 	// car, and the next claim makes it a session car again.
 	HandToEngine,
-	// This engine's own car (RemoteVehicle::ours). Never CoopIII's to delete;
+	// This engine's own car (RemoteVehicle::ours). Never CoopVC's to delete;
 	// the row goes and the car stays, for the engine to remove by its own
 	// rules like any car the player left behind.
 	Leave,
@@ -176,8 +176,8 @@ inline CopyEnd HowToEndCopy(bool ours, bool localPlayerAboard) {
 //
 // The save detour and the traffic allowance both need the answer inside the
 // engine's own call, where the roster isn't to hand, so the engine seam keeps
-// its own list: a handle goes in when CoopIII builds or adopts a copy, and
-// comes out when CoopIII destroys it or gives it to the engine. A copy the
+// its own list: a handle goes in when CoopVC builds or adopts a copy, and
+// comes out when CoopVC destroys it or gives it to the engine. A copy the
 // engine deletes by itself (a wreck, a reload) just stops resolving - handles
 // go dead when their slot is freed, and a dead one is reused, the same
 // discipline as ObservedTable.
@@ -238,4 +238,4 @@ public:
 	CopyList() { Clear(); }
 };
 
-} // namespace coopiii::game
+} // namespace coopvc::game

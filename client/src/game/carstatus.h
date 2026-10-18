@@ -8,7 +8,7 @@
 // CCarCtrl::SteerAIBoatWithPhysics. addresses.h, "the driver logic a status
 // runs", has the switch these choose an arm of.
 //
-// Several comments in this tree said every replica CoopIII builds is status 4,
+// Several comments in this tree said every replica CoopVC builds is status 4,
 // ABANDONED. The spawn does write 4. Seating a ped in it doesn't leave it
 // there: CPed::WarpPedIntoCar writes PHYSICS (3) for any ped that isn't a
 // player (0x004D7E9B), in the driver's arm and in the passenger arm alike,
@@ -67,7 +67,7 @@
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // The status a car should be left in once a ped has been warped into it.
 //
@@ -103,4 +103,4 @@ inline constexpr bool CarAiMayRun(uint8_t status, bool copy, bool localDrives) {
 	return !copy || localDrives;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

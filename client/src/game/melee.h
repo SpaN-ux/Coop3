@@ -26,11 +26,11 @@
 
 #include "addresses.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 struct MeleeTag {
 	uint8_t melee    = MELEE_NONE;
@@ -138,7 +138,7 @@ inline uint8_t DefendArg(const MeleeTag &tag, bool victimIsPlayer, uint8_t damag
 }
 
 // Does a strike knock him over? `state` and `after` are read after the
-// damage, `before` ahead of it. The striker is a player: CoopIII only sends
+// damage, `before` ahead of it. The striker is a player: CoopVC only sends
 // the local player's hits.
 inline bool StrikeKnocksDown(uint32_t state, float before, float after, bool victimIsPlayer,
                              bool armed, bool oneHitKnockdown) {
@@ -213,4 +213,4 @@ inline bool CopyMayReactToMelee(bool insideMelee, bool otherMachinesPed) {
 	return !(insideMelee && otherMachinesPed);
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

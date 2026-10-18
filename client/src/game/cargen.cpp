@@ -10,7 +10,7 @@
 
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -157,4 +157,4 @@ void AddCarGenToBridge(WorldBridge &bridge) {
 	bridge.SetParkedSeed = &SetParkedSeedImpl;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

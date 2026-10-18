@@ -58,11 +58,11 @@
 
 #include "siren.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // ---- the engine's rhythms ---------------------------------------------------
 //
@@ -198,7 +198,7 @@ inline bool ReplicaHornSounds(uint8_t flags, bool hasDriver, bool destroyed,
 // driver seated it is PHYSICS, but the driver logic is skipped for it
 // (game/carstatus.h) and ProcessControl clears the slowed-down bits before the
 // switch (0x00531892), so PlayHornIfNecessary never fires and the horn block
-// only counts down what CoopIII wrote. So the host sends a bit per car
+// only counts down what CoopVC wrote. So the host sends a bit per car
 // (protocol.h, CarStateHornBit) and the replica runs the countdown itself,
 // written after CGame::Process like the player's horn. It doesn't try to line
 // up with the host's countdown, which it can't see at 10 Hz. It doesn't need
@@ -264,4 +264,4 @@ inline uint8_t TrafficHornTimer(bool sounding, uint8_t &left) {
 	return left--;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

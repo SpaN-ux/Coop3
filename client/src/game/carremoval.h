@@ -40,9 +40,9 @@
 
 #include "addresses.h"
 #include "../client.h"
-#include "coopiii/protocol.h"
+#include "coopvc/protocol.h"
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Installs the call-site redirections. Not fatal: whatever does not install
 // stays as it was, which is every machine's engine acting on its own copy.
@@ -133,4 +133,4 @@ inline int32_t GeneratorForSlot(uint16_t parkedSlot) {
 	return parkedSlot == 0 ? -1 : static_cast<int32_t>(parkedSlot) - 1;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

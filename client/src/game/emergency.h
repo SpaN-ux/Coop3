@@ -37,7 +37,7 @@
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Takes the eight call sites. Not fatal: each one that fails leaves its half
 // the way it was, and the log names it.
@@ -85,4 +85,4 @@ inline constexpr bool DeadForMedic(uint32_t pedState) {
 	return pedState == PEDSTATE_DIE || pedState == PEDSTATE_DEAD;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

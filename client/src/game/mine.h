@@ -18,15 +18,15 @@
 
 #include "addresses.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 struct WorldBridge;
 }
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 inline bool IsMinePickup(uint8_t type) {
 	return type >= PICKUP_MINE_INACTIVE && type <= PICKUP_NAUTICAL_MINE_ARMED;
@@ -92,4 +92,4 @@ void RemoveMineHooks();
 
 void AddMinesToBridge(WorldBridge &bridge);
 
-} // namespace coopiii::game
+} // namespace coopvc::game

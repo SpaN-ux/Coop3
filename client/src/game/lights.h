@@ -7,7 +7,7 @@
 // clock. No light state travels and none needs to.
 #pragma once
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Detours the three light functions. False if any of them couldn't be
 // installed; the ones that could stay installed, and a light whose function
@@ -15,4 +15,4 @@ namespace coopiii::game {
 bool InstallLightClock();
 void RemoveLightClock();
 
-} // namespace coopiii::game
+} // namespace coopvc::game

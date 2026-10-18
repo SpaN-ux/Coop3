@@ -28,11 +28,11 @@
 #include <cstdint>
 #include <cstring>
 
-namespace coopiii {
+namespace coopvc {
 struct WorldBridge;
 }
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // The fields TestBulletCollision and TestRocketCollision read and write on
 // one helicopter.
@@ -192,4 +192,4 @@ void RemoveHeliHooks();
 // machine's player, with this machine's wanted level.
 void AddHeliToBridge(WorldBridge &bridge);
 
-} // namespace coopiii::game
+} // namespace coopvc::game

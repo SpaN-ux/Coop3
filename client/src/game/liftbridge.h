@@ -11,11 +11,11 @@
 // and locked on every machine, and this changes nothing.
 #pragma once
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Detours CBridge::Update. False if the detour couldn't be installed, in
 // which case every machine runs its own bridge, as before.
 bool InstallLiftBridgeClock();
 void RemoveLiftBridgeClock();
 
-} // namespace coopiii::game
+} // namespace coopvc::game

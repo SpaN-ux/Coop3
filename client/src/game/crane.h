@@ -40,9 +40,9 @@
 
 #include "addresses.h"
 #include "../client.h"
-#include "coopiii/protocol.h"
+#include "coopvc/protocol.h"
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // The call site's new target, installed with the car removal sites
 // (game/carremoval.cpp): follows another machine's crane, or runs ours and
@@ -90,4 +90,4 @@ inline bool CraneStateIsOld(uint8_t from, uint32_t sentMs, bool haveEnd, uint8_t
 	return following && followFrom == from && static_cast<int32_t>(sentMs - followSentMs) < 0;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

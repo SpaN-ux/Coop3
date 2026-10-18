@@ -8,7 +8,7 @@
 #include <cstdint>
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Is there `call target` at `insn`, a five-byte E8 with a 32-bit displacement
 // from the next instruction?
@@ -49,4 +49,4 @@ inline bool CdeclCallIn(const uint8_t *window, uintptr_t windowAddr, size_t len,
 	return false;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

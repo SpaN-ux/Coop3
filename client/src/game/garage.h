@@ -74,7 +74,7 @@
 #include "addresses.h"
 #include "../client.h"
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Installs the CGarage::Update detour. Not fatal if it fails: without it
 // garages stay exactly as local as they are today, and the log says so.
@@ -279,4 +279,4 @@ inline bool PassengerKeepsPaint(bool weDrive, bool driverIsAnotherPlayer) {
 	return !weDrive && driverIsAnotherPlayer;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

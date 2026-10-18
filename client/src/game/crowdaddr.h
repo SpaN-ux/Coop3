@@ -11,7 +11,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // ---- where the population is centred -------------------------------------------
 //
@@ -192,4 +192,4 @@ constexpr uintptr_t CPedPlacement__IsPositionClearForPed = 0x004EE2C0;
 constexpr uintptr_t AddToPopulation_IsPositionClearCall = 0x004F5036;
 constexpr uintptr_t SPAWN_SPOT_TESTS[4] = {0x00416B81, 0x00417C28, 0x00417C7F, 0x004EE2E3};
 
-} // namespace coopiii::game
+} // namespace coopvc::game

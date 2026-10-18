@@ -8,7 +8,7 @@
 
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 static_assert(HEAD_HIER_CURRENT_ANIM == offs::HANIM_CURRENT_ANIM &&
                   HEAD_HIER_TO_MATRIX == offs::HANIM_KEYFRAME_TO_MATRIX &&
@@ -181,4 +181,4 @@ void RemoveCutsceneHeadGuard() {
 
 uint32_t CutsceneHeadsHeld() { return g_held; }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

@@ -39,11 +39,11 @@
 
 #include "addresses.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // The wire's idea of how many doors and panels there are, against the
 // engine's. protocol.h has to state the counts because the server has no
@@ -194,4 +194,4 @@ constexpr uint16_t WRECK_DOOR_WORD = static_cast<uint16_t>(
 
 constexpr uint32_t WRECK_PANEL_WORD = 0;
 
-} // namespace coopiii::game
+} // namespace coopvc::game

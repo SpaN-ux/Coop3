@@ -15,7 +15,7 @@
 
 #include <windows.h>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // Same number as interp.h's ENGINE_STEPS_PER_SECOND, read off the same CTimer
 // code. The helicopter converts on the wire, everything else converts where it
@@ -945,4 +945,4 @@ void AddHeliToBridge(WorldBridge &bridge) {
 	}
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

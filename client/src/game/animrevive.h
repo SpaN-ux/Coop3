@@ -12,7 +12,7 @@
 //               partial and sets no DELETEFADEDOUT. UpdateBlend then parks each
 //               one at weight 0, delta 0, and keeps it. Nothing revives it.
 //   getting up  CPed::PedGetupCB does the same wipe, then SetMoveAnim blends a
-//               base of its own over the one CoopIII put on.
+//               base of its own over the one CoopVC put on.
 //   dry land    ProcessBuoyancy's arm for a ped pulled out of the water.
 //
 // On the owner's screen their own weapon code puts the aim back the same frame,
@@ -26,11 +26,11 @@
 
 #include "addresses.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // What one association is doing, as far as being seen goes.
 enum class AnimLife : uint8_t {
@@ -220,4 +220,4 @@ inline bool SeatedPoseStateToKeep(uint32_t pedState) {
 	       pedState == PEDSTATE_GETUP;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

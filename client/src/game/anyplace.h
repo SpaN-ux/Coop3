@@ -52,14 +52,14 @@
 
 #include "standin.h"
 
-#include <coopiii/mission.h>
+#include <coopvc/mission.h>
 
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
 
-namespace coopiii::game::anyplace {
+namespace coopvc::game::anyplace {
 
 // How near the place the owner has to be: the distance a summoned player is
 // left to walk (mission.h MISSION_MOVE_STAY_M), a little more than the 50 m
@@ -266,4 +266,4 @@ inline MissionArea ZoneArea(const float *min, const float *max) {
 	return MissionAreaCorners3D(min[0], min[1], min[2], max[0], max[1], max[2]);
 }
 
-} // namespace coopiii::game::anyplace
+} // namespace coopvc::game::anyplace

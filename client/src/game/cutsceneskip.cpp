@@ -8,13 +8,13 @@
 #include "../cutsceneskipview.h"
 #include "../log.h"
 
-#include <coopiii/mission.h>
+#include <coopvc/mission.h>
 
 #include <windows.h>
 
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -296,4 +296,4 @@ void DrawCutsceneSkip() {
 	DrawCornerMark(text);
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

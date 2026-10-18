@@ -1,9 +1,9 @@
-// A ped's car animations, when CoopIII changes his seat by hand.
+// A ped's car animations, when CoopVC changes his seat by hand.
 //
 // The engine gets a ped into and out of a car through a chain of animations,
 // each one's finish callback starting the next, and every callback reads the
 // ped's m_pMyVehicle when it fires (addresses.h, "the car chain's callbacks").
-// CoopIII also seats and unseats peds directly - the seat key, the warp the
+// CoopVC also seats and unseats peds directly - the seat key, the warp the
 // door falls back to, a remote player's or a replica's seat, a jack handed
 // over - and every one of those writes m_pMyVehicle, or nils it, while such a
 // callback may still be on its way. Fading the animation does not stop it:
@@ -29,7 +29,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 constexpr uintptr_t CAR_CHAIN_CALLBACKS[] = {
     CPed__PedAnimAlignCB,
@@ -110,7 +110,7 @@ enum class CarCallbackEnd : uint8_t {
 // that bit set has every ped who walks up to that door stand there
 // (addresses.h, GettingOutFlagsAfterUnseat). It is a CAutomobile's callback -
 // it swings the door through vtable 5Ch and writes its Damage - so only on
-// one. Everything else in the chain is about the ped, and CoopIII is about to
+// one. Everything else in the chain is about the ped, and CoopVC is about to
 // say where the ped is.
 inline CarCallbackEnd EndPendingCarCallback(uintptr_t engineFn, int32_t type,
                                             bool carIsAutomobile) {
@@ -138,4 +138,4 @@ void RemoveCarCallbackGuards();
 uintptr_t RollingDoorGuardAddress();
 uintptr_t OutTrainGuardAddress();
 
-} // namespace coopiii::game
+} // namespace coopvc::game

@@ -15,7 +15,7 @@
 
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -258,4 +258,4 @@ void RemoveSaveGuard() {
 	RestoreTrafficCap();
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

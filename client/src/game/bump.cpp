@@ -11,7 +11,7 @@
 
 #include <cmath>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -167,4 +167,4 @@ bool ApplyVehicleBump(int32_t target, int32_t by, const Vec3 &move, const Vec3 &
 	return true;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

@@ -43,11 +43,11 @@
 
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 struct WorldBridge;
 }
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // ---- addresses -----------------------------------------------------------------
 //
@@ -126,4 +126,4 @@ inline uint16_t CrtRand(uint32_t &state) {
 	return static_cast<uint16_t>((state >> 16) & 0x7FFF);
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

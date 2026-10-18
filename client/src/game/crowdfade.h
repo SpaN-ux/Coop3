@@ -34,15 +34,15 @@
 
 #include "carletgo.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 struct WorldBridge;
 }
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // The engine half: the local camera, whether a copy is on our screen, and its
 // clump alpha with bFadeOut. Never fails to install: it hooks nothing.
@@ -178,4 +178,4 @@ constexpr uint32_t PLAYER_VIEW_SEND_MS = 250;
 // coming (a dropped packet is nothing, a paused game is) is nobody's camera.
 constexpr uint32_t PLAYER_VIEW_STALE_MS = 2000;
 
-} // namespace coopiii::game
+} // namespace coopvc::game

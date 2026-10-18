@@ -6,7 +6,7 @@
 
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
@@ -113,4 +113,4 @@ void RemoveCopCrimeHook() {
 	g_report.Remove();
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

@@ -43,7 +43,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii::game::getaway {
+namespace coopvc::game::getaway {
 
 constexpr uint16_t THE_GETAWAY        = 29;
 constexpr uint16_t DRIVE_MISTY_FOR_ME = 21;
@@ -194,4 +194,4 @@ inline bool IsCrewLabel(const uint8_t *label, const Ride &ride = RIDES[0]) {
 	return false;
 }
 
-} // namespace coopiii::game::getaway
+} // namespace coopvc::game::getaway

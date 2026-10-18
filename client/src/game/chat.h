@@ -4,7 +4,7 @@
 // game: the keys, the controls while a line is being typed, the clipboard, and
 // the drawing.
 //
-// **The keys come off the game's own window.** CoopIII subclasses it the first
+// **The keys come off the game's own window.** CoopVC subclasses it the first
 // frame it is active on the game thread and reads WM_KEYDOWN there, turning
 // each press into a character with ToUnicode, so the keyboard layout is the
 // player's and nothing depends on the game's message loop calling
@@ -22,12 +22,12 @@
 // cheat", has the rule and why it is safe; it goes by the cheats the running
 // game has, which another plugin may have changed.
 //
-// **Every key the game had is shown to CoopIII's own cheats** after the
+// **Every key the game had is shown to CoopVC's own cheats** after the
 // game's window procedure has run (cheats.h, NoticeTypedKeys).
 //
 // **While a line is open the game is kept off the keyboard** three ways, each
 // through something addresses.h already proves: CPad::DisablePlayerControls'
-// CoopIII bit (game/pause.h, HoldControlsForChat), which every movement,
+// CoopVC bit (game/pause.h, HoldControlsForChat), which every movement,
 // steering and weapon accessor checks; the key messages themselves, which are
 // swallowed; and CPad::NewKeyState and TempKeyState, which are cleared every
 // frame so the menu and anything else that reads the keys directly sees none
@@ -41,13 +41,13 @@
 
 #include "client.h"
 
-namespace coopiii::game {
+namespace coopvc::game {
 
-// Virtual-key codes for the two keys, from CoopIII.ini (config.h).
+// Virtual-key codes for the two keys, from CoopVC.ini (config.h).
 void SetChatKeys(int chatKey, int listKey);
 
-// "CoopIII 0.1.1" in the bottom-left corner, under the radar. On unless
-// CoopIII.ini says otherwise.
+// "CoopVC 0.1.1" in the bottom-left corner, under the radar. On unless
+// CoopVC.ini says otherwise.
 void SetVersionMarkShown(bool shown);
 
 // Remembers the client whose feed is drawn. Nothing is hooked here; the
@@ -70,4 +70,4 @@ void DrawCornerMark(const char *text, int row = 0);
 // Fills the chat half of the bridge.
 void AddChatToBridge(WorldBridge &bridge);
 
-} // namespace coopiii::game
+} // namespace coopvc::game

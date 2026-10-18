@@ -17,13 +17,13 @@
 // without the game. ped.cpp reads the engine and acts on the answer.
 #pragma once
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 constexpr int LOOK_SLOTS = 4;   // special01..04, MI_SPECIAL01 onward
 
@@ -136,4 +136,4 @@ inline bool LookSlotReleasable(const LookSlot &s, bool wanted) {
 	return s.ours && !wanted && s.refs == 0;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game

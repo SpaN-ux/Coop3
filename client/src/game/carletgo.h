@@ -34,12 +34,12 @@
 
 #include "addresses.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 // The engine half, game/carletgo.cpp. Takes PossiblyRemoveVehicle's two calls
 // so that CarBeingReaped names the car it is deciding about for the length of
@@ -271,4 +271,4 @@ inline float NearestFlatD2(float x, float y, const Vec3 *pts, size_t count) {
 	return best;
 }
 
-} // namespace coopiii::game
+} // namespace coopvc::game
