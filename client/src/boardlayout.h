@@ -4,14 +4,14 @@
 // CSprite2d::DrawRect and CFont, and tools/clienttest walks all of this.
 //
 //   +------------------------------------------------------------------------------+
-//   | COOPIII                                                                  2/8 |  title
+//   | COOPVC                                                                   2/8 |  title
 //   |==============================================================================|  accent
 //   | server 127.0.0.1:2001                                world hosted by noxx    |
-//   | PLAYER              HEALTH   WANTED  MONEY     K/D    STATUS          PING    |
-//   | # noxx       HOST   [=====]  ]]]     $1250     3/1    DRIVING         |||| 38 |  you, lit
-//   | # alice             [===  ]          $80       1/3    ON FOOT         |||  95 |
+//   | PLAYER              HEALTH   WANTED  MONEY     K/D    STATUS          PING   |
+//   | # noxx       HOST   [=====]  ]]]     $1250     3/1    DRIVING        |||| 38 |  you, lit
+//   | # alice             [===  ]          $80       1/3    ON FOOT        |||  95 |
 //   |------------------------------------------------------------------------------|
-//   | CoopIII 0.1.1                                         out 1204  in 1188      |  footer
+//   | CoopVC  0.1.1                                         out 1204  in 1188      |  footer
 //   +------------------------------------------------------------------------------+
 //
 // MONEY only while the session's money rule is `own` or `shared`: the pool
