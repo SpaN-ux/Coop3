@@ -25,7 +25,7 @@
 //        wire's direction is really being applied. Trails that stay level
 //        under -pitch mean it is not. The snapshot's aimPitch follows the
 //        same sweep, so the ghost's gun arm should rise and fall with its
-//        trails; an arm that stays level means CoopIII.log never said it
+//        trails; an arm that stays level means CoopVC.log never said it
 //        hooked CPedIK::PointGunInDirection.
 // -throw holds a molotov and lobs one every three seconds, sends the
 //        explosion a beat later. The two halves are kept separate: the throw
@@ -60,7 +60,7 @@
 //                                       ghost's, and the session allows it.
 //          started without              you do not. The flame still comes
 //                                       out; only the damage is declined,
-//                                       and CoopIII.log says so in as many
+//                                       and CoopVC.log says so in as many
 //                                       words rather than going quiet.
 //
 //        Either way the decision is made here, on this machine, about this
@@ -111,7 +111,7 @@
 // -far   widens the orbit from four metres to a sweep between 20 and 200,
 //        out and back every minute. That is the radar's business: the radar
 //        reaches 120 m on foot, so the ghost's blip walks out to the rim,
-//        pins to it the way every GTA III blip does, and comes back in. It
+//        pins to it the way every GTA Vice City blip does, and comes back in. It
 //        is also the one thing worth looking at twice, because it is the
 //        handover docs/roadmap.md §5.3 will need - a player that far away
 //        eventually stops having a ped, and the blip has to survive that.
@@ -134,14 +134,14 @@
 // an interpolated pose onto it every frame.
 //
 // That spawn path is the one thing no unit test can reach, since it needs a
-// live ped pool inside gta3.exe. This is how you exercise it without a
+// live ped pool inside gta-vc.exe. This is how you exercise it without a
 // second machine and a second person.
 
 #include "clock.h"
 #include "interp.h"
 
-#include <coopiii/net.h>
-#include <coopiii/protocol.h>
+#include <coopvc/net.h>
+#include <coopvc/protocol.h>
 
 #include <chrono>
 #include <cmath>
@@ -150,7 +150,7 @@
 #include <thread>
 #include <vector>
 
-using namespace coopiii;
+using namespace coopvc;
 
 namespace {
 
@@ -208,7 +208,7 @@ int main(int argc, char **argv) {
 	// -blowup: blow the ghost's car up on a cycle, so the whole destruction
 	// path can be watched in a live game. There is no other way to reach it -
 	// the observer half runs the engine's own CAutomobile::BlowUpCar on a
-	// CAutomobile CoopIII built by hand, and nothing headless can touch that.
+	// CAutomobile CoopVC built by hand, and nothing headless can touch that.
 	bool blowUpFlag = false;
 	bool limbsFlag  = false;
 	bool pitchFlag  = false;
@@ -344,7 +344,7 @@ int main(int argc, char **argv) {
 	// circle around the same player. Same point as the ped: it puts the real
 	// client through a path no unit test can reach, allocating from the
 	// vehicle pool and running CAutomobile's constructor and CREATE_CAR's
-	// whole registration inside a live gta3.exe.
+	// whole registration inside a live gta-vc.exe.
 	const bool wantCar      = carFlag;
 	uint16_t carModel       = 91;   // Idaho: an ordinary car, always streamable
 	uint16_t myVehicleNetId = INVALID_NETID;
@@ -450,7 +450,7 @@ int main(int argc, char **argv) {
 	constexpr float    HURT_PER_ROUND  = 8.0f;
 	constexpr uint8_t  PEDPIECE_TORSO_ = 0;
 	constexpr uint16_t ANIM_KO_FRONT   = 13;   // ANIM_STD_KO_FRONT
-	// What GTA III itself waits before the hospital (CGameLogic::Update's
+	// What GTA Vice City itself waits before the hospital (CGameLogic::Update's
 	// 0x1000 ms), so the ghost's corpse lies there about as long as a real
 	// player's does.
 	constexpr uint32_t GHOST_DEATH_MS  = 4096;

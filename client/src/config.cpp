@@ -8,7 +8,7 @@
 #include <windows.h>
 #endif
 
-namespace coopiii {
+namespace coopvc {
 
 namespace {
 
@@ -208,15 +208,15 @@ void Config::ApplyOverrides(const char *hostEnv, const char *portEnv, const char
 }
 
 void Config::ApplyEnvOverrides() {
-	ApplyOverrides(std::getenv("COOPIII_HOST"), std::getenv("COOPIII_PORT"),
-	               std::getenv("COOPIII_NICK"));
+	ApplyOverrides(std::getenv("COOPVC_HOST"), std::getenv("COOPVC_PORT"),
+	               std::getenv("COOPVC_NICK"));
 }
 
 std::string Config::IniPath() {
-	if (const char *env = std::getenv("COOPIII_INI"))
+	if (const char *env = std::getenv("COOPVC_INI"))
 		if (env[0] != '\0')
 			return std::string(env);
-	return PathNextToModule("CoopIII.ini");
+	return PathNextToModule("CoopVC.ini");
 }
 
 std::string Config::PathNextToModule(const char *filename) {
@@ -242,4 +242,4 @@ std::string Config::PathNextToModule(const char *filename) {
 	return std::string(filename);
 }
 
-} // namespace coopiii
+} // namespace coopvc

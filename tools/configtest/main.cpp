@@ -1,4 +1,4 @@
-// CoopIII-Server.ini: what it parses, what it writes, and that a round trip
+// CoopVC-Server.ini: what it parses, what it writes, and that a round trip
 // through both comes back with the same rules.
 //
 // The defaults are the part worth a test of their own. docs/roadmap.md §5.5
@@ -10,7 +10,7 @@
 #include <cstdio>
 #include <string>
 
-using namespace coopiii;
+using namespace coopvc;
 
 namespace {
 
@@ -182,7 +182,7 @@ void TestCheats() {
 }
 
 void TestCoopCheats() {
-	std::printf("CoopIII's own cheats (cheats.md 7)\n");
+	std::printf("CoopVC's own cheats (cheats.md 7)\n");
 
 	ServerConfig c;
 	Check(c.coopCheats == CoopCheatMode::OutsideMissions,
@@ -233,7 +233,7 @@ void TestParse() {
 	std::printf("parsing\n");
 
 	ServerConfig c;
-	Check(c.Parse("[CoopIII]\nport = 2010\nfriendlyFire = true\nwantedLevel = shared\n"
+	Check(c.Parse("[CoopVC]\nport = 2010\nfriendlyFire = true\nwantedLevel = shared\n"
 	              "missionFailOnDeath = false\nammoSync = true\nrampages = scaled\n"),
 	      "a full file parses");
 	Check(c.port == 2010, "port");
@@ -264,7 +264,7 @@ void TestParse() {
 
 	// Comments, blank lines and keys from a newer build.
 	ServerConfig future;
-	Check(future.Parse("; a comment\n\n[CoopIII]\nport = 2005\n"
+	Check(future.Parse("; a comment\n\n[CoopVC]\nport = 2005\n"
 	                   "somethingNewerKnowsAbout = 7\n"),
 	      "a file with comments and an unknown key parses");
 	Check(future.port == 2005, "and the key it did know still landed");
@@ -326,7 +326,7 @@ void TestRoundTrip() {
 	written.keepProgress            = false;
 
 	const std::string ini = written.ToIni();
-	Check(ini.find("[CoopIII]") != std::string::npos, "the file has its section header");
+	Check(ini.find("[CoopVC]") != std::string::npos, "the file has its section header");
 	Check(ini.find(';') != std::string::npos, "and comments explaining the keys");
 
 	ServerConfig read;

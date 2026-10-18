@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-using namespace coopiii;
+using namespace coopvc;
 
 namespace {
 

@@ -1,4 +1,4 @@
-// The CoopIII server, with no interface attached.
+// The CoopVC server, with no interface attached.
 //
 // Relays player/vehicle state, and relays the host player's time of day and
 // weather to everyone else. Authority model is in docs/protocol.md §2.1, and
@@ -21,8 +21,8 @@
 #include "skinrelay.h"
 #include "stuntcam.h"
 
-#include "coopiii/net.h"
-#include "coopiii/version.h"
+#include "coopvc/net.h"
+#include "coopvc/version.h"
 
 #include <chrono>
 #include <cmath>
@@ -35,7 +35,7 @@
 #include <utility>
 #include <vector>
 
-namespace coopiii {
+namespace coopvc {
 
 inline const char *RejectText(RejectReason reason) {
 	switch (reason) {
@@ -70,7 +70,7 @@ enum class LogKind : uint8_t {
 	Chat,     // a player said something
 };
 
-inline const char *TagOf(LogKind kind) { return kind == LogKind::Chat ? "[chat]" : "[coopiii]"; }
+inline const char *TagOf(LogKind kind) { return kind == LogKind::Chat ? "[chat]" : "[coopvc]"; }
 
 // Connections the server takes: every slot, a launcher waiting in the lobby
 // for each (docs/protocol.md 1.31), and two to say "full" on.
@@ -115,7 +115,7 @@ public:
 		m_port      = port;
 		m_listening = true;
 		m_startedMs = NowMs();
-		Log(LogKind::Info, "CoopIII " COOPIII_VERSION " (protocol %u)",
+		Log(LogKind::Info, "CoopVC " COOPVC_VERSION " (protocol %u)",
 		    static_cast<unsigned>(PROTOCOL_VERSION));
 		Log(LogKind::Info, "listening on %u, %u slots, friendly fire %s, "
 		            "ammo sync %s, wanted level %s, money %s, hidden packages %s",
@@ -190,7 +190,7 @@ public:
 		                                      : "players need the password to join");
 	}
 
-	// Every setting in CoopIII-Server.ini but the port, applied to the running
+	// Every setting in CoopVC-Server.ini but the port, applied to the running
 	// session: both front ends call it once after Start, and the window again
 	// each time its options are saved. What the players have to be told goes
 	// to everybody already in:
@@ -1966,10 +1966,10 @@ private:
 		m_net.Disconnect(peer, LEAVE_KICKED);
 		const std::string nick = SanitizeText(hello.nick, NICK_LEN);
 		if (reject == REJECT_BAD_VERSION)
-			Log(LogKind::Warn, "turned %s away: their CoopIII speaks protocol %u and "
+			Log(LogKind::Warn, "turned %s away: their CoopVC speaks protocol %u and "
 			                   "this server %u; the two have to match, which in "
-			                   "practice means the same CoopIII release (this server "
-			                   "is " COOPIII_VERSION ")",
+			                   "practice means the same CoopVC release (this server "
+			                   "is " COOPVC_VERSION ")",
 			    nick.empty() ? "a player" : nick.c_str(),
 			    static_cast<unsigned>(hello.protocolVersion),
 			    static_cast<unsigned>(PROTOCOL_VERSION));
@@ -2403,7 +2403,7 @@ private:
 		OrderMissionFail(*p, MISSION_FAIL_DIED);
 	}
 
-	// And back again. The position is theirs to decide too: GTA III picks the
+	// And back again. The position is theirs to decide too: GTA Vice City picks the
 	// nearest hospital on their machine, and nobody else has the restart
 	// points for the island they happened to die on.
 	void OnRespawn(PeerId peer, const C_Respawn &in) {
@@ -2495,7 +2495,7 @@ private:
 	// What shape a car is in. docs/cardamage.md.
 	//
 	// The same entitlement gate as the snapshot above, and for the same
-	// reason: a car's owner is its driver, and the server has no GTA III
+	// reason: a car's owner is its driver, and the server has no GTA Vice City
 	// running so the one useful thing it can check is whether the reporter is
 	// the player it believes is behind the wheel - or, with nobody behind it,
 	// the player settling it (S_VehicleCustody), whose engine is the one
@@ -3134,7 +3134,7 @@ private:
 	// A car was destroyed, per the machine driving it.
 	//
 	// Who decides: the driver's, because that is the machine simulating it.
-	// The server checks that and nothing else - it has no GTA III running, so
+	// The server checks that and nothing else - it has no GTA Vice City running, so
 	// it cannot tell a real explosion from an invented one, and the only
 	// thing it can usefully refuse is a player declaring somebody else's car
 	// finished. Same test OnVehicleState uses to refuse a snapshot for a car
@@ -3233,7 +3233,7 @@ private:
 	// somebody else's property. This car has no owner: the map put it there,
 	// nobody claimed it, and the only machine that can possibly know it blew
 	// up is one that had it streamed in - which the host may well not be,
-	// since GTA III streams around each player's own position
+	// since GTA Vice City streams around each player's own position
 	// (docs/roadmap.md 2.1). Requiring the host to report it would mean
 	// nobody reports a car on the far side of the city from them.
 	//
@@ -3263,7 +3263,7 @@ private:
 		out.reporterPlayerId = p->id;
 		out.key              = in.key;
 		// Relayed as sent. The server has no opinion about where a car is -
-		// it has no GTA III running - so this is the reporter's own reading
+		// it has no GTA Vice City running - so this is the reporter's own reading
 		// passed along, exactly like the transform on C_VehicleBlowUp. What
 		// the server does decide is whether the reporter was entitled to say
 		// anything at all, and NoteUnownedBlowUp above has already done that.
@@ -4126,7 +4126,7 @@ private:
 	}
 
 	// Who the clock and the sky belong to moves with the session's mission
-	// (coopiii/sky.h). Nothing goes out for it: every client works it out
+	// (coopvc/sky.h). Nothing goes out for it: every client works it out
 	// from the S_MissionState it has just been sent. This only says so.
 	void NoteSkyHolder() {
 		const uint8_t holder = m_session.SkyHolderId();
@@ -5245,7 +5245,7 @@ private:
 	static constexpr uint8_t INVALID_RULE = 0xFF;
 	bool                      m_configured         = false;
 	uint8_t                   m_maxWanted          = WANTED_LEVEL_CEILING;
-	// CoopIII's own typed cheats (protocol.h, CoopCheatRule), in S_SessionRules.
+	// CoopVC's own typed cheats (protocol.h, CoopCheatRule), in S_SessionRules.
 	uint8_t                   m_coopCheats         = COOP_CHEATS_OUTSIDE_MISSIONS;
 	// syncCustomSkins, and the skins it lets through (skinrelay.h).
 	bool                      m_syncSkins          = true;
@@ -5270,4 +5270,4 @@ private:
 	uint32_t m_connectedAtMs[SERVER_PEERS] = {};
 };
 
-} // namespace coopiii
+} // namespace coopvc

@@ -13,8 +13,8 @@
 
 #include "server.h"
 
-#include "coopiii/mission.h"
-#include "coopiii/net.h"
+#include "coopvc/mission.h"
+#include "coopvc/net.h"
 #include "launcher/lobby.h"
 
 #include <chrono>
@@ -26,7 +26,7 @@
 #include <thread>
 #include <vector>
 
-using namespace coopiii;
+using namespace coopvc;
 
 namespace {
 
@@ -1289,7 +1289,7 @@ void TestPoliceAndSpeechTravel(Rig &rig) {
 
 // The host's places (C_PlaceBlips): the same way as the contacts.
 void TestTheHostsPlacesTravel(Rig &rig) {
-	std::printf("\nthe host's places reach the guests, and nobody else's do\n");
+	std::printf("\nthe host's places reach the guests, and nobody else's do\n");
 	std::vector<Raw *> raws;
 	const auto pump = [&](uint32_t ms, const std::function<bool()> &done) {
 		rig.Pump(ms, [&] {
@@ -2365,7 +2365,7 @@ void TestAWreckIsSettledAndHandedToAJoiner(Rig &rig) {
 // whatever a buggy or hostile client might put in it: the server stays up
 // and still lets somebody in. Mostly the small values and edges a field is
 // checked against, otherwise random, from a fixed seed.
-#define COOPIII_SERVER_PACKETS(X)                                                                  \
+#define COOPVC_SERVER_PACKETS(X)                                                                  \
 	X(C_CampaignDelta) X(C_CampaignSince) X(C_ContactMarkers) X(C_PlaceBlips) X(C_CarDespawn) X(C_CraneState) X(C_CarHit) X(C_CarLetGo) X(C_CarLists)  \
 	X(C_CrowdGone) X(C_MissionRelease) X(C_PlayerView) X(C_PedLetGo)                                                   \
 	X(C_CarSpawn) X(C_CarStates) X(C_Chat) X(C_Cheat) X(C_CopHandover) X(C_CutsceneState)          \
@@ -2396,9 +2396,9 @@ void TestNoPacketCrashesTheServer() {
 		uint8_t opcode;
 		size_t  size;
 	};
-#define COOPIII_FUZZ_ENTRY(T) Packet{T::OPCODE, sizeof(T)},
-	static const Packet kPackets[] = {COOPIII_SERVER_PACKETS(COOPIII_FUZZ_ENTRY)};
-#undef COOPIII_FUZZ_ENTRY
+#define COOPVC_FUZZ_ENTRY(T) Packet{T::OPCODE, sizeof(T)},
+	static const Packet kPackets[] = {COOPVC_SERVER_PACKETS(COOPVC_FUZZ_ENTRY)};
+#undef COOPVC_FUZZ_ENTRY
 	Rig rig;
 	rig.server.SetLogSink([](LogKind, const char *line) {
 		if (g_verbose)
@@ -3151,7 +3151,7 @@ bool FileThere(const std::string &path) {
 void TestProgressOutlivesTheServer() {
 	std::printf("\nthe session's progress, from one run of the server to the next\n");
 	const char *temp = std::getenv("TEMP");
-	const std::string path = std::string(temp ? temp : ".") + "\\coopiii-servertest-progress.dat";
+	const std::string path = std::string(temp ? temp : ".") + "\\coopvc-servertest-progress.dat";
 	std::remove(path.c_str());
 	std::remove((path + ".old").c_str());
 
@@ -3573,7 +3573,7 @@ void TestTheHostsRulesReachEverybody() {
 	Check(welcome && rules && rules->flags == welcome->flags && rules->maxWanted == 6,
 	      "with the welcome's flags and six stars");
 	Check(rules && rules->coopCheats == COOP_CHEATS_OUTSIDE_MISSIONS,
-	      "and CoopIII's own cheats outside missions, the default");
+	      "and CoopVC's own cheats outside missions, the default");
 	const uint8_t bob = Join(rig, 1, "bob");
 	Check(alice == 0 && bob == 1, "alice and bob are in");
 	rig.Pump(1000, [&] {
@@ -3629,13 +3629,13 @@ void TestTheHostsRulesReachEverybody() {
 	          Count<S_Money>(rig.inbox[1]) == 0,
 	      "saving without a change sends nothing");
 
-	// CoopIII's own cheats, and nothing else, changed: that alone is news.
+	// CoopVC's own cheats, and nothing else, changed: that alone is news.
 	cfg.coopCheats = CoopCheatMode::Always;
 	rig.server.Configure(cfg);
 	rig.Pump(1500, [&] { return Last<S_SessionRules>(rig.inbox[1]) != nullptr; });
 	rules = Last<S_SessionRules>(rig.inbox[1]);
 	Check(rules && rules->coopCheats == COOP_CHEATS_ALWAYS && rig.server.CoopCheats() == COOP_CHEATS_ALWAYS,
-	      "letting CoopIII's cheats into missions tells bob at once, in S_SessionRules");
+	      "letting CoopVC's cheats into missions tells bob at once, in S_SessionRules");
 	rig.ClearInboxes();
 	cfg.coopCheats = CoopCheatMode::Off;
 	rig.server.Configure(cfg);

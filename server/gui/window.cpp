@@ -1,4 +1,4 @@
-// CoopIII server, the window.
+// CoopVC server, the window.
 //
 // design/screens/Server.dc.html is the screen and ServerOptions.dc.html is the
 // dialog. Every position and size below is out of those files.
@@ -7,7 +7,7 @@
 // process. This file gives it a log sink, draws what it is doing, and lets
 // somebody kick a player or change the rules.
 #include "run.h"
-#include <coopiii/version.h>
+#include <coopvc/version.h>
 
 #include "config.h"
 #include "firewall.h"
@@ -40,7 +40,7 @@
 
 using namespace ui;
 
-namespace coopiii {
+namespace coopvc {
 namespace {
 
 // The design's window, to the pixel.
@@ -222,7 +222,7 @@ void SaveOptions(float now) {
 
 int RunWindow(const Startup &startup) {
 	AppOptions options;
-	options.title          = "CoopIII Server";
+	options.title          = "CoopVC Server";
 	options.width          = 1200;
 	options.height         = 760;
 	options.resizable      = true;
@@ -232,10 +232,10 @@ int RunWindow(const Startup &startup) {
 	App app(options);
 	if (!app.Ok()) {
 		MessageBoxW(nullptr,
-		            L"CoopIII Server could not create its window. A Direct3D 11 capable "
+		            L"CoopVC Server could not create its window. A Direct3D 11 capable "
 		            L"display driver is needed.\r\n\r\nRun it with --nogui to start the "
 		            L"server without one.",
-		            L"CoopIII Server", MB_ICONERROR | MB_OK);
+		            L"CoopVC Server", MB_ICONERROR | MB_OK);
 		return 1;
 	}
 
@@ -304,7 +304,7 @@ int RunWindow(const Startup &startup) {
 		                  MapFade{true, 0.45f, 0.78f, theme.bgWindow});
 		draw->PopClipRect();
 
-		const TitleBarResult bar = TitleBar(app, "Server", "v" COOPIII_VERSION, true);
+		const TitleBarResult bar = TitleBar(app, "Server", "v" COOPVC_VERSION, true);
 		if (bar.minimise) app.Minimize();
 		if (bar.maximise) app.ToggleMaximize();
 		if (bar.close)    app.Close();
@@ -783,4 +783,4 @@ int RunWindow(const Startup &startup) {
 	return result;
 }
 
-} // namespace coopiii
+} // namespace coopvc

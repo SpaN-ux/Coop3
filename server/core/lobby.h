@@ -7,14 +7,14 @@
 // the queue that decides who the host is.
 #pragma once
 
-#include <coopiii/net.h>
-#include <coopiii/protocol.h>
+#include <coopvc/net.h>
+#include <coopvc/protocol.h>
 
 #include <cstddef>
 #include <cstdint>
 #include <string>
 
-namespace coopiii {
+namespace coopvc {
 
 class Lobby {
 public:
@@ -64,4 +64,4 @@ private:
 	bool     m_started     = false;
 };
 
-} // namespace coopiii
+} // namespace coopvc

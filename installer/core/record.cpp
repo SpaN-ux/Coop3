@@ -1,13 +1,13 @@
-// CoopIII-Setup.record, and Uninstall, which is what it is for.
+// CoopVC-Setup.record, and Uninstall, which is what it is for.
 //
 // The record is plain text, one line per thing the Setup did to the game
 // folder, so a player (or whoever is helping them) can read exactly what was
 // changed without any tool:
 //
-//   CoopIII-Setup record 1
+//   CoopVC-Setup record 1
 //   file <TAB> path <TAB> sha256 written <TAB> backup of what was there, or empty
 //   dir  <TAB> path                                  a folder the Setup created
-//   exe  <TAB> gta3.exe <TAB> MD5 before <TAB> backup of the original
+//   exe  <TAB> gta-vc.exe <TAB> MD5 before <TAB> backup of the original
 //
 // Paths are relative to the game folder.
 #include "installer/core.h"
@@ -19,10 +19,10 @@
 #include <algorithm>
 #include <cstdio>
 
-namespace coopiii::installer {
+namespace coopvc::installer {
 namespace {
 
-constexpr const char *kHeader = "CoopIII-Setup record 1";
+constexpr const char *kHeader = "CoopVC-Setup record 1";
 
 std::vector<std::string> SplitTabs(const std::string &line) {
 	std::vector<std::string> out;
@@ -162,7 +162,7 @@ bool Uninstall(const std::string &gameDir, std::vector<std::string> *log, std::s
 	}
 	if (GameIsRunning(gameDir)) {
 		if (error)
-			*error = "GTA III is running. Close it and try again.";
+			*error = "GTA Vice City is running. Close it and try again.";
 		return false;
 	}
 
@@ -182,13 +182,13 @@ bool Uninstall(const std::string &gameDir, std::vector<std::string> *log, std::s
 			const std::string backup = launcher::Join(gameDir, e.backup.c_str());
 			const std::string now    = launcher::Md5File(full);
 			if (now == e.hash) {
-				say("gta3.exe is already the build it was before the downgrade");
+				say("gta-vc.exe is already the build it was before the downgrade");
 				DeleteFileA(backup.c_str());
 				continue;
 			}
 			if (now != launcher::GAME_MD5) {
 				// Steam or the player replaced it since. Theirs to keep.
-				say("left gta3.exe alone: it has changed since the downgrade. The original is "
+				say("left gta-vc.exe alone: it has changed since the downgrade. The original is "
 				    "still in " + e.backup);
 				continue;
 			}
@@ -196,18 +196,18 @@ bool Uninstall(const std::string &gameDir, std::vector<std::string> *log, std::s
 			std::string          why;
 			if (!launcher::FileExists(backup) || !ReadWholeFile(backup, &original, &why) ||
 			    launcher::Md5Buffer(original.data(), original.size()) != e.hash) {
-				say("could not restore gta3.exe: " + e.backup +
+				say("could not restore gta-vc.exe: " + e.backup +
 				    " is missing or is not the original any more");
 				kept.push_back(e);
 				continue;
 			}
 			if (!WriteFileAtomic(full, original, &why)) {
-				say("could not restore gta3.exe: " + why);
+				say("could not restore gta-vc.exe: " + why);
 				kept.push_back(e);
 				continue;
 			}
 			DeleteFileA(backup.c_str());
-			say("put the original gta3.exe back");
+			say("put the original gta-vc.exe back");
 			continue;
 		}
 
@@ -264,4 +264,4 @@ bool Uninstall(const std::string &gameDir, std::vector<std::string> *log, std::s
 	return true;
 }
 
-} // namespace coopiii::installer
+} // namespace coopvc::installer

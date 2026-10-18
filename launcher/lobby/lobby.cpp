@@ -2,16 +2,16 @@
 
 #include <cstring>
 
-namespace coopiii::launcher {
+namespace coopvc::launcher {
 
 const char *LobbyRefusalText(uint8_t reject) {
 	switch (reject) {
 	case REJECT_BAD_VERSION:
-		return "The server runs another CoopIII release. Both have to be the same one.";
+		return "The server runs another CoopVC release. Both have to be the same one.";
 	case REJECT_FULL:
 		return "The lobby is full.";
 	case REJECT_BAD_PASSWORD:
-		return "The server wants a password. Put it in CoopIII.ini as password = ...";
+		return "The server wants a password. Put it in CoopVC.ini as password = ...";
 	default:
 		return "The server turned this launcher away.";
 	}
@@ -101,7 +101,7 @@ void LobbyClient::Service(uint32_t nowMs) {
 		if (!m_net->IsConnected())
 			Lose("The server hung up.");
 		else if (nowMs - m_sinceMs >= LOBBY_ANSWER_WAIT_MS)
-			Lose("This server has no lobby; it may run an older CoopIII. Start your game "
+			Lose("This server has no lobby; it may run an older CoopVC. Start your game "
 			     "on your own.");
 		break;
 	case Phase::In:
@@ -196,4 +196,4 @@ bool LobbyClient::TakeStart(uint8_t *mode, std::string *byNick) {
 	return true;
 }
 
-} // namespace coopiii::launcher
+} // namespace coopvc::launcher

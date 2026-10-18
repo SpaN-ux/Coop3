@@ -7,7 +7,7 @@
 #include <cstring>
 #include <vector>
 
-using namespace coopiii;
+using namespace coopvc;
 
 namespace {
 

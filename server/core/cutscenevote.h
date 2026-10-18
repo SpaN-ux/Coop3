@@ -25,12 +25,12 @@
 //     game's own is not, since nobody asked him.
 #pragma once
 
-#include "coopiii/protocol.h"
+#include "coopvc/protocol.h"
 #include "rampagevote.h"
 
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 
 constexpr uint32_t CUTSCENE_SKIP_LATE_MS = 5000;
 
@@ -292,4 +292,4 @@ private:
 	VoteRule m_rule       = VoteRule::Most;
 };
 
-} // namespace coopiii
+} // namespace coopvc

@@ -1,4 +1,4 @@
-// The server window's options dialog: every setting in CoopIII-Server.ini,
+// The server window's options dialog: every setting in CoopVC-Server.ini,
 // in sections, with what each one does under its name.
 //
 // design/screens/ServerOptions.dc.html is where the dialog's look comes from:
@@ -16,7 +16,7 @@
 #include <string>
 #include <vector>
 
-namespace coopiii {
+namespace coopvc {
 
 enum OptionsSection : int {
 	SECTION_SERVER,
@@ -68,4 +68,4 @@ std::vector<RuleSummary> SummariseRules(const ServerConfig &config);
 // How many settings the dialog has.
 size_t SettingCount();
 
-} // namespace coopiii
+} // namespace coopvc

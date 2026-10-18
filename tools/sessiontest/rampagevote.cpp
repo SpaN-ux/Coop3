@@ -5,7 +5,7 @@
 
 #include <cstdio>
 
-using namespace coopiii;
+using namespace coopvc;
 
 namespace {
 

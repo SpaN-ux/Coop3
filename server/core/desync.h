@@ -2,12 +2,12 @@
 // so, and how far an observer's copy is from it. protocol.h, C_DesyncProbe.
 #pragma once
 
-#include "coopiii/protocol.h"
+#include "coopvc/protocol.h"
 
 #include <cmath>
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 
 // A copy this far from the owner, or further, gets a line in the server's log.
 constexpr float DESYNC_LOG_M = 5.0f;
@@ -142,4 +142,4 @@ inline uint16_t DesyncOffCm(const PoseHistory &history, const DesyncProbeRow &ro
 	return static_cast<uint16_t>(cm + 0.5f);
 }
 
-} // namespace coopiii
+} // namespace coopvc

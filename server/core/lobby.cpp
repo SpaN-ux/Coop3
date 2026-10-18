@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <cstring>
 
-namespace coopiii {
+namespace coopvc {
 
 const Lobby::Member *Lobby::Join(PeerId peer, const char *nick, RejectReason &reject) {
 	reject = REJECT_NONE;
@@ -92,4 +92,4 @@ void Lobby::FillRoster(S_Lobby &out) const {
 	}
 }
 
-} // namespace coopiii
+} // namespace coopvc

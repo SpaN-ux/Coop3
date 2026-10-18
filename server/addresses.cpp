@@ -14,7 +14,7 @@
 #pragma comment(lib, "iphlpapi.lib")
 #pragma comment(lib, "ws2_32.lib")
 
-namespace coopiii {
+namespace coopvc {
 
 std::vector<LocalAddress> LocalIPv4Addresses() {
 	const ULONG flags = GAA_FLAG_SKIP_ANYCAST | GAA_FLAG_SKIP_MULTICAST | GAA_FLAG_SKIP_DNS_SERVER |
@@ -55,4 +55,4 @@ std::vector<LocalAddress> LocalIPv4Addresses() {
 	return out;
 }
 
-} // namespace coopiii
+} // namespace coopvc

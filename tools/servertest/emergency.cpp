@@ -3,7 +3,7 @@
 
 #include "server.h"
 
-#include "coopiii/net.h"
+#include "coopvc/net.h"
 
 #include <chrono>
 #include <cstdio>
@@ -12,7 +12,7 @@
 #include <thread>
 #include <vector>
 
-using namespace coopiii;
+using namespace coopvc;
 
 namespace {
 

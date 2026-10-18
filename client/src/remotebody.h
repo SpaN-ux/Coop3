@@ -4,7 +4,7 @@
 // No engine dependency, same as interp.h, so clienttest covers all of it.
 #pragma once
 
-#include "coopiii/protocol.h"
+#include "coopvc/protocol.h"
 #include "interp.h"
 #include "remoteloco.h"
 
@@ -12,7 +12,7 @@
 #include <cstdint>
 #include <deque>
 
-namespace coopiii {
+namespace coopvc {
 
 // ---- the body played at the pose's instant ----------------------------------
 
@@ -242,4 +242,4 @@ inline bool RideOffsetPlausible(const Vec3 &o) {
 	       o.x * o.x + o.y * o.y + o.z * o.z <= RIDE_MAX_OFFSET_M * RIDE_MAX_OFFSET_M;
 }
 
-} // namespace coopiii
+} // namespace coopvc

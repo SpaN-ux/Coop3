@@ -1,6 +1,6 @@
-// CoopIII-Server.ini - the server's settings, read by both front ends.
+// CoopVC-Server.ini - the server's settings, read by both front ends.
 //
-// Same shape as CoopIII.ini: a `[CoopIII]` section of `key = value` lines with
+// Same shape as CoopVC.ini: a `[CoopVC]` section of `key = value` lines with
 // `;` comments, because a player who has edited one already knows how to edit
 // the other. It sits next to the executable, and both server.exe and
 // both front ends read it; the options dialog writes it.
@@ -10,14 +10,14 @@
 // wins, and the defaults do not relax it.
 #pragma once
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include "rampagevote.h"
 
 #include <cstdint>
 #include <string>
 
-namespace coopiii {
+namespace coopvc {
 
 enum class WantedLevelRule : uint8_t {
 	PerPlayer = 0,   // §5.1 default: own stars, shared inside a shared vehicle
@@ -85,7 +85,7 @@ const char *Name(CheatMode rule);                  // "shared" / "personal" / "o
 const char *Label(CheatMode rule);                 // "Shared" / "Personal only" / "Off"
 bool        ParseCheats(const std::string &text, CheatMode *out);
 
-// What CoopIII's own typed cheats - TPTO1 to TPTO8 so far - may do (protocol.h,
+// What CoopVC's own typed cheats - TPTO1 to TPTO8 so far - may do (protocol.h,
 // CoopCheatRule; docs/cheats.md 7). They move a player about, so by default
 // they work outside missions only; `always` lets them into missions too. Not
 // tied to `cheats`: that one is about the game's own 23.
@@ -185,7 +185,7 @@ struct ServerConfig {
 
 	// Whether a player's real ammunition is reported to everyone else
 	// (docs/protocol.md 1.9.6). Off by default, which is the behaviour
-	// CoopIII has always had: a remote player's gun is handed a fixed
+	// CoopVC has always had: a remote player's gun is handed a fixed
 	// thousand rounds and nobody ever sees anyone run dry.
 	//
 	// This is not a shared inventory. Players carry whatever they like; all
@@ -210,7 +210,7 @@ struct ServerConfig {
 	// `off` refuses all of them while connected.
 	CheatMode       cheats             = CheatMode::Shared;
 
-	// CoopIII's own typed cheats (TPTO1..TPTO8, a teleport to a player).
+	// CoopVC's own typed cheats (TPTO1..TPTO8, a teleport to a player).
 	// Outside missions by default; `always` lets them work during one too.
 	CoopCheatMode   coopCheats         = CoopCheatMode::OutsideMissions;
 
@@ -224,7 +224,7 @@ struct ServerConfig {
 
 	// Whether the session's progress - the missions passed, the hidden
 	// packages found, the Import/Export and crane lists - is kept in
-	// CoopIII-Progress.dat next to server.exe, and picked up again when the
+	// CoopVC-Progress.dat next to server.exe, and picked up again when the
 	// server starts (progress.h). On by default: a group that plays over
 	// several evenings should not have a server that forgets. Read when the
 	// server starts; off, the file is neither read nor written, and is left
@@ -337,4 +337,4 @@ struct ServerConfig {
 	bool operator!=(const ServerConfig &other) const { return !(*this == other); }
 };
 
-} // namespace coopiii
+} // namespace coopvc

@@ -15,7 +15,7 @@
 #include <string>
 #include <vector>
 
-namespace coopiii {
+namespace coopvc {
 
 // INetFwRule's protocol numbers and profile bits (netfw.h), spelled out so
 // this header does not need Windows.
@@ -236,7 +236,7 @@ struct ShellCommand {
 	std::string params;
 };
 
-constexpr const char *FIREWALL_RULE_NAME = "CoopIII server";
+constexpr const char *FIREWALL_RULE_NAME = "CoopVC server";
 
 inline std::string FirewallAddRule(const std::string &exe) {
 	return std::string("advfirewall firewall add rule name=\"") + FIREWALL_RULE_NAME +
@@ -276,4 +276,4 @@ inline std::vector<std::string> FirewallLogLines(const FirewallVerdict &v, uint1
 	return lines;
 }
 
-} // namespace coopiii
+} // namespace coopvc

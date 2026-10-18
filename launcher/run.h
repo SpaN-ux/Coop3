@@ -1,4 +1,4 @@
-// The two front ends over launcher-core, and what coopiii-launcher.exe hands
+// The two front ends over launcher-core, and what coopvc-launcher.exe hands
 // them.
 //
 // One executable, two ways to run it: the window by default, the console with
@@ -9,10 +9,10 @@
 #include <cstdint>
 #include <string>
 
-namespace coopiii::launcher {
+namespace coopvc::launcher {
 
 // What the command line asked for. Empty means "not given": the window fills
-// those in from CoopIII.ini and the game it finds, the console leaves the ini
+// those in from CoopVC.ini and the game it finds, the console leaves the ini
 // alone.
 struct Startup {
 	std::string gameDir;
@@ -29,4 +29,4 @@ int RunWindow(const Startup &startup);
 // launcher/cli/console.cpp - the checks as text, then the game.
 int RunConsole(const Startup &startup);
 
-} // namespace coopiii::launcher
+} // namespace coopvc::launcher

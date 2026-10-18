@@ -1,13 +1,13 @@
 #include "session.h"
 #include "progress.h"   // PROGRESS_PACKAGES_MAX
 
-#include "coopiii/net.h"   // InitHeader
-#include "coopiii/sky.h"
+#include "coopvc/net.h"   // InitHeader
+#include "coopvc/sky.h"
 
 #include <algorithm>
 #include <cstring>
 
-namespace coopiii {
+namespace coopvc {
 
 void GameClock::Advance(uint32_t elapsedMs) {
 	m_accumMs += elapsedMs;
@@ -313,7 +313,7 @@ void Session::NoteExitVehicle(Player &p, uint16_t netId) {
 			// roadmap.md §5.8 is right that an ownerless world entity is the
 			// host's, and that is the right rule for a *fact* about a car
 			// nobody owns - the host is one machine and it is always there.
-			// It is the wrong machine to run a car's physics on: GTA III
+			// It is the wrong machine to run a car's physics on: GTA Vice City
 			// streams around one player (roadmap §2.1) and keeps one island's
 			// collision in memory (§2.2), so a host across the river would be
 			// simulating a car with no ground under it and reporting the
@@ -2789,4 +2789,4 @@ std::string SanitizeText(const char *src, size_t capacity) {
 	return out;
 }
 
-} // namespace coopiii
+} // namespace coopvc

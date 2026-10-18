@@ -7,7 +7,7 @@
 #include <windows.h>
 #endif
 
-namespace coopiii {
+namespace coopvc {
 
 namespace {
 
@@ -172,4 +172,4 @@ uint8_t *ResolveRelative(uint8_t *instruction, size_t offsetToRel32, size_t inst
 	return instruction + instructionLength + rel;
 }
 
-} // namespace coopiii
+} // namespace coopvc

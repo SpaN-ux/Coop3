@@ -13,9 +13,9 @@
 #include <string>
 #include <vector>
 
-namespace coopiii {
+namespace coopvc {
 
-// What the command line and CoopIII-Server.ini between them decided, before
+// What the command line and CoopVC-Server.ini between them decided, before
 // either front end starts.
 struct Startup {
 	ServerConfig config;
@@ -37,4 +37,4 @@ int RunConsole(const Startup &startup);
 // server/core/reach.h.
 std::vector<LocalAddress> LocalIPv4Addresses();
 
-} // namespace coopiii
+} // namespace coopvc

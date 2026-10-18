@@ -1,6 +1,6 @@
 #include "config.h"
 
-#include <coopiii/mission.h>
+#include <coopvc/mission.h>
 
 #include <cstdarg>
 #include <cstdio>
@@ -9,7 +9,7 @@
 
 #include <windows.h>
 
-namespace coopiii {
+namespace coopvc {
 namespace {
 
 std::string Trim(const std::string &s) {
@@ -303,7 +303,7 @@ std::string ServerConfig::Path() {
 	std::string s(buf, n);
 	const size_t slash = s.find_last_of("\\/");
 	return (slash == std::string::npos ? std::string() : s.substr(0, slash + 1)) +
-	       "CoopIII-Server.ini";
+	       "CoopVC-Server.ini";
 }
 
 bool ServerConfig::Parse(const std::string &text) {
@@ -476,14 +476,14 @@ std::string ServerConfig::ToIni() const {
 	std::string out;
 	out.reserve(12000);
 
-	out += "; CoopIII server. Sits next to server.exe; both the console server and\n"
+	out += "; CoopVC server. Sits next to server.exe; both the console server and\n"
 	       "; the window read it, and the options dialog writes it. A key this build\n"
 	       "; does not know is ignored, and so is a value that makes no sense.\n"
 	       ";\n"
 	       "; The defaults are docs/roadmap.md 5: where single player and co-op\n"
 	       "; convenience disagree, single player wins.\n"
 	       "\n"
-	       "[CoopIII]\n";
+	       "[CoopVC]\n";
 
 	// ---- server ----
 	out += "\n"
@@ -497,7 +497,7 @@ std::string ServerConfig::ToIni() const {
 	Appendf(out, "port = %u\n", static_cast<unsigned>(port));
 	out += "\n"
 	       "; What players have to give to join, or nothing for anybody who knows\n"
-	       "; the address. Each of them puts the same in their CoopIII.ini as\n"
+	       "; the address. Each of them puts the same in their CoopVC.ini as\n"
 	       "; `password = ...`. It crosses the network as it is typed, so it keeps\n"
 	       "; strangers out and nothing more; up to 31 characters.\n";
 	Appendf(out, "password = %s\n", password.c_str());
@@ -552,7 +552,7 @@ std::string ServerConfig::ToIni() const {
 	out += "\n"
 	       "; ---- Missions ----\n"
 	       "; For the missions the session shares, which the players' games do\n"
-	       "; with `missions = on` in their CoopIII.ini.\n"
+	       "; with `missions = on` in their CoopVC.ini.\n"
 	       "\n"
 	       "; If anyone dies or is busted during a mission, it fails for everyone,\n"
 	       "; as it does in single player.\n";
@@ -630,7 +630,7 @@ std::string ServerConfig::ToIni() const {
 	Appendf(out, "hiddenPackages = %s\n", Name(hiddenPackages));
 	out += "\n"
 	       "; Whether the missions passed, the hidden packages found and the\n"
-	       "; Import/Export and crane lists are kept in CoopIII-Progress.dat next\n"
+	       "; Import/Export and crane lists are kept in CoopVC-Progress.dat next\n"
 	       "; to server.exe, so the next time the server starts the session picks\n"
 	       "; up where it was and a player who is behind catches up when he\n"
 	       "; joins. Turned off, the file is left alone. To start the campaign\n"
@@ -672,7 +672,7 @@ std::string ServerConfig::ToIni() const {
 	       ";   off       no cheats at all while connected\n";
 	Appendf(out, "cheats = %s\n", Name(cheats));
 	out += "\n"
-	       "; CoopIII's own cheats, typed the same way: TPTO and a player's number\n"
+	       "; CoopVC's own cheats, typed the same way: TPTO and a player's number\n"
 	       "; from the Tab list (TPTO1 to TPTO8) puts you beside that player, in\n"
 	       "; your car if you are driving one.\n"
 	       ";   outsidemissions  they work, but not during a mission (the default)\n"
@@ -696,4 +696,4 @@ bool ServerConfig::Save(const std::string &path) const {
 	return written == text.size();
 }
 
-} // namespace coopiii
+} // namespace coopvc

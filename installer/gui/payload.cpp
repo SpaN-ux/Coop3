@@ -1,4 +1,4 @@
-// What the Setup carries: CoopIII.asi, the launcher and CoopIII.ini.
+// What the Setup carries: CoopVC.asi, the launcher and CoopVC.ini.
 //
 // payload.inc is written by xmake just before this file is compiled, from the
 // artifacts the installer target depends on. It is what makes the release one
@@ -20,7 +20,7 @@ struct PayloadFile {
 
 } // namespace
 
-namespace coopiii::installer {
+namespace coopvc::installer {
 
 void RegisterPayload() {
 	SetPayloadReader([](const std::string &name, std::vector<uint8_t> *out) {
@@ -34,4 +34,4 @@ void RegisterPayload() {
 	});
 }
 
-} // namespace coopiii::installer
+} // namespace coopvc::installer

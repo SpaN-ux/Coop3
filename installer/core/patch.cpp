@@ -21,7 +21,7 @@
 #include <algorithm>
 #include <cstring>
 
-namespace coopiii::installer {
+namespace coopvc::installer {
 namespace {
 
 constexpr char     kMagic[8]   = {'C', '3', 'P', 'A', 'T', 'C', 'H', '2'};
@@ -130,7 +130,7 @@ struct Header {
 bool ParseHeader(const std::vector<uint8_t> &patch, Header *h, std::string *error) {
 	if (patch.size() < kHeaderSize || std::memcmp(patch.data(), kMagic, 8) != 0) {
 		if (error)
-			*error = "that is not a CoopIII downgrade patch";
+			*error = "that is not a CoopVC downgrade patch";
 		return false;
 	}
 	const uint8_t *p = patch.data() + 8;
@@ -412,11 +412,11 @@ bool ApplyPatch(const std::string &exePath, const std::string &patchPath,
 		std::vector<uint8_t> check;
 		if (!ReadWholeFile(backupPath, &check, error) || check != oldBytes) {
 			if (error)
-				*error = "the backup of gta3.exe did not read back the same, so nothing was changed";
+				*error = "the backup of gta-vc.exe did not read back the same, so nothing was changed";
 			return false;
 		}
 	}
 	return WriteFileAtomic(exePath, newBytes, error);
 }
 
-} // namespace coopiii::installer
+} // namespace coopvc::installer

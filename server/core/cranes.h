@@ -11,13 +11,13 @@
 // No socket here, so tools/sessiontest walks it; server.h does the sending.
 #pragma once
 
-#include "coopiii/protocol.h"
+#include "coopvc/protocol.h"
 
 #include <cstddef>
 #include <cstdint>
 #include <vector>
 
-namespace coopiii {
+namespace coopvc {
 
 class CraneWorkers {
 public:
@@ -93,4 +93,4 @@ private:
 	}
 };
 
-} // namespace coopiii
+} // namespace coopvc

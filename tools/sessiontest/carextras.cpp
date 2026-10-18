@@ -6,7 +6,7 @@
 #include <cstdio>
 #include <limits>
 
-using namespace coopiii;
+using namespace coopvc;
 
 namespace {
 

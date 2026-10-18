@@ -20,7 +20,7 @@
 
 #pragma comment(lib, "winhttp.lib")
 
-namespace coopiii::installer {
+namespace coopvc::installer {
 namespace {
 
 constexpr int      kAttempts = 4;
@@ -75,11 +75,11 @@ Outcome Attempt(const std::string &url, const std::string &part, const ByteProgr
 		return Outcome::GiveUp;
 	}
 
-	Handle session(WinHttpOpen(L"CoopIII-Setup/1", WINHTTP_ACCESS_TYPE_AUTOMATIC_PROXY,
+	Handle session(WinHttpOpen(L"CoopVC-Setup/1", WINHTTP_ACCESS_TYPE_AUTOMATIC_PROXY,
 	                           WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0));
 	if (!session) {
 		// Windows before 8.1 has no automatic proxy; the default one is next best.
-		session.h = WinHttpOpen(L"CoopIII-Setup/1", WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,
+		session.h = WinHttpOpen(L"CoopVC-Setup/1", WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,
 		                        WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
 	}
 	if (!session) {
@@ -287,7 +287,7 @@ std::string DefaultCacheDir() {
 	char base[MAX_PATH] = {0};
 	if (FAILED(SHGetFolderPathA(nullptr, CSIDL_LOCAL_APPDATA, nullptr, 0, base)))
 		GetTempPathA(MAX_PATH, base);
-	return launcher::Join(launcher::Join(launcher::Join(base, "CoopIII"), "Setup"), "downloads");
+	return launcher::Join(launcher::Join(launcher::Join(base, "CoopVC"), "Setup"), "downloads");
 }
 
-} // namespace coopiii::installer
+} // namespace coopvc::installer

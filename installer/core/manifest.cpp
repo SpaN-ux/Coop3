@@ -12,7 +12,7 @@
 #include <map>
 #include <memory>
 
-namespace coopiii::installer {
+namespace coopvc::installer {
 namespace {
 
 const unsigned char kManifestJson[] = {
@@ -537,4 +537,4 @@ const Manifest &BuiltInManifest(std::string *error) {
 	return manifest;
 }
 
-} // namespace coopiii::installer
+} // namespace coopvc::installer

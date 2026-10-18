@@ -7,7 +7,7 @@
 // ## The rule
 //
 // Each entity goes to the remaining player nearest to it, measured in 2D,
-// provided he is inside the widest distance at which GTA III itself would
+// provided he is inside the widest distance at which GTA Vice City itself would
 // still keep that kind of entity alive around a player. Past it nobody's
 // engine could keep it, so it is let go of - which is what the engine would
 // have done anyway, one frame after the handover.
@@ -59,13 +59,13 @@
 //     one.
 #pragma once
 
-#include "coopiii/protocol.h"
+#include "coopvc/protocol.h"
 
 #include <cstddef>
 #include <cstdint>
 #include <vector>
 
-namespace coopiii {
+namespace coopvc {
 
 constexpr float AMBIENT_CAR_ADOPT_RADIUS_M = 130.0f * 1.5f;
 // The host asks for a let-go by the same distance the server decides it by.
@@ -250,4 +250,4 @@ inline std::vector<std::vector<AmbientAdoptRow>> PackAdoptRows(
 	return batches;
 }
 
-} // namespace coopiii
+} // namespace coopvc

@@ -21,7 +21,7 @@
 #include <string>
 #include <vector>
 
-namespace coopiii {
+namespace coopvc {
 
 struct ProbeLine {
 	bool        warn = false;
@@ -70,4 +70,4 @@ private:
 	std::shared_ptr<Shared> m_shared;
 };
 
-} // namespace coopiii
+} // namespace coopvc

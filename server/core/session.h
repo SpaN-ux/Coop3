@@ -4,7 +4,7 @@
 #pragma once
 
 #include "adopt.h"
-#include "coopiii/protocol.h"
+#include "coopvc/protocol.h"
 #include "desync.h"
 #include "campaignlog.h"
 #include "missionslot.h"
@@ -13,7 +13,7 @@
 #include <string>
 #include <vector>
 
-namespace coopiii {
+namespace coopvc {
 
 struct Player {
 	bool        active = false;
@@ -387,12 +387,12 @@ struct AmbientPed {
 // How many ambient peds the session will track at once.
 //
 // A cap rather than an unbounded vector, because the thing on the other end
-// of this is an engine that generates pedestrians forever. GTA III's own ped
+// of this is an engine that generates pedestrians forever. GTA Vice City's own ped
 // pool is 140 slots and CPopulation keeps 25-odd of them alive per machine;
 // this is that, times the player cap, with room to spare. Past it the server
 // refuses the claim and says so once - a refused ped stays a purely local
 // pedestrian on its creator's machine, which is exactly the behaviour
-// CoopIII had before any of this existed.
+// CoopVC had before any of this existed.
 constexpr size_t MAX_AMBIENT_PEDS = 256;
 
 // A traffic car one player's engine made, that the whole session now shares.
@@ -445,7 +445,7 @@ constexpr uint32_t CAR_LET_GO_MEMORY_MS = 15000;
 // Fewer than the peds, and lower than the vehicle cap for a different reason
 // than the vehicle cap exists.
 //
-// GTA III's whole vehicle pool is 110 slots and CCarCtrl keeps a dozen-odd
+// GTA Vice City's whole vehicle pool is 110 slots and CCarCtrl keeps a dozen-odd
 // traffic cars alive per machine. 128 is that times the player cap with room
 // over; past it a claim is refused and the car stays purely local to the
 // machine that made it.
@@ -922,7 +922,7 @@ public:
 	// player still here. Nothing votes on it: one server, one answer.
 	uint8_t HostId() const { return m_hostId; }
 
-	// Whose game the clock and the sky are right now (coopiii/sky.h): the
+	// Whose game the clock and the sky are right now (coopvc/sky.h): the
 	// host's, or the running mission's owner's while it runs. C_WorldState is
 	// taken from this player alone, and a sky cheat is sent to them.
 	uint8_t SkyHolderId() const;
@@ -1778,4 +1778,4 @@ private:
 // Trims to capacity and guarantees NUL termination. Returns the clean string.
 std::string SanitizeText(const char *src, size_t capacity);
 
-} // namespace coopiii
+} // namespace coopvc

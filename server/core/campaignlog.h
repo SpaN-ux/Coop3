@@ -10,7 +10,7 @@
 // so the same name still means the same numbers.
 #pragma once
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <chrono>
 #include <cstdint>
@@ -18,7 +18,7 @@
 #include <utility>
 #include <vector>
 
-namespace coopiii {
+namespace coopvc {
 
 class CampaignLog {
 public:
@@ -112,4 +112,4 @@ private:
 	uint32_t           m_parts      = 0;
 };
 
-} // namespace coopiii
+} // namespace coopvc

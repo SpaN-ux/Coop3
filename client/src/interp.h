@@ -2,15 +2,15 @@
 //
 // No game or engine dependency here on purpose - it just takes snapshots in
 // and gives a pose out. That's the part most likely to look wrong on screen,
-// so keeping it testable without GTA III running matters more than usual.
+// so keeping it testable without GTA Vice City running matters more than usual.
 #pragma once
 
-#include "coopiii/protocol.h"
+#include "coopvc/protocol.h"
 
 #include <cstdint>
 #include <deque>
 
-namespace coopiii {
+namespace coopvc {
 
 struct Pose {
 	Vec3  pos     = {};
@@ -295,4 +295,4 @@ private:
 	PlaybackClock        m_clock;
 };
 
-} // namespace coopiii
+} // namespace coopvc

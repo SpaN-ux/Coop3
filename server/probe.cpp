@@ -25,7 +25,7 @@
 #pragma comment(lib, "oleaut32.lib")
 #pragma comment(lib, "shell32.lib")
 
-namespace coopiii {
+namespace coopvc {
 namespace {
 
 std::string Narrow(const wchar_t *text, int length = -1) {
@@ -157,7 +157,7 @@ bool Fetch(HINTERNET session, const wchar_t *host, std::string *body) {
 }
 
 uint32_t LookUpPublicAddress(const std::function<bool()> &stale, std::string *why) {
-	HINTERNET session = WinHttpOpen(L"CoopIII Server", WINHTTP_ACCESS_TYPE_AUTOMATIC_PROXY,
+	HINTERNET session = WinHttpOpen(L"CoopVC Server", WINHTTP_ACCESS_TYPE_AUTOMATIC_PROXY,
 	                                WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
 	if (!session) {
 		*why = "could not start a connection";
@@ -190,7 +190,7 @@ uint32_t LookUpPublicAddress(const std::function<bool()> &stale, std::string *wh
 
 // ---- the router ------------------------------------------------------------------
 
-constexpr const wchar_t *kMappingName = L"CoopIII server";
+constexpr const wchar_t *kMappingName = L"CoopVC server";
 
 // What was opened, so it can be closed. `owned` is false for a forward that
 // was already there pointing here under somebody else's name: that one is
@@ -779,4 +779,4 @@ std::string ReachProbe::ExePath() {
 	return Narrow(path, static_cast<int>(n));
 }
 
-} // namespace coopiii
+} // namespace coopvc

@@ -17,13 +17,13 @@
 //     else - not the sender, not somebody standing beside the car.
 #pragma once
 
-#include "coopiii/protocol.h"
+#include "coopvc/protocol.h"
 #include "session.h"
 
 #include <cstdint>
 #include <vector>
 
-namespace coopiii {
+namespace coopvc {
 
 inline bool StuntShotSenderOk(const Player &sender, const StuntCameraBody &body) {
 	if (body.netId == INVALID_NETID)
@@ -47,4 +47,4 @@ inline std::vector<uint8_t> StuntShotAudience(const std::vector<Player> &players
 	return out;
 }
 
-} // namespace coopiii
+} // namespace coopvc

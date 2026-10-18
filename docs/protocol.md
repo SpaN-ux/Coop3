@@ -1,7 +1,7 @@
-# CoopIII - wire protocol & sync design (v1 draft)
+# CoopVC - wire protocol & sync design (v1 draft)
 
 Every engine claim below is cited as `file:line` in `reference/re3` (branch
-`main` = GTA III). Verify there before trusting anything here, and re-verify
+`main` = GTA Vice City). Verify there before trusting anything here, and re-verify
 against the real retail 1.0 binary before writing offsets. Five anchors pinned
 this build, plus the correction from 1.1; `client/src/game/addresses.h` carries
 the proof for every address it lists.
@@ -56,14 +56,14 @@ because it divides anything.
 `GetTimeInMillisecondsPauseMode()` keeps advancing while paused but is still
 rescaled.
 
-Consequence: CoopIII carries its own monotonic wall clock for
+Consequence: CoopVC carries its own monotonic wall clock for
 `PacketHeader::sendTimeMs`, and drives the 25 Hz send cadence off that same
 clock. A dying player would otherwise emit timestamps at a third of everyone
 else's rate and desync their own interpolation. `CTimer` is still the right
 clock for anything that has to match engine behaviour, just not for the
 network.
 
-### 1.3 PC GTA III has exactly one player slot
+### 1.3 PC GTA Vice City has exactly one player slot
 
 `NUMPLAYERS = 1, // 4 on PS2` (`src/core/config.h:7`), and
 `CWorld::Players[NUMPLAYERS]` (`src/core/World.h:61`).
@@ -260,7 +260,7 @@ is that `CWorld::Process` keeps its moving-list cursor in `edi` across this
 call, and saved `edi` is inside the overflow region, so an overfull clump
 corrupts a list walk that has nothing to do with animation.
 
-Consequence: anything that adds an animation to a ped CoopIII owns counts
+Consequence: anything that adds an animation to a ped CoopVC owns counts
 first. `MAX_REMOTE_ANIM_ASSOCS` in `client/src/game/pedanim.h` keeps two slots
 back for the animations the engine blends on its own, and a per-frame sweep
 drops the least visible ones if the count ever goes over.
@@ -280,7 +280,7 @@ then runs their `ProcessControl`. Torso aiming happens in the second pass
 (`CPed::ProcessControl` → `AimGun` → `CPedIK::PointGunInDirection` →
 `RotateTorso`), on top of the pose the first pass just wrote.
 
-CoopIII's inbound hook runs before both. Anything it writes into a bone matrix
+CoopVC's inbound hook runs before both. Anything it writes into a bone matrix
 is overwritten in the same frame.
 
 Consequence: aim is applied by setting the engine's own inputs,
@@ -382,7 +382,7 @@ weights are rewritten before the next animation walk, so it lasts one frame.
 ### 1.9 Combat: a shot is an event, a trigger is a state, a projectile is an entity
 
 Three different things get called "firing" and they need three different
-treatments. This section is the design; `sdk/include/coopiii/protocol.h` has the
+treatments. This section is the design; `sdk/include/coopvc/protocol.h` has the
 structs and `client/src/game/combat.h` the engine side.
 
 #### 1.9.1 Why firing rides *both* the snapshot flag and the reliable event
@@ -404,7 +404,7 @@ An observer does not reproduce a shot by hand. It calls `CWeapon::Fire` on the
 remote ped's own `CWeapon`, the same function the shooter's engine called. That
 gives the muzzle flash, the gunshot, the shell casing, the point light, the
 bullet decal and the projectile for free, and gets them right for every weapon
-without CoopIII knowing which is which. It's §1.8.3's rule applied to combat:
+without CoopVC knowing which is which. It's §1.8.3's rule applied to combat:
 drive the engine, don't paint the result.
 
 The price is that `CWeapon::Fire` also *decides what it hit*, which is not the
@@ -478,7 +478,7 @@ observer may animate it, but it may not decide where it ends up.
   over it, so both arcs *start* identical.
 - `C_Explosion` carries the type and the position of the explosion the owner's
   machine actually produced. The observer plays it there.
-- The observer's copy is forbidden to explode at all. CoopIII detours
+- The observer's copy is forbidden to explode at all. CoopVC detours
   `CProjectileInfo::RemoveProjectile` and, for a projectile it created for a
   remote player, blanks `m_eWeaponType` before calling the original. The
   original's three-way switch then falls through to the teardown and skips
@@ -511,7 +511,7 @@ away.
 
 Every remote player is a `CCivilianPed` with no seek target, so that fourth arm
 is the one every replayed rocket takes — while on its owner's machine the same
-rocket takes the first and starts a metre out in front of them. Retail GTA III
+rocket takes the first and starts a metre out in front of them. Retail GTA Vice City
 has no NPC who fires a rocket launcher, so nothing else in the game has ever
 run that arm, which is why it is wrong.
 
@@ -671,7 +671,7 @@ around rather than a reason not to.
 What was wrong: `CPed::GiveWeapon` handed every remote ped an invented 1000
 rounds, so nobody ever watched anybody else run dry, nobody ever saw a reload,
 and the HUD-level truth of a firefight - who is nearly out, who has to back
-off - was a number CoopIII made up. It is visible in the only way that matters
+off - was a number CoopVC made up. It is visible in the only way that matters
 in co-op, which is that you cannot tell when the person covering you is about
 to stop covering you.
 
@@ -722,7 +722,7 @@ has three writers and only one of them is entitled to it:
    slot every frame, reloading on its own `CTimer` schedule.
 
 The wire wins. The owner is authoritative for their own ped everywhere else in
-CoopIII (§2.1, §1.10) and there is no reason for ammunition to be the
+CoopVC (§2.1, §1.10) and there is no reason for ammunition to be the
 exception. Concretely: the held slot is rewritten from the newest snapshot
 every time a pose is applied, so nothing local can accumulate for more than
 40 ms, and a replayed shot puts back exactly what it spent.
@@ -856,7 +856,7 @@ interoperates, at the old quality.
   `AddTrace(source, target)`. So a mouse-aimed shot that hits nothing draws its
   trail to whatever was left in that stack slot — most often a target from an
   earlier shot, which looks exactly like a trail veering off to one side.
-  CoopIII repairs it in a `DoBulletImpact` detour, by an *exact* test rather
+  CoopVC repairs it in a `DoBulletImpact` detour, by an *exact* test rather
   than a tolerance: the other three branches hand `&target` to
   `ProcessLineOfSight` themselves, so if the pointer arriving at
   `DoBulletImpact` is not the `point2` the engine just traced, nothing wrote
@@ -941,7 +941,7 @@ draws that `dir`, out of the wire's origin, pitch and all.
 
 The **sampling** half — the change this section is about — was not run in the
 game. It only happens when the local player pulls a trigger, the test save
-carries no weapon, and synthetic keyboard input cannot reach GTA III's cheat
+carries no weapon, and synthetic keyboard input cannot reach GTA Vice City's cheat
 path (writing `CPad` state is not enough; `CPad::AddToPCCheatString` is fed by
 `RsKeyboardEventHandler`, which is a different door). It is covered by
 `clienttest` and by the disassembly above, and the first shot of the next real
@@ -1015,7 +1015,7 @@ disagree within seconds.
 Everything in the engine that hurts a ped ends up in
 `CPed::InflictDamage(damagedBy, method, damage, pedPiece, direction)`
 (`src/peds/PedFight.cpp:2034`). Bullets, fists, fire, explosions, cars,
-drowning, falling. CoopIII detours it, and that one detour does both jobs:
+drowning, falling. CoopVC detours it, and that one detour does both jobs:
 
 - If the victim is another player's ped, the call is **refused**. Nothing on
   this machine may change the health of a player this machine does not own.
@@ -1150,7 +1150,7 @@ handed the clump a death animation, and there is no undo for any of that. So
 `S_Respawn` destroys the ped and the ordinary two-phase spawn (§1.6) builds a
 new one.
 
-Destroying a ped is the one thing in CoopIII that has to agree with the engine
+Destroying a ped is the one thing in CoopVC that has to agree with the engine
 about every list the engine is holding it in, and the moving list is the one
 that bites. `CWorld::Remove`, which `~CPed` calls first, only unlinks an entity
 from `CWorld::ms_listMovingEntityPtrs` when `bIsStatic` is clear
@@ -1390,7 +1390,7 @@ comparison against zero - see §1.11.3.
 
 #### 1.11.2 Who decides: the driver's machine, and only it
 
-A car's owner is its driver, which is already CoopIII's rule for its transform,
+A car's owner is its driver, which is already CoopVC's rule for its transform,
 its velocity and its controls (§2.1). Destruction is the same decision and goes
 the same way:
 
@@ -1400,7 +1400,7 @@ the same way:
   without doing anything if `bCanBeDamaged` is clear - it sends
   `C_VehicleBlowUp` with the transform the car had at that moment.
 - The server takes the packet **only** from the player it believes is driving
-  that car. It has no GTA III running, so it cannot tell a real explosion from
+  that car. It has no GTA Vice City running, so it cannot tell a real explosion from
   an invented one; refusing a player who is declaring somebody else's car
   finished is the one useful thing it can check, and it is the same test
   `OnVehicleState` already applies to a snapshot.
@@ -1409,7 +1409,7 @@ the same way:
 
 One call, because one call is what the engine does. The blast and the burnt
 shell are decided in the same function, so replaying it gets both - in the same
-street, on every screen - without CoopIII inventing either. This reuses
+street, on every screen - without CoopVC inventing either. This reuses
 `CExplosion::AddExplosion`, which §1.9.3 already replays at an agreed position;
 it does not add a second mechanism beside it.
 
@@ -1451,7 +1451,7 @@ by itself that somebody else's car is finished - at a moment its owner did not
 choose, at whatever position local physics had it in, and paying the local
 player `AwardMoneyForExplosion` once per frame until it succeeds.
 
-So CoopIII holds `m_fFireBlowUpTimer` at zero for any car another player is
+So CoopVC holds `m_fFireBlowUpTimer` at zero for any car another player is
 driving. **Only the timer.** The flames and the smoke are drawn off `m_fHealth`
 in the same block and are left alone, so a burning car still burns here exactly
 as it does on its driver's screen. What is taken away is the decision, not the
@@ -1466,7 +1466,7 @@ The observer's car vanishing for good was never one bug.
 
 `CCarCtrl::PossiblyRemoveVehicle` deletes any `STATUS_WRECKED` vehicle about 60
 seconds after `m_nTimeOfDeath`, and the branch that does it is reached
-*precisely because* a car is locked or not deletable - CoopIII's two
+*precisely because* a car is locked or not deletable - CoopVC's two
 registration gates route a car into it rather than protecting it from it. That
 is correct behaviour and it means a destroyed synced car leaves the pool by
 itself.
@@ -1480,7 +1480,7 @@ things followed:
   off the car, so a wreck this machine's own engine made is caught by the same
   test.
 - With the model no longer requested, the respawn waited forever. Nothing else
-  in the game holds a reference to a model only CoopIII's car was using, so the
+  in the game holds a reference to a model only CoopVC's car was using, so the
   moment that car left the pool the streamer was free to throw the model out,
   and `UpdateRemoteVehicles` sat on an `IsModelReady` that would never come
   true again. Reconnecting brought the car back, because `OnVehicleSpawn` was
@@ -1547,7 +1547,7 @@ invent a car.
 > "Hay autos que a un player le aparecen con extras que el otro jugador no ve y
 > viceversa"
 
-GTA III picks a vehicle's extra components at spawn, on each machine
+GTA Vice City picks a vehicle's extra components at spawn, on each machine
 independently, so two machines roll two different cars. This is the same family
 of bug as the paint job, which `EnterVehicleBody.colour1/2` already solved by
 carrying the claimer's own `m_currentColour1/2`. The extras join them.
@@ -1584,7 +1584,7 @@ car this machine creates, traffic included.
 ```
 
 Anything at or above `m_numComps` reads past a six-entry array and hands the
-result to `RpAtomicClone`. Anything CoopIII cannot prove the model has becomes
+result to `RpAtomicClone`. Anything CoopVC cannot prove the model has becomes
 -1, "fit nothing", which is the engine's own value for an empty slot and the
 one bound `CreateInstance` does check. This is the same class of bug as the
 four-entry animation group (§1.8.1) and the twelve-slot node array, and it is
@@ -1598,13 +1598,13 @@ between the claim and the backfill.
 ### 1.13 A remote ped's NPC logic: two fields, not a state threshold and not a skipped frame
 
 This answers §6 open question 1, which had been open since this document was
-written. It was measured against `gta3.exe` on 2026-09-22; `addresses.h`
+written. It was measured against `gta-vc.exe` on 2026-09-22; `addresses.h`
 carries the instructions, under `what CPed::ProcessControl actually does`.
 
 **The answer is neither of the two options §6 named, and the reason is the
 same for both: they are aimed at the wrong thing.** The NPC logic that would
 make a remote player wander off does not live in "`ProcessControl` running".
-It lives in two fields, `m_nPedState` and `m_objective`, and CoopIII has been
+It lives in two fields, `m_nPedState` and `m_objective`, and CoopVC has been
 holding both in the harmless position since the seating work without ever
 saying so.
 So there is nothing to build, and there is something to write down, because
@@ -1657,7 +1657,7 @@ that dies.
 
 #### 1.13.2 Skipping `ProcessControl` costs more than the NPC logic does
 
-The other option, refusing `CCivilianPed::ProcessControl` for a ped CoopIII
+The other option, refusing `CCivilianPed::ProcessControl` for a ped CoopVC
 owns, is implementable — every remote player is a `CCivilianPed`, and
 `RemotePlayerForPed` already answers "is this one ours" — and it would work.
 It would also take away the following, all of which a remote player currently
@@ -1668,12 +1668,12 @@ gets for free and would have to be reimplemented by hand:
 | `CVisibilityPlugins::SetClumpAlpha` at `0x004C8981` | The **only** thing in the engine that raises a ped's clump alpha. A ped that never runs `ProcessControl` is never drawn. This is the same fact the render block in `addresses.h` reaches from the other end, and it is how the second invisible ped was found. |
 | `CPhysical::ProcessControl` (`0x00495F10`) | Gravity and collision response. Snapshots arrive at 25 Hz and frames at 60; between them this is what keeps a remote player standing on the ground instead of hanging in the air at the last sample. |
 | `Die()` in the `PED_DIE` arm, and the `SetDead` else arm | A corpse's death animation is played out here and the transition to `PED_DEAD` happens here. Skip it and a killed remote player stays mid-fall forever. M4, confirmed in game. |
-| `AimGun` (`0x004C6AA0`) | §1.8.3's whole design: CoopIII sets `bIsAimingGun` and lets the engine rotate the torso. No `ProcessControl`, no aim. |
+| `AimGun` (`0x004C6AA0`) | §1.8.3's whole design: CoopVC sets `bIsAimingGun` and lets the engine rotate the torso. No `ProcessControl`, no aim. |
 | `CalculateNewOrientation`, `UpdatePosition`, `PlayFootSteps`, `ServiceTalking` | Facing eased toward `m_fRotationDest`, the animation's own translation applied, footstep sounds and dust, voice. |
 
 Only two of those could be replaced cheaply (the alpha write is two known
 calls). The rest is the engine doing a remote player's presentation, and
-CoopIII would be trading a small NPC-logic problem for a large reimplementation.
+CoopVC would be trading a small NPC-logic problem for a large reimplementation.
 
 `CWeapon::Update`, which would otherwise be on that list, is not: `combat.cpp`
 already forces a remote ped's weapon slot to `WEAPONSTATE_READY` with a full
@@ -1734,7 +1734,7 @@ and say in one place that keeping them is load-bearing rather than tidy.**
 ```
 
 `Idle` runs from the switch, and `SetMoveAnim` runs *after* the switch. So on
-a `CCivilianPed` — which every remote player is — the move state CoopIII
+a `CCivilianPed` — which every remote player is — the move state CoopVC
 writes from `PreFrame` is overwritten with `PEDMOVE_STILL` before
 `SetMoveAnim` ever reads it, and `SetMoveAnim`'s first line is
 `if (m_nStoredMoveState == m_nMoveState) return`.
@@ -1749,7 +1749,7 @@ things read it, and it is what a co-op mission script would see — but it is
 not the mechanism and nothing may be built on the belief that it is.
 
 Worth noticing for its own sake: that `if (!IsPlayer())` in `Idle` is the same
-shape as `CFireManager::StartFire`'s, which §1.10.7 already copies. GTA III
+shape as `CFireManager::StartFire`'s, which §1.10.7 already copies. GTA Vice City
 has more than one of these, and they are the engine agreeing that some peds'
 movement is not its to decide. Where one exists, take its branch rather than
 inventing a mechanism.
@@ -1806,7 +1806,7 @@ Protocol **11**. `docs/pickups.md` is the whole investigation and design; this
 is the wire.
 
 **There is no spawn packet, and that is the finding rather than an omission.**
-CoopIII does not suppress the main script on clients (M5 Tier 2, not built), so
+CoopVC does not suppress the main script on clients (M5 Tier 2, not built), so
 every machine runs `main.scm` and creates all 448 script pickups itself, from
 literal coordinates, through a `CPickups::GenerateNewOne` that never touches
 the RNG. The worlds already agree. What was missing was never the pickup, it
@@ -1863,7 +1863,7 @@ and not after it. The client enforces it by stashing and nilling `m_pObject`
 for every pickup it has not been granted, around the engine's own
 `CPickups::Update`: `CPickup::Update` returns false immediately on a nil
 object, below the respawn branch and above everything else, so the engine
-physically cannot award a pickup CoopIII has not unblocked. There is no race to
+physically cannot award a pickup CoopVC has not unblocked. There is no race to
 lose.
 
 #### 1.13.3 A grant is a reservation; only a collection removes anything
@@ -1885,7 +1885,7 @@ or, when the player leaves the radius without collecting, `C_PickupRelease`
 ends the reservation and the pickup is available again everywhere, having never
 been removed anywhere.
 
-The collection is **detected, not decided**: CoopIII holds the reservation, the
+The collection is **detected, not decided**: CoopVC holds the reservation, the
 engine's own touch test, `CanBePickedUp` and award switch run, and the slot
 being empty afterwards is what gets reported. Nothing re-implements the four
 refusals `CanBePickedUp` makes; a refusal simply shows up as a reservation
@@ -2076,7 +2076,7 @@ second is the one that would still hold if the first were fixed.
 **It would not run — for a remote ped, which is the only ped this is about.**
 `SetCarJack` returns without doing anything when the car's `VehicleCreatedBy`
 is `MISSION_VEHICLE` (the gate is at `0x004E032B`), and that is what every car
-CoopIII creates is, because it is what stops the engine reaping it.
+CoopVC creates is, because it is what stops the engine reaping it.
 
 That sentence was first written without its qualifier, and the qualifier
 matters. The bail sits **after** the `CPed::IsPlayer` call at `0x004E0310`, and
@@ -2125,7 +2125,7 @@ The bail sits behind the `CPed::IsPlayer` call at `0x004E0310` with a `jne` at
 player - and the two objectives that *also* jump it, at `0x004E031B`, are
 `m_objective == 8` and `== 7`, which are `KILL_CHAR_ANY_MEANS` and
 `KILL_CHAR_ON_FOOT`. Neither is `ENTER_CAR_AS_DRIVER` (15) or
-`ENTER_CAR_AS_PASSENGER` (14). Every ped CoopIII builds is a `CCivilianPed`,
+`ENTER_CAR_AS_PASSENGER` (14). Every ped CoopVC builds is a `CCivilianPed`,
 every car it builds is a `MISSION_VEHICLE` because that is what stops the
 engine reaping it, and a replica jacking one therefore falls straight through
 to the `ret` at `0x004E033D`. The animation is not available on exactly the
@@ -2466,7 +2466,7 @@ level was — the `cmp [eax+18h],0` just before it only decides whether the
 visit costs money. So `S_Respray` needs no field for it: every respray is a
 clear. The level itself travels in `PlayerStateBody::flags` (§1.18).
 
-- The payer's own engine clears the payer's stars, with no help from CoopIII.
+- The payer's own engine clears the payer's stars, with no help from CoopVC.
 - **Whose other stars it clears is the wanted rule's decision**
   ([wanted.md](wanted.md) §4.9). Under `shared`, everybody's: the session holds
   one level. Under `perplayer`, everybody sitting in the car `vehicleNetId`
@@ -2835,7 +2835,7 @@ A replica pedestrian is bullet-, fire-, melee- and explosion-proof on purpose,
 so a shot at one was refused by the shooter's own engine and **nothing
 happened** — no flinch, no blood, no death, on either screen.
 
-A replica car is not. CoopIII sets exactly one proof flag on one
+A replica car is not. CoopVC sets exactly one proof flag on one
 (`bCollisionProof`, `game/vehicle.cpp`'s `SetVehicleObserved`) and **cannot set
 the rest**: `bExplosionProof` would stop a replayed blast reaching a car it is
 supposed to reach identically on every machine, which is the one thing about an
@@ -2938,7 +2938,7 @@ screen at the same moment and only one machine ever decides.
 
 #### 1.20.4 Only a car somebody is driving, and why the other three are not this
 
-A car in a CoopIII session is one of four things, and only one of them has a
+A car in a CoopVC session is one of four things, and only one of them has a
 machine entitled to decide its condition:
 
 | kind | owner | what carries its condition |
@@ -3095,7 +3095,7 @@ ran its own fire timer on it.
 
 `roadmap.md` §5.8 says an ownerless world entity is the host's, and for a
 *fact* about a car nobody owns that is right: the host is one machine and it is
-always there. It is the wrong machine to run a car's **physics** on. GTA III
+always there. It is the wrong machine to run a car's **physics** on. GTA Vice City
 streams around one player (`roadmap.md` §2.1) and keeps one island's collision
 in memory (§2.2), so a host on the other side of the river would be simulating
 a car with no ground under it and reporting the fall — and every observer would
@@ -3169,7 +3169,7 @@ the top of a bounce reads still for exactly one frame, and handing it back
 there pins it in mid-air, which is the same bug reached by being impatient.
 
 **What this deliberately does not do** is right a car that has landed on its
-side. Nothing in GTA III does, single player included, so the car stays there
+side. Nothing in GTA Vice City does, single player included, so the car stays there
 and stays unenterable — which is fidelity (`roadmap.md` §5.5), not a residual.
 The bug was the pin, never the pose.
 
@@ -3298,8 +3298,8 @@ keep the `CVehicle` it already has:
 
 | machine | what it has | what changes |
 |---|---|---|
-| the new driver | a replica CoopIII built | the row; the object is untouched |
-| any observer | a replica CoopIII built | the row; the object is untouched |
+| the new driver | a replica CoopVC built | the row; the object is untouched |
+| any observer | a replica CoopVC built | the row; the object is untouched |
 | the original host | a car its **own engine** made | the row, plus it stops hosting it |
 
 The last one is why the netId is kept. A promotion that despawned and
@@ -3420,7 +3420,7 @@ at one generator saw two different cars, and one could open the door the other
 found locked.
 
 The server rolls one `u32` when it starts and sends it to every player as
-`S_PARKED_SEED` (`0x2A`) straight after `S_SESSION_RULES`. CoopIII takes
+`S_PARKED_SEED` (`0x2A`) straight after `S_SESSION_RULES`. CoopVC takes
 `CCarGenerator::Process`'s one call into `DoInternalProcessing`
 (`0x00542BE3`, `game/cargen.h`) and, from the seed and the generator's index,
 makes one number per generator. For the length of the call `rand()`'s state is
@@ -3675,8 +3675,8 @@ client never probes.
 
 A server somebody runs for their friends on the open internet needs a way to
 keep strangers out, and `C_Hello` has no room for one. So the server takes a
-`password` (CoopIII-Server.ini, or `-password`), empty by default, and a
-client with `password = ...` in its CoopIII.ini sends `C_Password` (0xB5) right
+`password` (CoopVC-Server.ini, or `-password`), empty by default, and a
+client with `password = ...` in its CoopVC.ini sends `C_Password` (0xB5) right
 behind its hello on the same reliable ordered channel. A server with a password
 holds the hello until it comes: the right one and the hello goes on exactly as
 it always did, the wrong one or none inside `PASSWORD_WAIT_MS` (3 s) and the
@@ -3740,7 +3740,7 @@ counted from one, and marks the host's name. The host types `/kick 3`, or
 one name, both in any case. A line that starts with `/` is a command and never
 goes out as chat. It's answered in the typist's own feed only, whether that's
 "throwing bob out", "only the host can kick, and that is alice", or a name
-nobody has. `listKey = Tab` in CoopIII.ini puts the list on Tab.
+nobody has. `listKey = Tab` in CoopVC.ini puts the list on Tab.
 
 **On the wire.** `C_Kick` (0xB6) carries the slot. The client only sends it
 when its player is the host, and the server checks that again, because the
@@ -3768,11 +3768,11 @@ gate is answered false until `S_MissionClaim` says `GRANTED`. The server
 inside the area or no more than the margin outside it: the box the engine's
 locate describes, grown by `missionMargin` (5 m by default) on every side,
 or 5 m round the owner for an odd job, whose button works anywhere
-(`coopiii/mission.h`, `InMissionArea`). A player nothing has placed yet is
+(`coopvc/mission.h`, `InMissionArea`). A player nothing has placed yet is
 missing. Until then it answers `WAITING` with who is missing, and
 `S_MissionWaiting` tells everybody the same, so the missing players' logs
 say "alice is waiting for you at the start of Luigi's Girls". That, and who
-started, passed or failed what, is `CoopIII.log`'s and never the chat's: the
+started, passed or failed what, is `CoopVC.log`'s and never the chat's: the
 mission's own text is what the players read. Who a start or a checkpoint
 waits for is also a small line in the HUD's bottom-right corner, in the
 version mark's face ("Waiting for carol - 42 s", "alice is waiting for you
@@ -3873,7 +3873,7 @@ controls, the player's moves, and what the world keeps of it) goes out as
 That's a 32-bit literal, which `CollectParameters` copies untouched, so an int
 arrives an int and a float the same float. A text label goes as its eight
 bytes, a timer's global by its offset, and an output to the runner's local 0.
-Every participant's own interpreter runs it through a script of CoopIII's
+Every participant's own interpreter runs it through a script of CoopVC's
 whose instruction pointer is the buffer. That's plugin-sdk's `CallCommandById`,
 the engine doing exactly what it does for its own scripts. A blip is the
 owner's handle on the wire and each machine's own on that machine, so
@@ -4182,7 +4182,7 @@ that participant alone (`onlyTo`).
 claims nothing before it has one. So behind an older server every machine's
 missions stay its own, as they always were. An older client never sends any
 of this and plays its missions alone. The script engine's half only runs with
-`missions = on` in CoopIII.ini (missions.md §8 has why).
+`missions = on` in CoopVC.ini (missions.md §8 has why).
 
 ### 1.30 What a mission leaves behind
 
@@ -4289,7 +4289,7 @@ applies none of that mission's parts, values, instruction and threads, since
 its own save passed it (`MissionSync::PassedHere`); the parts are judged
 together, and applied or not only once the one marked `last` is in (or the
 next mission's have come). No layout moves; the server keeps and relays the
-bit, in `CoopIII-Progress.dat` too. An older owner marks nothing, and its
+bit, in `CoopVC-Progress.dat` too. An older owner marks nothing, and its
 deltas are applied as before ([missions.md](missions.md) 5.8).
 
 **The Import/Export lists and the crane's are the session's too**
@@ -4311,7 +4311,7 @@ before any game. "Join the lobby" takes it into the server's lobby, where it
 sees who else is waiting and who is already playing there. The launcher that
 has waited longest is the lobby's host, and has a button that starts everybody's
 game at once, into a new game or at the menu. Every launcher in the lobby then
-starts its own gta3.exe, writes CoopIII.ini on the way as the start always did,
+starts its own gta-vc.exe, writes CoopVC.ini on the way as the start always did,
 and closes, and each game connects the way it always has. "Start on my own"
 is the old button, and still there.
 
@@ -4323,7 +4323,7 @@ nothing else. The server takes a launcher per slot on top of the slots, so
 
 **The door.** `C_LOBBY_JOIN` carries the version, the name and the password,
 since a launcher has no game to send `C_HELLO` and `C_PASSWORD` from; the
-launcher takes the password from CoopIII.ini, where the client takes it. The
+launcher takes the password from CoopVC.ini, where the client takes it. The
 answer says yes with the member's place, or no with `S_WELCOME`'s reasons, and
 the server hangs up behind a no. An older server drops the opcode and never
 answers, and the launcher says so after 3 s and leaves the player to start
@@ -4335,7 +4335,7 @@ second one inside `LOBBY_START_COOLDOWN_MS` (5 s), is dropped, so one click is
 one start however often it arrives. Players already in the game are not
 started: they are playing.
 
-**A new game.** The launcher puts `COOPIII_NEW_GAME` beside `COOPIII_LAUNCHED`
+**A new game.** The launcher puts `COOPVC_NEW_GAME` beside `COOPVC_LAUNCHED`
 in the game's environment, and the client starts a new game from the menu by
 itself, as its New Game item does. The intro that follows is every machine's
 own, and the first mission waits at the bridge until everybody's is over
@@ -4881,7 +4881,7 @@ roof", has both transcribed):
   puts its health at 249, its engine at 225 and `m_pSetOnFireEntity` at nil
   (`0x004A0804` to `0x004A0858`).
 
-The second never involved CoopIII: it is the driver's machine deciding about
+The second never involved CoopVC: it is the driver's machine deciding about
 the driver's car, whose health already travels on the snapshot and whose
 `BlowUpCar` already travels as `C_VehicleBlowUp`. The first was broken in two
 places.
@@ -4908,7 +4908,7 @@ One explosion.
 so it was invisible - except on a car nobody holds, whose fire timer runs on
 the host unheld (§1.38.1): a session health a few points above 250 was drained
 across it there on every frame, the host's timer counted, and the host blew
-the car up with no fire on anybody else's screen first. CoopIII now takes the
+the car up with no fire on anybody else's screen first. CoopVC now takes the
 drain's own gate, the `call
 FindPlayerVehicle` at `0x0052F426`, and answers with the car itself - "the
 player's car, no drain", which skips the drain and nothing else - for any car
@@ -4938,7 +4938,7 @@ else the milliseconds it has left. A driver sitting down in an armed car
 (`0x0056C44F`) and `PreRender`'s flashing lights (`0x00538150`) go on "not 0
 and not -1". Those are all nineteen word accesses to the field in the image.
 Only a generator arms a car, and every copy of a session car on another
-machine is one CoopIII built, so a car's alarm went off on the machine whose
+machine is one CoopVC built, so a car's alarm went off on the machine whose
 generator parked it and was silent everywhere else.
 
 The machine simulating the car - its driver, or with nobody driving it its
@@ -5038,7 +5038,7 @@ follows in it; one with no seat stays where he is, on foot, and the log tells
 him to follow in a car of his own. Nobody is moved beside the car: the
 mission's own `SET_PLAYER_COORDINATES` and `WARP_PLAYER_FROM_CAR_TO_COORD`
 already keep everybody at the owner (§1.29), and "beside" a boat is the water,
-where GTA III's player drowns.
+where GTA Vice City's player drowns.
 
 **Checkpoints nobody can reach.** A boat has one passenger seat
 (`GetMaximumNumberOfPassengersFromNumberOfDoors`, no doors), so in Last
@@ -5169,7 +5169,7 @@ Protocol version 65. No opcode and no layout moves;
 what a `C_Shot` from a passenger seat means changes, and so does what a
 seated player's drive-by overlay holds.
 
-GTA III's drive-by is the driver's: `CAutomobile::DoDriveByShootings` runs
+GTA Vice City's drive-by is the driver's: `CAutomobile::DoDriveByShootings` runs
 for the car the local pad drives, with the uzi, out of the left or the right
 window on the look keys (§1.9 and `game/driveby.h`). A passenger had nothing.
 Now a passenger aims the way a player on foot does
@@ -5242,7 +5242,7 @@ gate open while anybody else's bit is set. Held open, the local thread's shut
 request is answered "done" without moving anything, so its loop ends and no
 clunk plays; the gate is slid open, on a machine whose thread may not be
 running at all, by the engine's own `SLIDE_OBJECT` run once a frame on a
-script of CoopIII's with `gates.sc`'s own operands. Released, a gate CoopIII
+script of CoopVC's with `gates.sc`'s own operands. Released, a gate CoopVC
 opened is slid shut again with the collision check on, unless the local thread
 is in the zone and doing it itself. A gate is named by the positions the
 script slides it between; its object is whatever the global the `029B` at its
@@ -5396,7 +5396,7 @@ handle -1, blocking).
 and Rhinos (`CARLOCK_LOCKED_INITIALLY`, `0x0052CF5A..0x0052CF74`), and only the
 engine's own driver exit takes it off. A copy is a car somebody has claimed,
 unlocked on the claimer's machine, and its driver never leaves through that
-exit here. So a copy, a promoted traffic car and a car CoopIII takes a remote
+exit here. So a copy, a promoted traffic car and a car CoopVC takes a remote
 driver out of are unlocked. No wire is needed: every copy of a session car is
 unlocked on the machine that claimed it too.
 
@@ -5463,7 +5463,7 @@ Protocol version 71. One opcode, `0x07`, and
 `S_MissionState` grows by eight bytes.
 
 **What was wrong.** The server window's options showed three of the thirteen
-settings `CoopIII-Server.ini` had, and a change to any rule that clients
+settings `CoopVC-Server.ini` had, and a change to any rule that clients
 apply - friendly fire's blast immunity, ammunition, the wanted rule, the
 rampage rule, cheats - reached only the players who joined after it, because
 the only carrier was `S_Welcome`. And several things the owner decided as
@@ -5537,7 +5537,7 @@ everybody else's screen. Retail's `WM_ACTIVATEAPP` (0x00581A82) only clears
 the pads, and the windowed-mode plugin's `autoPause` opens the pause menu
 through `RequestFrontEndStartUp` (0x00488770), which the pause policy
 (`game/pause.h`) already keeps from stopping the world. The `WaitMessage`
-call's operand now points at a pointer of CoopIII's: in a session it runs
+call's operand now points at a pointer of CoopVC's: in a session it runs
 Idle's (0x0048E480) no-render frame - `CTimer::Update`,
 `CPointLights::NumLights = 0`, `CGame::Process` - without the audio (the
 digital handle was just released) and without anything that draws, then waits
@@ -5577,8 +5577,8 @@ own thread asked for 210 in the last 2.5 s and not for 0 since", the door is
 found by the handle in the global `init.sc`'s `CREATE_OBJECT` at 890.875
 -307.6875 8.75 fills, and a machine holding it for somebody else answers its
 own thread's rotate to 0 "done" and turns it open with `save.sc`'s own
-operands on a script of CoopIII's. A mission's own turn of the door
-(`19_8ball.sc` does both) is never touched, and CoopIII leaves the door alone
+operands on a script of CoopVC's. A mission's own turn of the door
+(`19_8ball.sc` does both) is never touched, and CoopVC leaves the door alone
 for 3 s after one. Like the gates, the local bit is read in the mission
 hooks' range handler, so with `missions = off` a machine holds the door for
 others but never asks for it.
@@ -5768,7 +5768,7 @@ lowest slot still in. Its save is the session's campaign:
   and to a joiner while the sender is still the host; the host leaving
   forgets them. A client keeps them only when `hostId` is the host it knows,
   and forgets them when the host changes.
-- **Drawing.** On a guest, CoopIII's `CRadar::DrawBlips` detour and a
+- **Drawing.** On a guest, CoopVC's `CRadar::DrawBlips` detour and a
   redirect of `CHud::Draw`'s one call to `CRadar::Draw3dMarkers`
   (`0x005084C4`, the function untouched) each set the display of the
   guest's own contacts to `NEITHER` for the length of the engine's call and
@@ -5911,7 +5911,7 @@ own count, says nothing and nothing is concluded from it.
 The server (`Session::NotePackagesLive`) keeps every connected player's last
 report and, per hash, every package anybody has reported lying anywhere. A
 package on that list and missing from a report is one that save collected:
-it is recorded taken for good (so it goes in `CoopIII-Progress.dat` and is
+it is recorded taken for good (so it goes in `CoopVC-Progress.dat` and is
 refused to every claim) and sent as `S_PickupTaken` to everybody but the
 finder. And a package in a report that the session has already taken is sent
 to the reporter again: what an older save loaded over the session needs. The
@@ -6245,7 +6245,7 @@ currently driving. One designated client, the host, is additionally
 authoritative over the time of day and the weather (§2.7). The server relays
 all of it and assigns ownership for everything else.
 
-Why not server-authoritative: GTA III physics is frame-rate-coupled through
+Why not server-authoritative: GTA Vice City physics is frame-rate-coupled through
 `ms_fTimeStep` (§1.2) and not deterministic across machines, so rolling back or
 resimulating isn't realistic here. Why that's acceptable: this is co-op with
 friends, not competitive play. There is no anti-cheat requirement, so the usual
@@ -6259,7 +6259,7 @@ It's a deliberate trade, not an oversight.
 Needs unreliable-sequenced (snapshots) *and* reliable-ordered (events) on one
 socket, with fragmentation and MTU handling. ENet does exactly this, is C, and
 builds as a static x86 lib. The x86 part matters: the client DLL has to be
-32-bit to load into `gta3.exe` (`README.md` has the build commands).
+32-bit to load into `gta-vc.exe` (`README.md` has the build commands).
 
 Channels:
 
@@ -6298,7 +6298,7 @@ Bit-packing can come later.
 
 1-byte opcode + fixed-layout payload. `#pragma pack(1)`, little-endian on both
 ends (x86 → x86, no swapping). Shared structs live in
-`sdk/include/coopiii/protocol.h` and are the single source of truth for both
+`sdk/include/coopvc/protocol.h` and are the single source of truth for both
 `client/` and `server/`.
 
 ```c
@@ -6344,7 +6344,7 @@ The session's clock is one player's `CClock`. That player is the host: the
 first one to connect, and on their way out the lowest-numbered player still
 in. Everyone else, and only everyone else, is corrected toward it.
 
-**Why not keep the clock on the server.** The server has no GTA III running,
+**Why not keep the clock on the server.** The server has no GTA Vice City running,
 so a clock it keeps is a clock nobody is playing to. Three things follow
 from that and none of them have a workaround:
 
@@ -6368,7 +6368,7 @@ that was already being sent.
 mission's script runs on the owner's machine and nowhere else, so that is
 where its `SET_TIME_OF_DAY` and `FORCE_WEATHER_NOW` land, and with the host
 in charge regardless the owner's clock was put back to the host's within a
-second. `sdk/include/coopiii/sky.h` has the rule: the server takes
+second. `sdk/include/coopvc/sky.h` has the rule: the server takes
 `C_WorldState` from the running mission's owner alone, and relays a sky cheat
 there; every client works out the same holder from `S_MissionState` and the
 host byte, so nothing new is on the wire. The owner takes the sky from its
@@ -6387,7 +6387,7 @@ game first.
 **Corrections are a jump, and the tolerance is what stops them.** A world
 packet is at least a round trip old and the host reports once a second, so a
 client that matched exactly would be told to step its clock every second, and
-GTA III hangs the HUD clock, the sun's position and the streetlights off the
+GTA Vice City hangs the HUD clock, the sun's position and the streetlights off the
 minute. So a client only moves once it is more than three game minutes out
 (`kClockToleranceMinutes` in `client/src/client.h`). Three game minutes is
 three real seconds, which nothing on screen can show; everything that
@@ -6415,7 +6415,7 @@ takes the blend falling below last frame's as the top of the hour and would
 otherwise turn the follower's weather over on its own.
 
 Nothing else reaches the colours. `CTimeCycle::Update` (0x004ABF40) reads the
-hour, the minute, the two types and the blend, and that is all; GTA III has
+hour, the minute, the two types and the blend, and that is all; GTA Vice City has
 no extra colours (`SET_EXTRA_COLOURS` is Vice City's), and the only other
 input to the picture's tint is the camera's motion blur type: the sniper
 scope, a close blast's shake, and `SET_MOTION_BLUR`, which only the intro
@@ -6449,7 +6449,7 @@ byte holding:
 
 | Flag | Meaning |
 |---|---|
-| `PJF_POS_VALID` | `pos`/`heading` are somewhere the session actually saw this player, not the zeroes a fresh slot starts with. Needed because the origin in GTA III is open water — the first remote ped this project ever created was born there and drowned in eight frames. A receiver without this bit cannot tell "at the origin" from "never heard from". |
+| `PJF_POS_VALID` | `pos`/`heading` are somewhere the session actually saw this player, not the zeroes a fresh slot starts with. Needed because the origin in GTA Vice City is open water — the first remote ped this project ever created was born there and drowned in eight frames. A receiver without this bit cannot tell "at the origin" from "never heard from". |
 | `PJF_DEAD` | Dead and waiting to respawn, with `deathAnimId` from their own engine's `SetDie` so a backfilled corpse lies the way it fell. This is the flag the version is about: a death has exactly one carrier, `C_Death`, so before this a joiner arriving while somebody lay in the road got a live player, standing up, on zero health. |
 
 `S_VehicleSpawn` grew `health` and `flags`, the same flag byte the vehicle
@@ -6486,7 +6486,7 @@ nothing else.
 The other half of the owner's report, and the half that explains
 "no se puede manejar ni nada".
 
-A synced car only ever exists as a `CVehicle` **CoopIII created** on a machine
+A synced car only ever exists as a `CVehicle` **CoopVC created** on a machine
 that was not in the session when the car was claimed — for everybody else it
 is a car from their own world that they happened to get into. So this is a
 late joiner's problem by construction, and with two clients started together
@@ -6604,7 +6604,7 @@ model that doesn't exist yet.
 | 0x03 | `S_PLAYER_JOIN` | 1 | `playerId`, `netId`, nickname, model id, transform, then condition: health `float`, armour `float`, weapon `u8`, flags `u8` (`PJF_POS_VALID`, `PJF_DEAD`, and `PJF_ARRIVED` on the live announcement and never on a backfill, which is what the HUD's "X joined" goes by), death anim `u16` (§2.8.1) |
 | 0x04 | `S_PLAYER_LEAVE` | 1 | `playerId`, reason |
 | 0x05 | `C_PLAYER_MODEL` / 0x06 `S_PLAYER_MODEL` | 1 | model id `u16`; `S_` also carries `playerId`. A skin change after the hello, which is how a cheat's skin reaches everybody ([cheats.md](cheats.md)) |
-| 0x07 | `S_SESSION_RULES` | 1 | `flags` `u8` (the welcome's session flags), `maxWanted` `u8` (the most stars anybody may have, 1-6), `coopCheats` `u8` (CoopIII's own typed cheats: 0 outside missions, 1 always, 2 off; §1.61), 1 pad. After every `S_WELCOME`, and to everybody when the host changes a rule (§1.46) |
+| 0x07 | `S_SESSION_RULES` | 1 | `flags` `u8` (the welcome's session flags), `maxWanted` `u8` (the most stars anybody may have, 1-6), `coopCheats` `u8` (CoopVC's own typed cheats: 0 outside missions, 1 always, 2 off; §1.61), 1 pad. After every `S_WELCOME`, and to everybody when the host changes a rule (§1.46) |
 | 0x10 | `C_PLAYER_STATE` | 0 | pos `float[3]`, heading `float`, `m_vecMoveSpeed` `float[3]`, `m_nMoveState` `u8`, `m_nPedState` `u8`, anim `u16` + time `float` + speed `float`, partial anim `u16` + time `float`, health `float`, armour `float`, weapon `u8`, the held weapon's ammo (clip `u16` + total `u32`, §1.9.6), aim yaw/pitch `float[2]`, flags `u8`, the legs: `locoWeight` `u8[5]` + `locoPhase` `u8` (§1.8.4) (77 bytes) |
 | 0x11 | `S_PLAYER_STATE` | 0 | `playerId` + the above |
 | 0x12 | `C_VEHICLE_STATE` | 0 | `netId`, pos `float[3]`, quat `float[4]`, move/turn speed `float[6]`, steer/gas/brake `float[3]`, gear `u8`, health `float`, flags `u8` (`VEH_ENGINE_ON`, `VEH_SIREN`, `VEH_LIGHTS`, `VEH_WRECKED`, `VEH_HORN`, `VEH_TAXI_LIGHT`, `VEH_HANDBRAKE`). With `VEH_WRECKED` set it is a wreck's settle: taken for a destroyed car from its custodian alone, transform only, and dropped for a car that is not a wreck yet (§1.38.3) |
@@ -6706,7 +6706,7 @@ model that doesn't exist yet.
 | 0xB6 | `C_KICK` | 1 | `playerId` `u8`: the slot the host wants thrown out. Taken from the session's host alone, and only for somebody else; the kick is the window's, so everybody hears `LEAVE_KICKED` (§1.28) |
 | 0xB7 | `C_MISSION_BUSY` | 1 | `busy` `u8` (1 while the sender's game runs a mission script that is not the session's: a new game's intro, an info scene), `fresh` `u8` (1 once, when its game has started over: a load or a new game). Sent on every change of `busy`, the first one once the server has said it shares missions. A busy player is nowhere at a start and out of the running mission, and comes back into it as a joiner does (§1.29) |
 | 0xB8 | `S_MISSION_HAND_OVER` | 1 | `playerId` `u8`, pad, `missionNumber` `u16`: that participant's game started over in the middle of the mission, so the owner's machine hands them what it has up again. To the owner alone (§1.29) |
-| 0xB9 | `C_LOBBY_JOIN` | 1 | `protocolVersion` `u16`, `nick` `char[24]`, `password` `char[32]` (the server's, from CoopIII.ini, or empty): a launcher asking into the server's lobby before any game runs (§1.31) |
+| 0xB9 | `C_LOBBY_JOIN` | 1 | `protocolVersion` `u16`, `nick` `char[24]`, `password` `char[32]` (the server's, from CoopVC.ini, or empty): a launcher asking into the server's lobby before any game runs (§1.31) |
 | 0xBA | `S_LOBBY_ANSWER` | 1 | `reject` `u8` (`S_WELCOME`'s reasons: another version, full, wrong password), `lobbyId` `u8`, `protocolVersion` `u16`. A refusal is followed by the server hanging up |
 | 0xBB | `S_LOBBY` | 1 | `count` `u8`, `hostLobbyId` `u8`, `waiting` `u8`, pad, then 16 `LobbyEntry` (`id` `u8`, `flags` `u8` with 1 host and 2 playing, `nick` `char[24]`): the lobby longest waiting first, then everybody already playing. To every lobby member whenever either changes |
 | 0xBC | `C_LOBBY_START` | 1 | `mode` `u8` (1 the menu, 2 a new game), 3 pad. Taken from the lobby's host alone, once in 5 s |
@@ -6773,7 +6773,7 @@ come from the retail 1.0 binary, with re3 used only as the map. They live in
    fire. And skipping `ProcessControl` costs the clump alpha fade (so the ped
    is never drawn), `CPhysical::ProcessControl`, the death animation, aiming
    and footsteps. The NPC logic is two fields, `m_nPedState` and
-   `m_objective`, and CoopIII has been holding both since the seating work.
+   `m_objective`, and CoopVC has been holding both since the seating work.
    Nothing was built; §1.13.6 says what ambient NPC sync can rely on.
 2. ~~**Vehicle authority handoff**~~ **Answered — §1.21, §1.22 and roadmap
    §5.8.1-5.8.2.** A server-assigned owner, as guessed, and the grace period
@@ -6890,7 +6890,7 @@ Getting in, getting out, being dragged or jacked out, dying and dead are left
 to their own animations. A boat's wheel has no sit animation in the engine,
 so there it only takes the wrong ones off.
 
-### 1.61 CoopIII's own typed cheats: TPTO, and the server's say over them
+### 1.61 CoopVC's own typed cheats: TPTO, and the server's say over them
 
 Version: 87.
 
@@ -6910,7 +6910,7 @@ over whether these cheats work at all.
   this is not in `S_Welcome`. Between a welcome and its `S_SessionRules` a
   client goes by the default.
 - The server takes it from `coopCheats = outsidemissions | always | off` in
-  `CoopIII-Server.ini` and the options window, and a change of it alone is
+  `CoopVC-Server.ini` and the options window, and a change of it alone is
   enough to send `S_SessionRules` to everybody.
 - The server cannot refuse a teleport, so each client keeps the rule itself.
 
@@ -7198,7 +7198,7 @@ written to the skins folder. A texture replaced or dropped while a ped still
 shows it is not freed under it: the material holds a reference of its own.
 
 **On the wire.** A skin is a `SkinInfo` and a payload (`protocol.h`,
-`coopiii/skin.h`):
+`coopvc/skin.h`):
 
 | format | payload |
 |---|---|
@@ -7227,7 +7227,7 @@ is paced on its own and takes turns between the skins it is owed; a skin
 that changes on its way to somebody starts again for him. A player's skin
 goes with him.
 
-**The rule.** `syncCustomSkins` in `CoopIII-Server.ini`, on by default, is
+**The rule.** `syncCustomSkins` in `CoopVC-Server.ini`, on by default, is
 `S_SessionRules::skins`: `SKIN_RULE_SYNC` (0) or `SKIN_RULE_OFF`. Off, the
 server forgets every skin and drops every piece, and each client stops
 sending and puts every remote player in the default skin. Back on, each

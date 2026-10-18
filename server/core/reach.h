@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-namespace coopiii {
+namespace coopvc {
 
 // IPv4 in host order, a.b.c.d as a << 24 | b << 16 | c << 8 | d.
 enum class AddressKind : uint8_t {
@@ -474,4 +474,4 @@ inline std::string HostLogLine(const std::vector<LocalAddress> &addresses, uint1
 	return line;
 }
 
-} // namespace coopiii
+} // namespace coopvc

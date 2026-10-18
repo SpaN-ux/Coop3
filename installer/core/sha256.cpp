@@ -5,7 +5,7 @@
 #include <cstdio>
 #include <cstring>
 
-namespace coopiii::installer {
+namespace coopvc::installer {
 namespace {
 
 constexpr uint32_t K[64] = {
@@ -116,4 +116,4 @@ std::string Sha256File(const std::string &path) {
 	return h.Finish();
 }
 
-} // namespace coopiii::installer
+} // namespace coopvc::installer

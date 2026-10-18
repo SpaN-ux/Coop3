@@ -15,7 +15,7 @@
 #include <utility>
 #include <vector>
 
-namespace coopiii {
+namespace coopvc {
 
 template <class T>
 class SwapQueue {
@@ -70,4 +70,4 @@ private:
 	std::vector<T>     m_items;
 };
 
-} // namespace coopiii
+} // namespace coopvc

@@ -7,13 +7,13 @@
 // caller answers it with a MissionPresence per connected player.
 #pragma once
 
-#include <coopiii/mission.h>
-#include <coopiii/protocol.h>
+#include <coopvc/mission.h>
+#include <coopvc/protocol.h>
 
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 
 class MissionSlot {
 public:
@@ -185,4 +185,4 @@ private:
 	uint32_t m_cpSinceMs   = 0;   // when the checkpoint waited for now began to
 };
 
-} // namespace coopiii
+} // namespace coopvc

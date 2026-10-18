@@ -1,6 +1,6 @@
 // Byte-pattern (AOB) scanning.
 //
-// CoopIII finds game addresses by scanning for code patterns instead of
+// CoopVC finds game addresses by scanning for code patterns instead of
 // hardcoding offsets. The user's install runs SilentPatch, which rewrites
 // some game code at runtime, so an address that's correct on disk can land
 // in rewritten bytes once it's in memory. Scanning what's actually mapped is
@@ -15,7 +15,7 @@
 #include <string>
 #include <vector>
 
-namespace coopiii {
+namespace coopvc {
 
 // An IDA-style pattern: "8B 0D ?? ?? ?? ?? 85 C9", where ?? matches any byte.
 class Pattern {
@@ -68,4 +68,4 @@ ScanResult ScanModule(const char *idaPattern);
 // `offsetToRel32` is how far the rel32 sits from `instruction`.
 uint8_t *ResolveRelative(uint8_t *instruction, size_t offsetToRel32, size_t instructionLength);
 
-} // namespace coopiii
+} // namespace coopvc

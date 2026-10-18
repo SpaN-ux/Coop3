@@ -12,7 +12,7 @@
 #include <csignal>
 #include <cstdio>
 
-namespace coopiii {
+namespace coopvc {
 namespace {
 
 volatile std::sig_atomic_t g_running = 1;
@@ -39,11 +39,11 @@ int RunConsole(const Startup &startup) {
 	std::signal(SIGTERM, OnSignal);
 
 	if (startup.hadConfig)
-		std::printf("[coopiii] settings from %s\n", startup.configPath.c_str());
+		std::printf("[coopvc] settings from %s\n", startup.configPath.c_str());
 	else
-		std::printf("[coopiii] no %s, using the defaults\n", startup.configPath.c_str());
-	std::printf("[coopiii] wanted level %s, mission fails on death %s, rampages %s, "
-	            "cheats %s, CoopIII cheats %s, money %s, hidden packages %s\n",
+		std::printf("[coopvc] no %s, using the defaults\n", startup.configPath.c_str());
+	std::printf("[coopvc] wanted level %s, mission fails on death %s, rampages %s, "
+	            "cheats %s, CoopVC cheats %s, money %s, hidden packages %s\n",
 	            Name(startup.config.wantedLevel),
 	            startup.config.missionFailOnDeath ? "on" : "off",
 	            Name(startup.config.rampage), Name(startup.config.cheats),
@@ -67,7 +67,7 @@ int RunConsole(const Startup &startup) {
 	const std::vector<LocalAddress> local = LocalIPv4Addresses();
 	for (const std::string &line :
 	     ReachLines(local, startup.config.port, startup.config.lookUpPublicAddress))
-		std::printf("[coopiii] %s\n", line.c_str());
+		std::printf("[coopvc] %s\n", line.c_str());
 
 	// The public address, the router and the firewall, found out on a thread
 	// of their own (server/probe.h); what it finds is printed between ticks.
@@ -76,7 +76,7 @@ int RunConsole(const Startup &startup) {
 	            startup.config.openRouterPort);
 	const auto say = [&probe] {
 		for (const ProbeLine &line : probe.TakeLines())
-			std::printf("[coopiii] %s\n", line.text.c_str());
+			std::printf("[coopvc] %s\n", line.text.c_str());
 	};
 
 	while (g_running) {
@@ -84,11 +84,11 @@ int RunConsole(const Startup &startup) {
 		say();
 	}
 
-	std::printf("[coopiii] shutting down\n");
+	std::printf("[coopvc] shutting down\n");
 	server.Stop();
 	probe.Finish();
 	say();
 	return 0;
 }
 
-} // namespace coopiii
+} // namespace coopvc

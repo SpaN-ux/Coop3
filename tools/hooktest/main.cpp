@@ -1,7 +1,7 @@
 // Tests the detour engine by hooking real functions in this process.
 //   xmake build hooktest && xmake run hooktest
 //
-// About as close as we can get to the real thing without GTA III running.
+// About as close as we can get to the real thing without GTA Vice City running.
 // MinHook is rewriting actual instructions here, so a broken trampoline
 // fails loudly instead of quietly.
 
@@ -9,7 +9,7 @@
 
 #include <cstdio>
 
-using namespace coopiii;
+using namespace coopvc;
 
 namespace {
 

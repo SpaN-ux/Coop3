@@ -2,7 +2,7 @@
 //
 // A failed hook is never silent here. The game keeps running, but the
 // failure gets recorded and reported, because "multiplayer quietly did
-// nothing" is a much worse bug to chase down than "CoopIII refused to start
+// nothing" is a much worse bug to chase down than "CoopVC refused to start
 // and said why".
 #pragma once
 
@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 
-namespace coopiii {
+namespace coopvc {
 
 // Process-wide MinHook init/teardown, refcounted.
 bool HookInit();
@@ -68,4 +68,4 @@ void RecordHookFailure(const char *name, const std::string &reason);
 // Formats a ScanResult as a human-readable reason, for RecordHookFailure.
 std::string DescribeScan(const ScanResult &result);
 
-} // namespace coopiii
+} // namespace coopvc

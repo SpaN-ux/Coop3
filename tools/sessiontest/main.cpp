@@ -14,7 +14,7 @@
 #include "objectrecords.h"
 #include "session.h"
 
-#include "coopiii/net.h"
+#include "coopvc/net.h"
 
 #include <cmath>
 #include <cstdio>
@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 
-using namespace coopiii;
+using namespace coopvc;
 
 namespace {
 
@@ -355,7 +355,7 @@ void TestAPlayerNobodyHasHeardFromHasNoPosition() {
 	Player *bob = Join(s, 2, "bob");
 
 	// A Player starts at the origin because a struct has to start somewhere,
-	// and the origin in GTA III is the water off Portland. Announcing it as a
+	// and the origin in GTA Vice City is the water off Portland. Announcing it as a
 	// position is how you get a remote ped that drowns in eight frames, which
 	// this project has already paid for once.
 	const S_PlayerJoin *j = FindJoin(s.BuildBackfill(bob->id, 1), 0);

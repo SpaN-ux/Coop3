@@ -10,7 +10,7 @@
 #include <cstdio>
 #include <cstring>
 
-using namespace coopiii;
+using namespace coopvc;
 
 namespace {
 

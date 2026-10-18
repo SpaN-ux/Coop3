@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-namespace coopiii {
+namespace coopvc {
 
 namespace {
 
@@ -325,4 +325,4 @@ bool InterpBuffer::SampleDelayed(uint32_t localNowMs, Pose &out) {
 	return Sample(m_clock.Advance(localNowMs, target), out);
 }
 
-} // namespace coopiii
+} // namespace coopvc

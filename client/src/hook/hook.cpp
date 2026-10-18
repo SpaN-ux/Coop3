@@ -4,7 +4,7 @@
 
 #include <utility>
 
-namespace coopiii {
+namespace coopvc {
 
 namespace {
 
@@ -131,4 +131,4 @@ std::string DescribeScan(const ScanResult &result) {
 	return out;
 }
 
-} // namespace coopiii
+} // namespace coopvc

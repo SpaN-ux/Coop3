@@ -1,4 +1,4 @@
-// Turns two gta3.exe files into the downgrade patch the Setup fetches.
+// Turns two gta-vc.exe files into the downgrade patch the Setup fetches.
 //
 //   mkpatch [--max-stored <percent>] <the-exe-you-have> <the-v1.0-exe> <out.c3patch> [name]
 //
@@ -26,8 +26,8 @@
 #include <string>
 #include <vector>
 
-using namespace coopiii;
-using namespace coopiii::installer;
+using namespace coopvc;
+using namespace coopvc::installer;
 
 namespace {
 
@@ -65,7 +65,7 @@ int main(int argc, char **argv) {
 	if ((args.size() != 3 && args.size() != 4) || maxStored <= 0.0 || maxStored > 1.0) {
 		std::printf("mkpatch [--max-stored <percent>] <from.exe> <to-v1.0.exe> <out.c3patch> [build name]\n");
 		std::printf("\n");
-		std::printf("Builds the downgrade patch CoopIII-Setup applies. Neither exe\n");
+		std::printf("Builds the downgrade patch CoopVC-Setup applies. Neither exe\n");
 		std::printf("goes into the patch: only the differences between them.\n");
 		std::printf("Refuses a patch that stores more than %.0f%% of v1.0 as itself.\n",
 		            kMaxStoredFraction * 100.0);
@@ -98,7 +98,7 @@ int main(int argc, char **argv) {
 		std::printf("That second file is not v1.0 retail.\n");
 		std::printf("  expected MD5 %s\n", launcher::GAME_MD5);
 		std::printf("  got          %s\n", toMd5.c_str());
-		std::printf("CoopIII's addresses belong to that build only, so a patch to\n");
+		std::printf("CoopVC's addresses belong to that build only, so a patch to\n");
 		std::printf("anything else would produce a game it cannot hook.\n");
 		return 1;
 	}
@@ -132,9 +132,9 @@ int main(int argc, char **argv) {
 		            info.extraBytes, info.newSize);
 		std::printf("themselves (%.1f%%, over the %.0f%% ceiling). A patch that big is a copy of\n",
 		            StoredFraction(info) * 100.0, maxStored * 100.0);
-		std::printf("the game, and CoopIII does not ship Rockstar's executable in any form.\n");
+		std::printf("the game, and CoopVC does not ship Rockstar's executable in any form.\n");
 		std::printf("It usually means the source exe is wrapped or encrypted (the Steam exe is\n");
-		std::printf("wrapped in SteamStub), and removing that is not something CoopIII does.\n");
+		std::printf("wrapped in SteamStub), and removing that is not something CoopVC does.\n");
 		std::printf("Send players of that build to a downgrade guide instead: the manifest's\n");
 		std::printf("\"downgrader\" entry, docs/installer.md section 2.\n");
 		return 1;
@@ -170,7 +170,7 @@ int main(int argc, char **argv) {
 	std::printf("  \"patches\": [\n");
 	std::printf("    {\"from\": \"%s\", \"name\": \"%s\", \"file\": \"%s\",\n", fromMd5.c_str(),
 	            name.c_str(), Leaf(out).c_str());
-	std::printf("     \"url\": \"https://github.com/noxxUY/CoopIII/releases/latest/download/%s\",\n",
+	std::printf("     \"url\": \"https://github.com/YOUR-ACCOUNT/CoopVC/releases/latest/download/%s\",\n",
 	            Leaf(out).c_str());
 	std::printf("     \"sha256\": \"%s\"}\n", sha.c_str());
 	std::printf("  ],\n");

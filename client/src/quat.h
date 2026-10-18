@@ -7,22 +7,22 @@
 // (docs/protocol.md §1.7), and this is the conversion.
 //
 // The engine side is a CMatrix, whose first three rows are the right,
-// forward and up axes (re3 Matrix.h: rx/ry/rz, fx/fy/fz, ux/uy/uz). GTA III
+// forward and up axes (re3 Matrix.h: rx/ry/rz, fx/fy/fz, ux/uy/uz). GTA Vice City
 // is right-handed and Z-up.
 //
 // The only thing that actually has to hold is that a matrix survives the
-// round trip - both ends of the wire are CoopIII, the sender writes what the
+// round trip - both ends of the wire are CoopVC, the sender writes what the
 // receiver reads, and no third party cares about the convention. The forward
 // and inverse below are the standard mutually-inverse pair, and basetest
 // round-trips them over rotations picked to hit all four branches of the
 // reconstruction, including the ones only an upside-down car reaches.
 #pragma once
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cmath>
 
-namespace coopiii {
+namespace coopvc {
 
 // Rows of the rotation matrix, in CMatrix's order.
 inline Quat QuatFromAxes(const Vec3 &right, const Vec3 &forward, const Vec3 &up) {
@@ -95,4 +95,4 @@ inline void AxesFromQuat(const Quat &q, Vec3 &right, Vec3 &forward, Vec3 &up) {
 	          1.0f - 2.0f * (x * x + y * y)};
 }
 
-} // namespace coopiii
+} // namespace coopvc

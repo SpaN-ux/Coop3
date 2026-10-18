@@ -1,4 +1,4 @@
-// CoopIII launcher, the window.
+// CoopVC launcher, the window.
 //
 // design/screens/Main.dc.html is the screen when everything is in place, and
 // LauncherBlocked.dc.html is the same screen with problems on it. Every
@@ -9,10 +9,10 @@
 //
 // All the thinking lives in launcher-core, which the console launcher uses
 // too. This file is layout, and the one decision the window makes that the
-// CLI does not: it writes CoopIII.ini before starting, so the name and server
+// CLI does not: it writes CoopVC.ini before starting, so the name and server
 // typed here are the ones the client reads.
 #include "run.h"
-#include <coopiii/version.h>
+#include <coopvc/version.h>
 
 #include "launcher/core.h"
 #include "launcher/lobby.h"
@@ -31,7 +31,7 @@
 
 using namespace ui;
 
-namespace coopiii::launcher {
+namespace coopvc::launcher {
 namespace {
 
 // The design's window, to the pixel.
@@ -56,7 +56,7 @@ struct State {
 	std::string startError;
 	bool        launched = false;
 	float       checkedAt = -10.0f;   // when the list was last re-run
-	// discordPresence in CoopIII.ini: the game shown as CoopIII in Discord.
+	// discordPresence in CoopVC.ini: the game shown as CoopVC in Discord.
 	bool        discord   = true;
 
 	// The lobby (docs/protocol.md 1.31): the right column shows it instead
@@ -203,7 +203,7 @@ void Recheck() {
 	g_state.startError.clear();
 }
 
-// The command line first, then the game it finds and what its CoopIII.ini
+// The command line first, then the game it finds and what its CoopVC.ini
 // says, then what the command line said about the server again - an argument
 // is somebody asking for something on purpose, and the ini is only last time.
 void FindGameAndLoadConfig(const Startup &startup) {
@@ -214,7 +214,7 @@ void FindGameAndLoadConfig(const Startup &startup) {
 		std::string host = g_state.host;
 		std::string nick = g_state.nick;
 		uint16_t    port = 2001;
-		ReadIni(Join(found, "CoopIII.ini"), &host, &port, &nick, nullptr, &g_state.discord);
+		ReadIni(Join(found, "CoopVC.ini"), &host, &port, &nick, nullptr, &g_state.discord);
 		CopyInto(g_state.host, sizeof(g_state.host), host);
 		CopyInto(g_state.nick, sizeof(g_state.nick), SanitizeNick(nick));
 		std::snprintf(g_state.port, sizeof(g_state.port), "%u", port);
@@ -238,7 +238,7 @@ bool FormIsValid(uint16_t *port) {
 
 uint32_t NowMs() { return static_cast<uint32_t>(GetTickCount()); }
 
-// Writes the form into CoopIII.ini and starts the game: alone, or because the
+// Writes the form into CoopVC.ini and starts the game: alone, or because the
 // lobby's host started everybody's, into a new game with `newGame`. The
 // window closes behind a game that started.
 bool StartGame(bool newGame) {
@@ -250,9 +250,9 @@ bool StartGame(bool newGame) {
 	const std::string nick = SanitizeNick(g_state.nick);
 	CopyInto(g_state.nick, sizeof(g_state.nick), nick);
 	g_state.startError.clear();
-	if (!UpdateIni(Join(g_state.gameDir, "CoopIII.ini"), g_state.host, port, nick) ||
-	    !UpdateIniDiscord(Join(g_state.gameDir, "CoopIII.ini"), g_state.discord)) {
-		g_state.startError = "Could not write CoopIII.ini in the game folder.";
+	if (!UpdateIni(Join(g_state.gameDir, "CoopVC.ini"), g_state.host, port, nick) ||
+	    !UpdateIniDiscord(Join(g_state.gameDir, "CoopVC.ini"), g_state.discord)) {
+		g_state.startError = "Could not write CoopVC.ini in the game folder.";
 		return false;
 	}
 	if (!LaunchGame(g_state.gameDir, &g_state.startError, newGame))
@@ -262,12 +262,12 @@ bool StartGame(bool newGame) {
 }
 
 // Into the server's lobby with what the form says, and the password
-// CoopIII.ini has, if any.
+// CoopVC.ini has, if any.
 void JoinLobby(uint16_t port) {
 	const std::string nick = SanitizeNick(g_state.nick);
 	CopyInto(g_state.nick, sizeof(g_state.nick), nick);
 	std::string password;
-	ReadIni(Join(g_state.gameDir, "CoopIII.ini"), nullptr, nullptr, nullptr, &password);
+	ReadIni(Join(g_state.gameDir, "CoopVC.ini"), nullptr, nullptr, nullptr, &password);
 	g_state.startError.clear();
 	g_state.lobbyView = true;
 	g_state.lobby.Join(g_state.host, port, nick, password, NowMs());
@@ -467,7 +467,7 @@ void DrawLobby(const Theme &theme, float rightX, float rightW, float top, float 
 
 int RunWindow(const Startup &startup) {
 	AppOptions options;
-	options.title          = "CoopIII Launcher";
+	options.title          = "CoopVC Launcher";
 	options.width          = static_cast<int>(kWindowW);
 	options.height         = static_cast<int>(kWindowH);
 	options.resizable      = false;
@@ -477,10 +477,10 @@ int RunWindow(const Startup &startup) {
 	App app(options);
 	if (!app.Ok()) {
 		MessageBoxW(nullptr,
-		            L"CoopIII could not create its window. A Direct3D 11 capable display "
+		            L"CoopVC could not create its window. A Direct3D 11 capable display "
 		            L"driver is needed.\r\n\r\nRun it with --nogui to check the game and "
 		            L"start it without one.",
-		            L"CoopIII Launcher", MB_ICONERROR | MB_OK);
+		            L"CoopVC Launcher", MB_ICONERROR | MB_OK);
 		return 1;
 	}
 
@@ -517,7 +517,7 @@ int RunWindow(const Startup &startup) {
 		CityMap::DrawFade(draw, ImVec2(0, bodyTop), mapSize, theme,
 		                  MapFade{true, 0.35f, 0.92f, theme.bgWindow});
 
-		const TitleBarResult bar = TitleBar(app, "Launcher", "v" COOPIII_VERSION, false);
+		const TitleBarResult bar = TitleBar(app, "Launcher", "v" COOPVC_VERSION, false);
 		if (bar.minimise) app.Minimize();
 		if (bar.close)    app.Close();
 		if (bar.theme)    app.SetTheme(!app.IsLight());
@@ -582,8 +582,8 @@ int RunWindow(const Startup &startup) {
 			Text(ImVec2(rightX, y), Type::WindowHeading, theme.textPrimary, "Join a server");
 			y += 34.0f + 10.0f;
 			y += TextWrapped(ImVec2(rightX, y), 470.0f, Type::Body, theme.textSecondary,
-			                 "Co-op only runs when GTA III starts from here. Your name and server "
-			                 "are saved to CoopIII.ini.");
+			                 "Co-op only runs when GTA Vice City starts from here. Your name and server "
+			                 "are saved to CoopVC.ini.");
 
 			y += 32.0f;   // the form's margin-top
 
@@ -617,20 +617,20 @@ int RunWindow(const Startup &startup) {
 			                  {ImVec2(dirBox.Max().x + 8.0f, dirBox.pos.y), ImVec2(browseW, 46.0f)},
 			                  "Browse", Icon::Folder, theme)) {
 				const std::string picked =
-				    App::PickFolder("Where is GTA III installed?", g_state.gameDir);
+				    App::PickFolder("Where is GTA Vice City installed?", g_state.gameDir);
 				if (!picked.empty()) {
 					CopyInto(g_state.gameDir, sizeof(g_state.gameDir), picked);
 					Recheck();
 				}
 			}
 
-			// Discord: "Playing CoopIII" on the profile, or the game as Discord
+			// Discord: "Playing CoopVC" on the profile, or the game as Discord
 			// finds it. Into an ini that is there straight away, so it holds
 			// whether or not the game is started from here this time; a start
 			// writes it either way.
 			if (Checkbox("##discord", ImVec2(rightX, dirBox.Max().y + 18.0f), &g_state.discord,
-			             "Show CoopIII in Discord", theme)) {
-				const std::string ini = Join(g_state.gameDir, "CoopIII.ini");
+			             "Show CoopVC in Discord", theme)) {
+				const std::string ini = Join(g_state.gameDir, "CoopVC.ini");
 				if (FileExists(ini))
 					UpdateIniDiscord(ini, g_state.discord);
 			}
@@ -693,4 +693,4 @@ int RunWindow(const Startup &startup) {
 	return result;
 }
 
-} // namespace coopiii::launcher
+} // namespace coopvc::launcher

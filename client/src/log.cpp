@@ -11,7 +11,7 @@
 #include <windows.h>
 #endif
 
-namespace coopiii {
+namespace coopvc {
 
 namespace {
 
@@ -23,7 +23,7 @@ std::string g_path;
 // you can still tail the file while the game runs. That's the whole point.
 //
 // This is also what makes the per-pid fallback work: a second copy of the
-// game can't take CoopIII.log, so it falls back to CoopIII.<pid>.log. Plain
+// game can't take CoopVC.log, so it falls back to CoopVC.<pid>.log. Plain
 // fopen(path, "w") would let both processes succeed and both truncate, and
 // the two line streams would interleave into something unreadable.
 FILE *OpenDenyingWriters(const std::string &path) {
@@ -40,7 +40,7 @@ std::string LogPathForProcess(const std::string &path, uint32_t pid) {
 	char suffix[16];
 	std::snprintf(suffix, sizeof(suffix), ".%u", pid);
 
-	// Only look for an extension inside the file name itself. "C:\my.stuff\CoopIII"
+	// Only look for an extension inside the file name itself. "C:\my.stuff\CoopVC"
 	// has a dot in it but no extension, and appending the pid before that dot
 	// would put the suffix inside a directory name that doesn't exist.
 	const size_t slash = path.find_last_of("\\/");
@@ -111,4 +111,4 @@ void Log(const char *fmt, ...) {
 #endif
 }
 
-} // namespace coopiii
+} // namespace coopvc

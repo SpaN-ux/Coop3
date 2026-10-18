@@ -2,7 +2,7 @@
 //
 // The two things worth protecting here are the ones a player would notice:
 // a name that does not survive the trip to the wire, and a hand-edited
-// CoopIII.ini that the launcher flattens on the way past.
+// CoopVC.ini that the launcher flattens on the way past.
 #include "launcher/core.h"
 
 #include <cstdio>
@@ -11,7 +11,7 @@
 
 #include <windows.h>
 
-using namespace coopiii::launcher;
+using namespace coopvc::launcher;
 
 namespace {
 
@@ -102,19 +102,19 @@ void TestPortAndHost() {
 	Check(!ValidHost("has a space"), "a space is refused");
 }
 
-// ---- CoopIII.ini ----------------------------------------------------------
+// ---- CoopVC.ini ----------------------------------------------------------
 
 void TestIni() {
-	std::printf("CoopIII.ini\n");
+	std::printf("CoopVC.ini\n");
 
-	const std::string path = TempPath("coopiii-launchertest.ini");
+	const std::string path = TempPath("coopvc-launchertest.ini");
 	DeleteFileA(path.c_str());
 
 	// A file the player has edited: comments, their own spacing, and a key the
 	// launcher does not know about.
 	const std::string original =
 	    "; my config, do not eat\n"
-	    "[CoopIII]\n"
+	    "[CoopVC]\n"
 	    "host = 10.0.0.9\n"
 	    "port = 2001\n"
 	    "nick = marta\n"
@@ -193,7 +193,7 @@ void TestIni() {
 	DeleteFileA(path.c_str());
 	Check(UpdateIni(path, "127.0.0.1", 2001, "Player"), "a missing ini is created");
 	const std::string fresh = ReadWhole(path);
-	Check(fresh.find("[CoopIII]") != std::string::npos, "the new file has its section header");
+	Check(fresh.find("[CoopVC]") != std::string::npos, "the new file has its section header");
 	Check(fresh.find("host = 127.0.0.1") != std::string::npos, "and the keys");
 
 	// A file with no keys at all still ends up with them.
@@ -212,7 +212,7 @@ void TestIni() {
 void TestMd5() {
 	std::printf("MD5\n");
 
-	const std::string path = TempPath("coopiii-md5test.bin");
+	const std::string path = TempPath("coopvc-md5test.bin");
 
 	Write(path, "");
 	CheckEq(Md5File(path), "D41D8CD98F00B204E9800998ECF8427E", "MD5 of an empty file");
@@ -228,7 +228,7 @@ void TestMd5() {
 	Write(path, long_);
 	CheckEq(Md5File(path), "CABE45DCC9AE5B66BA86600CCA6B8BA8", "MD5 of 1000 a's");
 
-	Check(Md5File(TempPath("coopiii-does-not-exist.bin")).empty(),
+	Check(Md5File(TempPath("coopvc-does-not-exist.bin")).empty(),
 	      "a file that is not there hashes to nothing");
 
 	DeleteFileA(path.c_str());
@@ -245,11 +245,11 @@ void TestChecks() {
 	const Checks missing = RunChecks("Z:\\definitely\\not\\here");
 	Check(missing.problems == 1 && !missing.Ready(), "a folder that is not there is a problem");
 
-	// An empty directory: gta3.exe missing, no loader, no .asi, no ini. Three
+	// An empty directory: gta-vc.exe missing, no loader, no .asi, no ini. Three
 	// failures, and the ini is informational because the launcher writes it.
 	char dir[MAX_PATH] = {0};
 	GetTempPathA(MAX_PATH, dir);
-	const std::string empty = std::string(dir) + "coopiii-checktest";
+	const std::string empty = std::string(dir) + "coopvc-checktest";
 	CreateDirectoryA(empty.c_str(), nullptr);
 
 	const Checks blank = RunChecks(empty);
@@ -258,7 +258,7 @@ void TestChecks() {
 	Check(!blank.Ready(), "and it is not ready to start");
 	if (blank.items.size() == 4) {
 		Check(blank.items[3].state == Check::State::Info,
-		      "a missing CoopIII.ini is informational, not a failure");
+		      "a missing CoopVC.ini is informational, not a failure");
 		Check(!blank.items[0].detail.empty(), "a failing check says what to do about it");
 	}
 

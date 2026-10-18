@@ -21,11 +21,11 @@
 // count, both ways: his vote goes and so does his place in the 75%.
 #pragma once
 
-#include "coopiii/protocol.h"
+#include "coopvc/protocol.h"
 
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 
 constexpr uint32_t RAMPAGE_VOTE_MS = 15000;
 
@@ -239,4 +239,4 @@ inline uint8_t RampageVoteStateOf(RampageVote::Outcome outcome) {
 	}
 }
 
-} // namespace coopiii
+} // namespace coopvc

@@ -1,6 +1,6 @@
-// CoopIII launcher.
+// CoopVC launcher.
 //
-//   coopiii-launcher [--game <dir>] [--server <host[:port]>] [--nick <name>]
+//   coopvc-launcher [--game <dir>] [--server <host[:port]>] [--nick <name>]
 //                    [--check] [--nogui]
 //
 // The window by default (design/screens/Main.dc.html); the console with
@@ -8,7 +8,7 @@
 // that wants the checks as text. Both are launcher-core underneath.
 //
 // Arguments work in both. In the window they fill the form in over what
-// CoopIII.ini says, so a shortcut can carry a server and a name and still show
+// CoopVC.ini says, so a shortcut can carry a server and a name and still show
 // the checks before anything starts.
 //
 // Linked as a Windows application, so --nogui has to go and find a console;
@@ -24,20 +24,20 @@
 #include <cstring>
 #include <string>
 
-using namespace coopiii::launcher;
+using namespace coopvc::launcher;
 
 namespace {
 
-bool OpenConsole() { return ui::OpenConsole(L"CoopIII Launcher"); }
+bool OpenConsole() { return ui::OpenConsole(L"CoopVC Launcher"); }
 
 void Usage() {
-	std::printf("usage: coopiii-launcher [options]\n"
+	std::printf("usage: coopvc-launcher [options]\n"
 	            "\n"
-	            "  --game <dir>            where GTA III is installed\n"
+	            "  --game <dir>            where GTA Vice City is installed\n"
 	            "  --server <host[:port]>  server to join\n"
 	            "  --nick <name>           your name in game\n"
 	            "  --check                 run the checks and stop (implies --nogui)\n"
-	            "  --nogui                 no window: check, write CoopIII.ini, start the game\n"
+	            "  --nogui                 no window: check, write CoopVC.ini, start the game\n"
 	            "\n"
 	            "With no arguments it opens the window.\n");
 }
@@ -49,7 +49,7 @@ bool Matches(const char *arg, const char *a, const char *b = nullptr) {
 // Refuses at the door, in whichever console there is, and says why.
 int Refuse(const char *fmt, const char *what) {
 	OpenConsole();
-	std::printf("coopiii-launcher: ");
+	std::printf("coopvc-launcher: ");
 	std::printf(fmt, what);
 	std::printf("\n\n");
 	Usage();
@@ -103,9 +103,9 @@ int main(int argc, char **argv) {
 	if (!startup.gui) {
 		if (!OpenConsole()) {
 			MessageBoxW(nullptr,
-			            L"CoopIII Launcher was started with --nogui but could not open a "
+			            L"CoopVC Launcher was started with --nogui but could not open a "
 			            L"console to write to.",
-			            L"CoopIII Launcher", MB_ICONERROR | MB_OK);
+			            L"CoopVC Launcher", MB_ICONERROR | MB_OK);
 			return 1;
 		}
 		const int result = RunConsole(startup);

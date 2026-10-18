@@ -1,8 +1,8 @@
-#include "coopiii/net.h"
+#include "coopvc/net.h"
 
 #include <enet/enet.h>
 
-namespace coopiii {
+namespace coopvc {
 
 namespace {
 int g_initRefs = 0;
@@ -266,4 +266,4 @@ void NetServer::Service(std::vector<ServerEvent> &out, uint32_t timeoutMs) {
 	}
 }
 
-} // namespace coopiii
+} // namespace coopvc

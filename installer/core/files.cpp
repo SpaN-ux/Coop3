@@ -11,7 +11,7 @@
 
 #include <cstdio>
 
-namespace coopiii::installer {
+namespace coopvc::installer {
 
 bool ReadWholeFile(const std::string &path, std::vector<uint8_t> *out, std::string *error) {
 	FILE *fh = std::fopen(path.c_str(), "rb");
@@ -36,7 +36,7 @@ bool ReadWholeFile(const std::string &path, std::vector<uint8_t> *out, std::stri
 
 bool WriteFileAtomic(const std::string &path, const std::vector<uint8_t> &bytes,
                      std::string *error) {
-	const std::string temp = path + ".coopiii-new";
+	const std::string temp = path + ".coopvc-new";
 	FILE             *fh   = std::fopen(temp.c_str(), "wb");
 	if (!fh) {
 		if (error)
@@ -58,7 +58,7 @@ bool WriteFileAtomic(const std::string &path, const std::vector<uint8_t> &bytes,
 		if (error) {
 			*error = "could not replace " + path;
 			if (why == ERROR_SHARING_VIOLATION || why == ERROR_ACCESS_DENIED)
-				*error += ". Something has it open - is GTA III still running?";
+				*error += ". Something has it open - is GTA Vice City still running?";
 		}
 		return false;
 	}
@@ -74,4 +74,4 @@ bool EnsureDir(const std::string &path) {
 	return CreateDirectoryA(path.c_str(), nullptr) || GetLastError() == ERROR_ALREADY_EXISTS;
 }
 
-} // namespace coopiii::installer
+} // namespace coopvc::installer

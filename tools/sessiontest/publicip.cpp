@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-using namespace coopiii;
+using namespace coopvc;
 
 namespace {
 
@@ -214,7 +214,7 @@ FirewallRule For(const char *app, bool allow) {
 
 void TestWhatTheFirewallAllows() {
 	std::printf("\nwhat Windows Firewall lets in\n");
-	const std::string exe = "C:\\Games\\CoopIII\\server.exe";
+	const std::string exe = "C:\\Games\\CoopVC\\server.exe";
 
 	Check(JudgeFirewall(FirewallFacts{}, exe, 2001).state == FirewallState::Unknown,
 	      "a firewall that could not be asked is unknown, not fine");
@@ -230,11 +230,11 @@ void TestWhatTheFirewallAllows() {
 	      "unless the firewall lets in whatever no rule mentions");
 
 	f = Firewall();
-	f.rules.push_back(For("c:/games/COOPIII/Server.EXE", true));
+	f.rules.push_back(For("c:/games/COOPVC/Server.EXE", true));
 	Check(JudgeFirewall(f, exe, 2001).state == FirewallState::Allowed,
 	      "a rule for this program, spelt with other case and slashes, lets it in");
 
-	f.rules.push_back(For("C:\\Games\\CoopIII\\server.exe", false));
+	f.rules.push_back(For("C:\\Games\\CoopVC\\server.exe", false));
 	FirewallVerdict v = JudgeFirewall(f, exe, 2001);
 	Check(v.state == FirewallState::Blocked && v.blockingRule == "server.exe",
 	      "and a block beside it wins, by name, the way Windows' own does");
@@ -296,7 +296,7 @@ void TestWhatTheFirewallAllows() {
 
 void TestWhatTheHostIsTold() {
 	std::printf("\nwhat the host is told about the firewall\n");
-	const std::string exe = "C:\\Program Files\\CoopIII\\server.exe";
+	const std::string exe = "C:\\Program Files\\CoopVC\\server.exe";
 
 	FirewallVerdict v;
 	v.state          = FirewallState::NotAllowed;
@@ -318,14 +318,14 @@ void TestWhatTheHostIsTold() {
 
 	ShellCommand c = FirewallFix(exe, false);
 	Check(c.file == "netsh.exe" &&
-	          c.params == "advfirewall firewall add rule name=\"CoopIII server\" dir=in "
-	                      "action=allow program=\"C:\\Program Files\\CoopIII\\server.exe\" "
+	          c.params == "advfirewall firewall add rule name=\"CoopVC server\" dir=in "
+	                      "action=allow program=\"C:\\Program Files\\CoopVC\\server.exe\" "
 	                      "protocol=UDP profile=any enable=yes",
 	      "the button adds one inbound UDP rule for this program, the path quoted");
 	c = FirewallFix(exe, true);
 	Check(c.file == "cmd.exe" &&
 	          c.params.rfind("/c \"netsh advfirewall firewall delete rule ", 0) == 0 &&
-	          Has(c.params, "dir=in program=\"C:\\Program Files\\CoopIII\\server.exe\" & netsh "
+	          Has(c.params, "dir=in program=\"C:\\Program Files\\CoopVC\\server.exe\" & netsh "
 	                        "advfirewall firewall add rule") &&
 	          c.params.back() == '"',
 	      "and when a rule blocks it, deletes the program's inbound rules first, in one go");

@@ -1,6 +1,6 @@
 #include "missionslot.h"
 
-namespace coopiii {
+namespace coopvc {
 
 MissionSlot::ClaimAnswer MissionSlot::Claim(uint8_t playerId, const C_MissionClaim &claim,
                                             const MissionPresence *players, size_t count,
@@ -294,4 +294,4 @@ void MissionSlot::ClearWait() {
 	m_waitDirty    = true;
 }
 
-} // namespace coopiii
+} // namespace coopvc

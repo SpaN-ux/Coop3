@@ -6,15 +6,15 @@
 // server. The window draws what it says and calls Service every frame.
 #pragma once
 
-#include <coopiii/net.h>
-#include <coopiii/protocol.h>
+#include <coopvc/net.h>
+#include <coopvc/protocol.h>
 
 #include <cstdint>
 #include <memory>
 #include <string>
 #include <vector>
 
-namespace coopiii::launcher {
+namespace coopvc::launcher {
 
 // How long the connection may take to come up, and the server to answer once
 // it has. An older server never answers: it drops C_LobbyJoin.
@@ -98,4 +98,4 @@ private:
 // What a refusal says to the player.
 const char *LobbyRefusalText(uint8_t reject);
 
-} // namespace coopiii::launcher
+} // namespace coopvc::launcher

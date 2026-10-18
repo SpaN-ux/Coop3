@@ -11,7 +11,7 @@
 #include <cctype>
 #include <cstring>
 
-namespace coopiii::installer {
+namespace coopvc::installer {
 namespace {
 
 // A path that stays where it is unpacked: relative, no drive, no "..".
@@ -223,4 +223,4 @@ std::vector<uint8_t> WriteZip(const std::vector<ArchiveEntry> &entries) {
 	return out;
 }
 
-} // namespace coopiii::installer
+} // namespace coopvc::installer

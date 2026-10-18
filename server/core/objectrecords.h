@@ -21,12 +21,12 @@
 // rebuild is only asked about for an object the client was told of.
 #pragma once
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 
 // Farther than the engine's 80 m on purpose. A player the server places at
 // 85 m may be at 79 m on their own screen, still holding the object broken;
@@ -167,4 +167,4 @@ private:
 	ObjectRecord m_rows[OBJECT_RECORD_CAPACITY];
 };
 
-} // namespace coopiii
+} // namespace coopvc

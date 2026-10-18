@@ -1,4 +1,4 @@
-// CoopIII dedicated server.
+// CoopVC dedicated server.
 //
 //   server.exe [port] [-friendlyfire] [--nogui]
 //
@@ -7,7 +7,7 @@
 // Ctrl-C. Both run the same class in the same process, so there is one
 // server and two ways of looking at it.
 //
-// Settings come from CoopIII-Server.ini next to the executable, and an
+// Settings come from CoopVC-Server.ini next to the executable, and an
 // argument wins over the file so a second server on one machine can be
 // started on another port without editing anything.
 //
@@ -24,11 +24,11 @@
 #include <cstdlib>
 #include <cstring>
 
-using namespace coopiii;
+using namespace coopvc;
 
 namespace {
 
-bool OpenConsole() { return ui::OpenConsole(L"CoopIII Server"); }
+bool OpenConsole() { return ui::OpenConsole(L"CoopVC Server"); }
 
 void Usage() {
 	std::printf("usage: server [port] [-friendlyfire] [-ammosync] [-money off|own|shared]\n"
@@ -44,8 +44,8 @@ void Usage() {
 	            "                 (also -money=RULE)\n"
 	            "  -password PW   players have to give PW to join (also -password=PW)\n"
 	            "  -forgetprogress\n"
-	            "                 start the campaign over: CoopIII-Progress.dat is set\n"
-	            "                 aside as CoopIII-Progress.dat.old\n"
+	            "                 start the campaign over: CoopVC-Progress.dat is set\n"
+	            "                 aside as CoopVC-Progress.dat.old\n"
 	            "  --nogui        no window: log to this console, Ctrl-C to stop\n");
 }
 

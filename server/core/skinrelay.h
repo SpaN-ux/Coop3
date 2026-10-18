@@ -1,7 +1,7 @@
 // The players' custom skins, on the server (docs/protocol.md 1.72).
 //
 // A skin comes in from its player in pieces (C_PlayerSkin). Each piece is
-// checked as it lands (coopiii/skin.h, SkinAssembly), and only a skin that is
+// checked as it lands (coopvc/skin.h, SkinAssembly), and only a skin that is
 // all here and hashes right is kept, one per player, and sent on: to every
 // other player, and to whoever joins later. Nothing of a half-sent skin ever
 // leaves the server.
@@ -16,14 +16,14 @@
 // sessiontest drives it alone.
 #pragma once
 
-#include <coopiii/net.h>
-#include <coopiii/protocol.h>
-#include <coopiii/skin.h>
+#include <coopvc/net.h>
+#include <coopvc/protocol.h>
+#include <coopvc/skin.h>
 
 #include <cstdint>
 #include <memory>
 
-namespace coopiii {
+namespace coopvc {
 
 class SkinRelay {
 public:
@@ -141,4 +141,4 @@ private:
 	uint32_t     m_rejected = 0;
 };
 
-} // namespace coopiii
+} // namespace coopvc

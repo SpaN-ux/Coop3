@@ -22,7 +22,7 @@
 
 using namespace ui;
 
-namespace coopiii {
+namespace coopvc {
 namespace {
 
 // ---- the table ---------------------------------------------------------------
@@ -32,7 +32,7 @@ enum class Kind : uint8_t { Toggle, Choice, Number, Port, Password };
 struct Setting {
 	int         section = SECTION_SERVER;
 	Kind        kind    = Kind::Toggle;
-	const char *key     = "";       // its name in CoopIII-Server.ini
+	const char *key     = "";       // its name in CoopVC-Server.ini
 	const char *title   = "";
 	const char *detail  = "";       // the line under the title
 	const char *note    = nullptr;  // a second, quieter line, when there is one
@@ -104,7 +104,7 @@ const char *const kCoopCheats[]    = {"Outside missions", "Always", "Off"};
 const char *const kCoopCheatsWhy[] = {
     "Outside missions: TPTO1 to TPTO8 put you beside that player, but not in a mission.",
     "Always: the same, during a mission too.",
-    "Off: CoopIII's own cheats do nothing.",
+    "Off: CoopVC's own cheats do nothing.",
 };
 
 Setting Toggle(int section, const char *key, const char *title, const char *detail,
@@ -181,7 +181,7 @@ const std::vector<Setting> &Settings() {
 			s.kind    = Kind::Password;
 			s.key     = "password";
 			s.title   = "Password";
-			s.detail  = "What players put in their CoopIII.ini to join. Empty lets in anybody "
+			s.detail  = "What players put in their CoopVC.ini to join. Empty lets in anybody "
 			            "with the address.";
 			s.note    = "It keeps strangers out and no more: it crosses the network as typed.";
 			t.push_back(s);
@@ -366,7 +366,7 @@ const std::vector<Setting> &Settings() {
 			    "next time the server starts, and whoever is behind catches up when he joins.",
 			    [](const ServerConfig &c) { return c.keepProgress ? 1 : 0; },
 			    [](ServerConfig &c, int v) { c.keepProgress = v != 0; });
-			s.note    = "Kept in CoopIII-Progress.dat. Forget progress, below, starts it over.";
+			s.note    = "Kept in CoopVC-Progress.dat. Forget progress, below, starts it over.";
 			s.restart = true;
 			t.push_back(s);
 		}
@@ -404,7 +404,7 @@ const std::vector<Setting> &Settings() {
 		    [](const ServerConfig &c) { return static_cast<int>(c.cheats); },
 		    [](ServerConfig &c, int v) { c.cheats = static_cast<CheatMode>(v); }));
 		t.push_back(Choice(
-		    SECTION_WORLD, "coopCheats", "CoopIII cheats", "", kCoopCheats, 3, kCoopCheatsWhy,
+		    SECTION_WORLD, "coopCheats", "CoopVC cheats", "", kCoopCheats, 3, kCoopCheatsWhy,
 		    [](const ServerConfig &c) { return static_cast<int>(c.coopCheats); },
 		    [](ServerConfig &c, int v) { c.coopCheats = static_cast<CoopCheatMode>(v); }));
 		t.push_back(Number(
@@ -859,7 +859,7 @@ OptionsResult DrawOptions(OptionsDialog &d, const ServerConfig &saved, App &app,
 				}
 				if (app.Seconds() - s_tipSince > 0.45f) {
 					const std::string def = ValueText(s, ServerConfig{});
-					ImGui::SetTooltip("%s in CoopIII-Server.ini\nDefault: %s%s", s.key,
+					ImGui::SetTooltip("%s in CoopVC-Server.ini\nDefault: %s%s", s.key,
 					                  s.kind == Kind::Password ? "no password" : def.c_str(),
 					                  s.restart ? "\nTakes effect when the server starts again."
 					                  : !live   ? "\nDoes nothing with the settings above as they are."
@@ -931,7 +931,7 @@ OptionsResult DrawOptions(OptionsDialog &d, const ServerConfig &saved, App &app,
 		}
 		ImGui::SetItemTooltip("Starts the campaign over: the missions passed, the packages found "
 		                      "and the car lists.\nOnly with nobody connected. The old file is "
-		                      "kept as CoopIII-Progress.dat.old.");
+		                      "kept as CoopVC-Progress.dat.old.");
 		noteX += MeasureText(Type::ButtonSmall, label).x + 18.0f;
 	}
 	if (changedAll > 0) {
@@ -1001,4 +1001,4 @@ std::vector<RuleSummary> SummariseRules(const ServerConfig &c) {
 	return out;
 }
 
-} // namespace coopiii
+} // namespace coopvc

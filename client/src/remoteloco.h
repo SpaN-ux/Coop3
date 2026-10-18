@@ -7,12 +7,12 @@
 // speeds and seeks on the clump.
 #pragma once
 
-#include "coopiii/protocol.h"
+#include "coopvc/protocol.h"
 
 #include <cmath>
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 
 // Indices into PlayerStateBody::locoWeight, and the AnimationIds they stand
 // for (LOCO_ANIM_IDS).
@@ -360,4 +360,4 @@ private:
 	Entry m_entries[MAX_PLAYERS];
 };
 
-} // namespace coopiii
+} // namespace coopvc

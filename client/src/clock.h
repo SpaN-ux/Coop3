@@ -13,11 +13,11 @@
 #include <chrono>
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 
 class WallClock {
 public:
-	// Called once when CoopIII starts. Later calls do nothing, so the epoch
+	// Called once when CoopVC starts. Later calls do nothing, so the epoch
 	// stays fixed for the life of the process.
 	static void Start() {
 		if (!s_started) {
@@ -77,4 +77,4 @@ private:
 	uint32_t m_nextMs = 0;
 };
 
-} // namespace coopiii
+} // namespace coopvc
