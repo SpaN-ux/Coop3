@@ -622,17 +622,6 @@ int RunWindow(const Startup &startup) {
 				}
 			}
 
-			// Discord: "Playing CoopVC" on the profile, or the game as Discord
-			// finds it. Into an ini that is there straight away, so it holds
-			// whether or not the game is started from here this time; a start
-			// writes it either way.
-			if (Checkbox("##discord", ImVec2(rightX, dirBox.Max().y + 18.0f), &g_state.discord,
-			             "Show CoopVC in Discord", theme)) {
-				const std::string ini = Join(g_state.gameDir, "CoopVC.ini");
-				if (FileExists(ini))
-					UpdateIniDiscord(ini, g_state.discord);
-			}
-
 			// ---- the lobby button, pinned to the bottom -----------------------
 			// Everybody waits there and the host starts everybody's game; the
 			// link beside the note starts this one alone, as the button used to.
