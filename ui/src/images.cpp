@@ -1,4 +1,4 @@
-// The one image the apps carry: the CoopIII logo mark.
+// The one image the apps carry: the CoopVC logo mark.
 //
 // Embedded rather than loaded from disk, for the same reason the fonts are -
 // an app that cannot find its own logo looks broken, and this one is drawn on

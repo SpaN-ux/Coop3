@@ -57,7 +57,7 @@ void Section(ImVec2 pos, const char *title, const Theme &theme) {
 
 int main() {
 	AppOptions options;
-	options.title       = "CoopIII UI gallery";
+	options.title       = "CoopVC UI gallery";
 	options.width       = 1180;
 	options.height      = 860;
 	options.resizable   = true;
@@ -66,7 +66,7 @@ int main() {
 	App app(options);
 	if (!app.Ok()) {
 		MessageBoxW(nullptr, L"Could not create the window or the Direct3D device.",
-		            L"CoopIII UI gallery", MB_ICONERROR);
+		            L"CoopVC UI gallery", MB_ICONERROR);
 		return 1;
 	}
 
@@ -113,9 +113,9 @@ int main() {
 		Section(ImVec2(x, y), "Buttons", theme);
 		Checkbox("##live", ImVec2(x + 120, y + 1), &g_live, "enabled", theme);
 		y += 28.0f;
-		PrimaryButton("##start", {ImVec2(x, y), ImVec2(240, 60)}, "Start GTA III", Icon::Play,
+		PrimaryButton("##start", {ImVec2(x, y), ImVec2(240, 60)}, "Start GTA Vice City", Icon::Play,
 		              g_live, theme);
-		PrimaryButton("##startoff", {ImVec2(x + 256, y), ImVec2(240, 60)}, "Start GTA III",
+		PrimaryButton("##startoff", {ImVec2(x + 256, y), ImVec2(240, 60)}, "Start GTA Vice City",
 		              Icon::Play, !g_live, theme);
 		y += 72.0f;
 		OutlineButton("##again", {ImVec2(x, y), ImVec2(140, 44)}, "Check again", Icon::RotateCcw,
@@ -150,13 +150,13 @@ int main() {
 		Section(ImVec2(x, y), "Status", theme);
 		y += 28.0f;
 		Card({ImVec2(x, y), ImVec2(420, 44 * 2 + 63)}, theme);
-		StatusRow({ImVec2(x, y), ImVec2(420, 44)}, StatusKind::Ok, "gta3.exe is v1.0 retail",
+		StatusRow({ImVec2(x, y), ImVec2(420, 44)}, StatusKind::Ok, "gta-vc.exe is v1.0 retail",
 		          nullptr, nullptr, theme);
 		StatusRow({ImVec2(x, y + 44), ImVec2(420, 44)}, StatusKind::Ok, "ASI loader found",
 		          nullptr, "dinput8.dll", theme);
 		StatusRow({ImVec2(x, y + 88), ImVec2(420, 63)}, StatusKind::Fail,
-		          "CoopIII.asi is not installed",
-		          "Copy it, and CoopIII.ini, next to gta3.exe.", nullptr, theme);
+		          "CoopVC.asi is not installed",
+		          "Copy it, and CoopVC.ini, next to gta-vc.exe.", nullptr, theme);
 		Pill(ImVec2(x + 440, y + 6), "Running", theme.statusOk, theme.okPillBg,
 		     theme.okPillBorder, true);
 		Chip(ImVec2(x + 440, y + 44), "Required", theme);
@@ -179,18 +179,18 @@ int main() {
 			++g_said;
 		y += 28.0f;
 		std::vector<ConsoleLine> lines = {
-		    {"21:29:04", "[coopiii]", "listening on 2001, 8 slots", theme.textTertiary,
+		    {"21:29:04", "[coopvc]", "listening on 2001, 8 slots", theme.textTertiary,
 		     theme.textSecondary},
-		    {"21:31:47", "[coopiii]", "noxx joined (slot 0, net 1)", theme.statusOk,
+		    {"21:31:47", "[coopvc]", "noxx joined (slot 0, net 1)", theme.statusOk,
 		     theme.textPrimary},
 		    {"21:35:40", "[chat]", "marta: meet at the docks", theme.actionBg, theme.textPrimary},
-		    {"21:58:51", "[coopiii]", "rejected peer 3 (reason 1: bad version)", theme.statusWarn,
+		    {"21:58:51", "[coopvc]", "rejected peer 3 (reason 1: bad version)", theme.statusWarn,
 		     theme.textPrimary},
 		};
 		for (int i = 0; i < g_said; ++i) {
 			char when[16];
 			std::snprintf(when, sizeof(when), "22:%02d:%02d", (i * 7) % 60, (i * 23) % 60);
-			lines.push_back({when, "[coopiii]", kSayings[i % 5], theme.textTertiary,
+			lines.push_back({when, "[coopvc]", kSayings[i % 5], theme.textTertiary,
 			                 theme.textSecondary});
 		}
 		Card({ImVec2(x, y), ImVec2(660, 120)}, theme, radius::kCard, theme.bgConsole);

@@ -1,4 +1,4 @@
-// The window every CoopIII GUI runs in.
+// The window every CoopVC GUI runs in.
 //
 // A frameless Win32 window with a Direct3D 11 swap chain and Dear ImGui on
 // top. Frameless the good way: the frame is still there, WM_NCCALCSIZE just
@@ -22,7 +22,7 @@ namespace ui {
 struct Theme;
 
 struct AppOptions {
-	const char *title      = "CoopIII";
+	const char *title      = "CoopVC";
 	int         width      = 1040;   // design pixels
 	int         height     = 700;
 	bool        resizable  = false;

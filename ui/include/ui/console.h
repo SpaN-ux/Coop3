@@ -1,7 +1,7 @@
 // A console for a Windows-subsystem executable that was asked not to open its
 // window.
 //
-// server.exe and coopiii-launcher.exe are linked as Windows applications,
+// server.exe and coopvc-launcher.exe are linked as Windows applications,
 // because the window is the common case and a console subsystem flashes a
 // black rectangle every time somebody double-clicks one. --nogui therefore has
 // to go and find a console: the one it was launched from if there is one, a

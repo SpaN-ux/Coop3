@@ -1,4 +1,4 @@
-// Resolves E8/E9 rel32 targets in gta3.exe and dumps the bytes at the
+// Resolves E8/E9 rel32 targets in gta-vc.exe and dumps the bytes at the
 // destination, so you can tell whether it's actually a function start.
 //
 //   calltarget <exe> <VA-of-call> [<VA-of-call> ...]

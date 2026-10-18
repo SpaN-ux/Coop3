@@ -1,4 +1,4 @@
-// Turns an address in gta3.exe into a byte pattern the client can scan for at
+// Turns an address in gta-vc.exe into a byte pattern the client can scan for at
 // runtime, and checks the pattern is unique inside .text.
 //
 // Hardcoded addresses break the moment anything shifts. A pattern that's
@@ -22,7 +22,7 @@
 #include <windows.h>
 #endif
 
-using namespace coopiii;
+using namespace coopvc;
 
 namespace {
 

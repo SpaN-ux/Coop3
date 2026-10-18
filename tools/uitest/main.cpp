@@ -412,8 +412,8 @@ int main() {
 	std::printf("type widths\n");
 	struct Want { Type role; const char *text; float browser; };
 	const Want wants[] = {
-	    {Type::Body, "CoopIII goes in with the Essential Pack by default. Untick anything you already manage yourself.", 586.77f},
-	    {Type::Body, "Co-op only runs when GTA III starts from here.", 283.44f},
+	    {Type::Body, "CoopVC goes in with the Essential Pack by default. Untick anything you already manage yourself.", 586.77f},
+	    {Type::Body, "Co-op only runs when GTA Vice City starts from here.", 283.44f},
 	    {Type::Body, "The quick brown fox jumps over the lazy dog", 270.75f},
 	    {Type::WindowHeading, "Join a server", 221.05f},
 	    {Type::SectionTitle, "Pre-launch checks", 127.73f},

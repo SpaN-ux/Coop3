@@ -1,7 +1,7 @@
 // Headless protocol test. Drives real NetClients against a real server.exe
 // over loopback and checks the handshake, relay and chat flows.
 //
-// The client DLL can't be tested without GTA III running, but the protocol
+// The client DLL can't be tested without GTA Vice City running, but the protocol
 // itself can. Run this after touching protocol.h or the server.
 //
 //   xmake build nettest && xmake run nettest
@@ -9,7 +9,7 @@
 // Expects a server already listening on DEFAULT_PORT, or on the port given as
 // the second argument (`nettest 127.0.0.1 2005`).
 
-#include "coopiii/net.h"
+#include "coopvc/net.h"
 
 #include <chrono>
 #include <cstdlib>
@@ -20,7 +20,7 @@
 #include <thread>
 #include <vector>
 
-using namespace coopiii;
+using namespace coopvc;
 
 namespace {
 

@@ -1,7 +1,7 @@
 # Screenshots a running GUI by process name, so a screen can be checked
 # against design/screens/ without a person having to look at it.
 #
-#   powershell -ExecutionPolicy Bypass -File tools\shot.ps1 -Process coopiii-launcher -Out shot.png
+#   powershell -ExecutionPolicy Bypass -File tools\shot.ps1 -Process coopvc-launcher -Out shot.png
 #
 # Uses PrintWindow with PW_RENDERFULLCONTENT, which photographs the window's
 # own pixels rather than the screen. That matters here: the server binds a UDP

@@ -256,7 +256,7 @@ struct Dialog {
 
 // ---- images ---------------------------------------------------------------
 
-// The CoopIII logo mark, drawn `height` px tall with its top-left at `pos`.
+// The CoopVC logo mark, drawn `height` px tall with its top-left at `pos`.
 // Returns the width it took.
 float Logo(ImVec2 pos, float height);
 // Same, sized by width instead - the launcher's left column asks for 216 px.

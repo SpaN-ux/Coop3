@@ -11,7 +11,7 @@
 #include "queue.h"
 #include "quat.h"
 
-#include <coopiii/version.h>
+#include <coopvc/version.h>
 
 #include <cmath>
 #include <cstdio>
@@ -25,7 +25,7 @@
 #include <windows.h>
 #endif
 
-using namespace coopiii;
+using namespace coopvc;
 
 namespace {
 
@@ -56,7 +56,7 @@ void TestConfigDefaults() {
 void TestConfigParsing() {
 	std::printf("\nconfig parsing\n");
 	Config c;
-	Check(c.ParseIni("[CoopIII]\n"
+	Check(c.ParseIni("[CoopVC]\n"
 	                 "; a comment\n"
 	                 "# another\n"
 	                 "host = 192.168.1.50\n"
@@ -192,27 +192,27 @@ std::string ReadFileNear(const char *thisFile, const char *relative) {
 
 void TestTheVersionIsTheBuilds() {
 	std::printf("\nthe version in the corner\n");
-	Check(std::string(COOPIII_VERSION).find('.') != std::string::npos, "it looks like a version");
+	Check(std::string(COOPVC_VERSION).find('.') != std::string::npos, "it looks like a version");
 
 	const std::string lua = ReadFileNear(__FILE__, "xmake.lua");
 	if (lua.empty()) {
 		std::printf("  (xmake.lua is not beside this build; not compared)\n");
 		return;
 	}
-	const std::string want = std::string("set_version(\"") + COOPIII_VERSION + "\")";
+	const std::string want = std::string("set_version(\"") + COOPVC_VERSION + "\")";
 	Check(lua.find(want) != std::string::npos, "it is the one xmake.lua builds");
 
 	const std::string json = ReadFileNear(__FILE__, "installer/assets/components.json");
 	if (!json.empty()) {
 		const std::string key = "\"version\": \"";
-		const size_t at  = json.find("\"id\": \"coopiii\"");
+		const size_t at  = json.find("\"id\": \"coopvc\"");
 		const size_t val = at == std::string::npos ? at : json.find(key, at);
 		std::string shipped;
 		if (val != std::string::npos) {
 			const size_t from = val + key.size();
 			shipped = json.substr(from, json.find('"', from) - from);
 		}
-		Check(shipped == COOPIII_VERSION, "and the one the installer ships");
+		Check(shipped == COOPVC_VERSION, "and the one the installer ships");
 	}
 }
 
@@ -236,7 +236,7 @@ void TestNickSanitising() {
 void TestEnvOverrides() {
 	std::printf("\nenvironment overrides - two game instances need two nicks\n");
 
-	// CoopIII.ini is read-only, so two copies of the game can safely share the
+	// CoopVC.ini is read-only, so two copies of the game can safely share the
 	// same one. What they can't share is a nick - two players both called
 	// "Player" isn't a working test. So the launcher sets these per process
 	// instead of writing two ini files into one game folder.
@@ -246,9 +246,9 @@ void TestEnvOverrides() {
 	      "the file is read first");
 
 	c.ApplyOverrides("192.168.1.5", "2002", "Second");
-	Check(c.host == "192.168.1.5", "COOPIII_HOST wins over the file");
-	Check(c.port == 2002, "COOPIII_PORT wins over the file");
-	Check(c.nick == "Second", "COOPIII_NICK wins over the file");
+	Check(c.host == "192.168.1.5", "COOPVC_HOST wins over the file");
+	Check(c.port == 2002, "COOPVC_PORT wins over the file");
+	Check(c.nick == "Second", "COOPVC_NICK wins over the file");
 
 	c.ApplyOverrides(nullptr, nullptr, nullptr);
 	Check(c.host == "192.168.1.5" && c.port == 2002 && c.nick == "Second",
@@ -269,22 +269,22 @@ void TestEnvOverrides() {
 }
 
 void TestLogPathPerProcess() {
-	std::printf("\nlog path - two instances must not share one CoopIII.log\n");
+	std::printf("\nlog path - two instances must not share one CoopVC.log\n");
 
-	Check(LogPathForProcess("C:\\game\\CoopIII.log", 4312) == "C:\\game\\CoopIII.4312.log",
+	Check(LogPathForProcess("C:\\game\\CoopVC.log", 4312) == "C:\\game\\CoopVC.4312.log",
 	      "the pid goes before the extension");
-	Check(LogPathForProcess("CoopIII.log", 7) == "CoopIII.7.log",
+	Check(LogPathForProcess("CoopVC.log", 7) == "CoopVC.7.log",
 	      "a bare file name works too");
-	Check(LogPathForProcess("C:\\game\\CoopIII", 7) == "C:\\game\\CoopIII.7",
+	Check(LogPathForProcess("C:\\game\\CoopVC", 7) == "C:\\game\\CoopVC.7",
 	      "no extension means the pid is just appended");
 
 	// A dot in a directory name is not an extension. Splitting on it blindly
 	// would put the log in a directory that doesn't exist.
-	Check(LogPathForProcess("C:\\my.mods\\CoopIII", 7) == "C:\\my.mods\\CoopIII.7",
+	Check(LogPathForProcess("C:\\my.mods\\CoopVC", 7) == "C:\\my.mods\\CoopVC.7",
 	      "a dotted directory is not mistaken for an extension");
-	Check(LogPathForProcess("C:/my.mods/CoopIII", 7) == "C:/my.mods/CoopIII.7",
+	Check(LogPathForProcess("C:/my.mods/CoopVC", 7) == "C:/my.mods/CoopVC.7",
 	      "forward slashes count as separators too");
-	Check(LogPathForProcess("C:\\my.mods\\CoopIII.log", 7) == "C:\\my.mods\\CoopIII.7.log",
+	Check(LogPathForProcess("C:\\my.mods\\CoopVC.log", 7) == "C:\\my.mods\\CoopVC.7.log",
 	      "and a real extension still wins when there is one");
 
 	Check(LogPathForProcess("a.b.c.log", 1) == "a.b.c.1.log", "only the last dot is the extension");
@@ -295,7 +295,7 @@ void TestLogPathPerProcess() {
 	// and check it falls back to the per-pid one. A plain fopen(path, "w")
 	// would have succeeded here too, and truncated the other instance's log.
 	const std::string wanted = std::string(std::getenv("TEMP") ? std::getenv("TEMP") : ".") +
-	                           "\\coopiii-basetest.log";
+	                           "\\coopvc-basetest.log";
 	FILE *held = _fsopen(wanted.c_str(), "w", _SH_DENYWR);
 	Check(held != nullptr, "the test could take the log first");
 	if (held) {
@@ -533,9 +533,9 @@ void TestVoteKeys() {
 	bad.ParseIni("voteYesKey = Space\nvoteNoKey = \n");
 	Check(bad.voteYesKey == 'Y' && bad.voteNoKey == 'N', "one it can't read keeps the default");
 
-	const std::string ini = ReadFileNear(__FILE__, "CoopIII.ini");
+	const std::string ini = ReadFileNear(__FILE__, "CoopVC.ini");
 	if (ini.empty()) {
-		std::printf("  [skip] CoopIII.ini isn't beside the source\n");
+		std::printf("  [skip] CoopVC.ini isn't beside the source\n");
 		return;
 	}
 	Config shipped;

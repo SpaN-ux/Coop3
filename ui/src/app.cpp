@@ -26,7 +26,7 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 namespace ui {
 namespace {
 
-constexpr wchar_t kClassName[] = L"CoopIIIWindow";
+constexpr wchar_t kClassName[] = L"CoopVCWindow";
 
 // The frame is only hidden, not removed, so the window keeps its shadow and
 // Aero Snap. These are the widths of the invisible resize edges.
