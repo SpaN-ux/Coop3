@@ -1,4 +1,4 @@
-// Which CoopIII this is, as the player reads it: the mark in the corner of the
+// Which CoopVC this is, as the player reads it: the mark in the corner of the
 // HUD and the first line of each log.
 //
 // The same number as set_version in xmake.lua and the "coopiii" component in
@@ -7,4 +7,4 @@
 // protocol.h, and it moves on its own schedule.
 #pragma once
 
-#define COOPIII_VERSION "0.1.3"
+#define COOPVC_VERSION "0.1"
