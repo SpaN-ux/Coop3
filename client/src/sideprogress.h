@@ -32,7 +32,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii::sideprogress {
+namespace coopvc::sideprogress {
 
 // ScriptCodeHash (game/mission.h) of the retail main.scm.
 constexpr uint32_t RETAIL_SCRIPT_HASH = 0x49D0F4C5u;
@@ -118,4 +118,4 @@ inline bool IsProgressOp(const uint8_t *op, size_t length) {
 	return length >= 2 && op[1] == 0x03 && (op[0] == 0x0C || op[0] == 0x18);
 }
 
-} // namespace coopiii::sideprogress
+} // namespace coopvc::sideprogress

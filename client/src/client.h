@@ -1,4 +1,4 @@
-// The client: everything CoopIII does inside gta3.exe, above the transport.
+// The client: everything CoopVC does inside gta3.exe, above the transport.
 //
 // Owns the socket thread, the roster of remote players, and the two
 // callbacks the frame hook drives (client/src/game/frame.h):
@@ -33,12 +33,12 @@
 #include "skinsync.h"
 #include "stuntshotview.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstdint>
 #include <string>
 
-namespace coopiii {
+namespace coopvc {
 
 // Is a car entry the engine is still running actually getting anywhere?
 //
@@ -339,7 +339,7 @@ struct RemotePlayer {
 	// though the session still names it. DragLatchFor says when.
 	uint16_t draggedFromNetId = INVALID_NETID;
 
-	// Which of gFireManager's 40 slots holds the fire CoopIII lit on this
+	// Which of gFireManager's 40 slots holds the fire CoopVC lit on this
 	// player's ped, or -1 for none. An index rather than a CFire*, for the
 	// same reason poolHandle is a pool reference: the slot outlives the
 	// fire, so the contents have to be asked whether it is still ours
@@ -969,7 +969,7 @@ struct RemoteVehicle {
 	bool destroyed = false;
 
 	// This CVehicle is one our own engine made and we claimed, not a replica
-	// CoopIII built off the wire.
+	// CoopVC built off the wire.
 	//
 	// The row exists so that stepping out of our own car and back into it is
 	// recognised as the same car (Client::AdoptOurClaimedVehicle). What it
@@ -1459,7 +1459,7 @@ struct RemoteAmbientPed {
 	// is not the same as "standing still" - a sender whose animation could
 	// not be read leaves the replica playing whatever it already had.
 	uint16_t     animId        = ANIM_NONE;
-	// What CoopIII actually blended onto the clump, so the blend happens on
+	// What CoopVC actually blended onto the clump, so the blend happens on
 	// a change rather than sixty times a second. Same field and same reason
 	// as RemotePlayer::appliedAnimId.
 	uint16_t     appliedAnimId = ANIM_NONE;
@@ -1854,7 +1854,7 @@ inline uint16_t FuseLeft(uint32_t endsMs, uint32_t nowMs) {
 }
 
 // The engine seam. Every function here is optional - with none of them set,
-// CoopIII runs headless. It connects, keeps an accurate roster, interpolates
+// CoopVC runs headless. It connects, keeps an accurate roster, interpolates
 // poses, but draws nothing. That's exactly the state Area B starts from, and
 // it's genuinely useful to be able to test that state on its own.
 // What the local player is riding, as the engine has it (docs/protocol.md
@@ -1871,7 +1871,7 @@ struct LocalRide {
 
 struct WorldBridge {
 	// Fill `out` from the local player. Returns false if there's no player
-	// yet (menus, loading) - CoopIII then sends nothing this frame.
+	// yet (menus, loading) - CoopVC then sends nothing this frame.
 	bool (*SampleLocalPlayer)(PlayerStateBody &out) = nullptr;
 
 	// What the local player stands on or sits in that moves, and where on it.
@@ -1953,7 +1953,7 @@ struct WorldBridge {
 	void (*DespawnRemoteVehicle)(RemoteVehicle &vehicle) = nullptr;
 
 	// The other two ways a row gets a CVehicle and loses it, for a car the
-	// local player claimed rather than one CoopIII built. Adopt runs when the
+	// local player claimed rather than one CoopVC built. Adopt runs when the
 	// claim comes back with a netId; Release runs instead of Despawn for a
 	// row marked `ours`, which is never destroyed. Between them they keep
 	// game/vehicle.cpp's Observed table - what the damage and blow-up detours
@@ -2254,7 +2254,7 @@ struct WorldBridge {
 	// This exists because of a question only a late joiner ever asks: is the
 	// car I have just got into one of *ours*? Everybody who was in the
 	// session when a car was claimed has it as a car from their own world;
-	// only somebody who joined afterwards has it as a CVehicle CoopIII
+	// only somebody who joined afterwards has it as a CVehicle CoopVC
 	// created, and until this callback there was no way to notice. The claim
 	// therefore went out as a brand new car, the session handed back a second
 	// netId for a car it already knew, and the joiner ended up both driving
@@ -2271,7 +2271,7 @@ struct WorldBridge {
 	//
 	// GTA III has no passenger seat for the player: the enter key jacks the
 	// driver, because in single player nobody is driving a car you would want
-	// to ride in. This is the one control CoopIII adds that the original game
+	// to ride in. This is the one control CoopVC adds that the original game
 	// does not have. game/seat.h has the whole of it.
 
 	// True once per press of the seat key, never while it is held.
@@ -2298,7 +2298,7 @@ struct WorldBridge {
 	int32_t (*PollLocalSeatEntry)() = nullptr;
 
 	// In a car, and not driving it. How the exit is noticed: there is no
-	// CoopIII way out, the player uses the game's own exit key and this goes
+	// CoopVC way out, the player uses the game's own exit key and this goes
 	// false.
 	bool (*LocalIsPassenger)() = nullptr;
 
@@ -2440,7 +2440,7 @@ struct WorldBridge {
 	// CAutomobile::BlowUpCar, at the transform they say it ended up at. One
 	// call because one call is what the engine does: the blast and the burnt
 	// shell are decided in the same function, so replaying it gets both, in
-	// the same place, without CoopIII inventing either.
+	// the same place, without CoopVC inventing either.
 	bool (*BlowUpRemoteVehicle)(RemoteVehicle &vehicle, const Vec3 &pos,
 	                            const Quat &rot) = nullptr;
 
@@ -2534,7 +2534,7 @@ struct WorldBridge {
 	// own CPed::InflictDamage. `attacker` is who gets the blame and may be
 	// null when their ped hasn't streamed in; the damage lands either way.
 	//
-	// This is the only place in CoopIII where a packet reduces anyone's
+	// This is the only place in CoopVC where a packet reduces anyone's
 	// health, and it is deliberately the one player this machine owns.
 	void (*ApplyRemoteDamage)(RemotePlayer *attacker, const DamageBody &body) = nullptr;
 
@@ -2597,7 +2597,7 @@ struct WorldBridge {
 	void (*ApplyWorldTime)(uint8_t hour, uint8_t minute) = nullptr;
 
 	// Pin this machine's sky to the pair the session is blending between, as
-	// coopiii/sky.h's FollowSky puts it for our clock, and stop the local
+	// coopvc/sky.h's FollowSky puts it for our clock, and stop the local
 	// weather rotation picking its own next one: ForcedWeatherType = `forced`.
 	void (*ApplyWorldWeather)(uint8_t weather, uint8_t weatherOld, uint8_t forced) = nullptr;
 
@@ -2772,7 +2772,7 @@ struct WorldBridge {
 	uint32_t (*DrainAmbientPedDeaths)(PedDeathBody *out, uint32_t max) = nullptr;
 
 	// Runs CPed::SetDie on a replica, because its host's engine did - the
-	// engine deciding the death rather than CoopIII inventing one, the same
+	// engine deciding the death rather than CoopVC inventing one, the same
 	// rule BlowUpRemoteVehicle follows for a car.
 	//
 	// False when the replica is not there to take it, which the caller reads
@@ -2804,7 +2804,7 @@ struct WorldBridge {
 	// `attacker` is who gets the blame and may be null when their ped has not
 	// streamed in; the hit lands either way.
 	//
-	// This and ApplyRemoteDamage are the only two places in CoopIII where a
+	// This and ApplyRemoteDamage are the only two places in CoopVC where a
 	// packet reduces anything's health, and both are deliberately about
 	// something this machine owns. Nothing here writes health directly and
 	// nothing here decides an outcome: the wire carried CPed::InflictDamage's
@@ -2927,7 +2927,7 @@ struct WorldBridge {
 	// half of it.
 	//
 	// `weHostedIt` is the one machine for which this CVehicle is its own
-	// engine's work rather than a replica CoopIII built. Two things follow
+	// engine's work rather than a replica CoopVC built. Two things follow
 	// only on that machine: whatever pedestrian its own CCarCtrl put at the
 	// wheel has to come out, or the seat sync has nowhere to put the player
 	// who is actually driving; and the row is marked `ours`, so the roster
@@ -3266,7 +3266,7 @@ public:
 	bool    IsHost() const {
 		return m_localPlayerId != INVALID_PLAYER && m_localPlayerId == m_hostPlayerId;
 	}
-	// Whose game everyone else's clock and sky follow (coopiii/sky.h): the
+	// Whose game everyone else's clock and sky follow (coopvc/sky.h): the
 	// host's, or the owner's of the session's mission while it runs, ours
 	// from our own START_MISSION on.
 	uint8_t SkyHolderId() const;
@@ -3374,7 +3374,7 @@ public:
 	// the world at once. Test seams: neither leaves any other trace without a
 	// socket.
 	uint8_t CheatRule() const { return m_cheatRule; }
-	// What S_SessionRules said about CoopIII's own typed cheats (CoopCheatRule).
+	// What S_SessionRules said about CoopVC's own typed cheats (CoopCheatRule).
 	uint8_t CoopCheatRule() const { return m_coopCheatRule; }
 	// What S_SessionRules said: the wanted rule and the most stars anybody may have.
 	uint8_t WantedRuleNow() const { return m_wantedRule; }
@@ -3636,7 +3636,7 @@ public:
 	// second.
 	bool DroppedPickup(const PickupDropBody &drop);
 
-	// Is this CPed one CoopIII built - a remote player's, or an ambient
+	// Is this CPed one CoopVC built - a remote player's, or an ambient
 	// replica? Asked by game/pickup.cpp from inside the drop detours, which
 	// have nothing but a pointer and no way to tell a replica from a script
 	// ped without the roster.
@@ -3864,7 +3864,7 @@ private:
 	// Is this a car the local player is driving rather than watching?
 	//
 	// A row in m_vehicles is normally somebody else's car, but it does not
-	// have to stay that way: a car CoopIII spawned from the session backfill
+	// have to stay that way: a car CoopVC spawned from the session backfill
 	// is a real car in the street and anyone can get into it. The moment the
 	// local player does, this machine owns it - it samples it, it sends its
 	// snapshots, and it must stop writing anybody else's idea of where it is
@@ -4326,7 +4326,7 @@ private:
 	// And what it said about ammunition (protocol.h, SESSION_AMMO_SYNC).
 	// With it clear this client never samples its own counts, never sends a
 	// C_PlayerAmmo, and ignores the two ammo fields in every snapshot it
-	// receives - which is exactly the behaviour CoopIII had before any of
+	// receives - which is exactly the behaviour CoopVC had before any of
 	// this existed.
 	bool m_ammoSync = false;
 
@@ -4391,8 +4391,8 @@ private:
 	// re-announce one that is already open.
 	bool m_frenzyReported = false;
 
-	// The level this player reached without CoopIII's help, and the level
-	// CoopIII last left the engine at. `own` is only ever re-read from the
+	// The level this player reached without CoopVC's help, and the level
+	// CoopVC last left the engine at. `own` is only ever re-read from the
 	// engine when the engine has moved by itself - the comparison against
 	// `applied` is how that is noticed, and it is the whole of the
 	// earned-versus-granted bookkeeping. game/wanted.h, PlanWanted.
@@ -4780,7 +4780,7 @@ private:
 	//
 	// Only the ids, because the ped itself is the engine's and population.cpp
 	// is what holds it. This exists so the claim goes out exactly once per
-	// ped, which matters more here than anywhere else in CoopIII: the thing
+	// ped, which matters more here than anywhere else in CoopVC: the thing
 	// producing these is a generator that never stops.
 	static constexpr size_t MAX_PENDING_PED_CLAIMS = 64;
 	uint32_t m_pedClaims[MAX_PENDING_PED_CLAIMS]{};
@@ -4874,4 +4874,4 @@ private:
 	void BindMissions();
 };
 
-} // namespace coopiii
+} // namespace coopvc

@@ -1,4 +1,4 @@
-// Discord Rich Presence: "Playing CoopIII" on the player's profile instead of
+// Discord Rich Presence: "Playing CoopVC" on the player's profile instead of
 // the "Grand Theft Auto III" Discord finds by itself.
 //
 // Discord's desktop app listens on a named pipe, \\.\pipe\discord-ipc-0 to -9.
@@ -24,7 +24,7 @@
 #include <cstdio>
 #include <string>
 
-namespace coopiii::presence {
+namespace coopvc::presence {
 
 // ---- the frames -------------------------------------------------------------------
 
@@ -183,7 +183,7 @@ inline std::string ActivityJson(uint32_t pid, const Activity &a, uint32_t nonce)
 		j += ",\"timestamps\":{\"start\":" + std::to_string(a.startUnix) + "}";
 	// No party: its size is drawn "(2 of 8)", and the count is in the state
 	// line already.
-	j += ",\"assets\":{\"large_image\":\"logo\",\"large_text\":\"CoopIII\"}";
+	j += ",\"assets\":{\"large_image\":\"logo\",\"large_text\":\"CoopVC\"}";
 	j += "}},\"nonce\":\"" + std::to_string(nonce) + "\"}";
 	return j;
 }
@@ -250,7 +250,7 @@ struct Tracker {
 // ---- the thread (presence.cpp) --------------------------------------------------
 
 // Starts the thread with `appId`, the application from discordapp.h or
-// CoopIII.ini. Zero starts nothing.
+// CoopVC.ini. Zero starts nothing.
 void Start(uint64_t appId);
 
 // Game thread: what to show now. Cheap; the thread picks it up on its own.
@@ -261,4 +261,4 @@ void Update(const Activity &activity);
 // pipe closing with the process clears the profile by itself.
 void Stop();
 
-} // namespace coopiii::presence
+} // namespace coopvc::presence

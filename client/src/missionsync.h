@@ -44,14 +44,14 @@
 // anything about.
 #pragma once
 
-#include <coopiii/mission.h>
-#include <coopiii/protocol.h>
+#include <coopvc/mission.h>
+#include <coopvc/protocol.h>
 
 #include <cstddef>
 #include <cstdint>
 #include <vector>
 
-namespace coopiii {
+namespace coopvc {
 
 // The engine seam. Every entry is optional; with none set this machine's
 // missions stay its own.
@@ -239,7 +239,7 @@ public:
 	// checkpoint then.
 	bool AskCheckpoint(const MissionArea &area, uint8_t localPlayerId, uint32_t nowMs);
 	// Whether the session's mission's checkpoints wait for everybody, with the
-	// server's say in it (CheckpointsWait in coopiii/mission.h).
+	// server's say in it (CheckpointsWait in coopvc/mission.h).
 	bool CheckpointsWaitNow() const {
 		return CheckpointsWait(m_number, m_timerUp, m_flags, m_cpWaitS);
 	}
@@ -811,4 +811,4 @@ private:
 	bool     m_ownsRunning  = false;   // the session's running mission is ours
 };
 
-} // namespace coopiii
+} // namespace coopvc

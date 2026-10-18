@@ -3,7 +3,7 @@
 #include "log.h"
 #include "sideprogress.h"
 
-#include <coopiii/net.h>
+#include <coopvc/net.h>
 
 #include <cmath>
 #include <cstdarg>
@@ -11,7 +11,7 @@
 #include <cstdio>
 #include <cstring>
 
-namespace coopiii {
+namespace coopvc {
 
 // An ADD_SCORE that takes money rather than pays it, as the owner's replay
 // encodes it (game/replay.h): the opcode, then the player and the amount,
@@ -1914,4 +1914,4 @@ void MissionSync::SetMirror(bool on) {
 	                                                 : "is its own again");
 }
 
-} // namespace coopiii
+} // namespace coopvc

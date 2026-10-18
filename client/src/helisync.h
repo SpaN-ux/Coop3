@@ -20,12 +20,12 @@
 #include "clock.h"
 #include "interp.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 
 // How long a replica is held with nothing new from its owner before it is
 // treated as abandoned. Twenty states at HELI_STATE_HZ.
@@ -344,4 +344,4 @@ private:
 	bool m_saidShotsFull     = false;
 };
 
-} // namespace coopiii
+} // namespace coopvc

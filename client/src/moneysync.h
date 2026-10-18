@@ -33,12 +33,12 @@
 // Under `own` each player keeps his, which is what single player pays him.
 #pragma once
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 
 // An award the engine half did not pay here, and who it is for.
 struct LocalMoneyAward {
@@ -241,4 +241,4 @@ private:
 	bool m_saidOwnBack    = false;
 };
 
-} // namespace coopiii
+} // namespace coopvc

@@ -12,21 +12,21 @@
 //     that cannot be read or is not a size the wire takes goes out as the
 //     default one, so nobody keeps an old one of ours;
 //   - theirs come in. Each player's pieces are put back together and checked
-//     (coopiii/skin.h), and a whole skin is handed to the engine half for
+//     (coopvc/skin.h), and a whole skin is handed to the engine half for
 //     that player's ped alone. It keeps it while they stay, so a rebuilt ped
 //     wears it at once. Until a skin of theirs is in, and whenever the
 //     session's rule is off, a remote player wears the game's default skin,
 //     never ours.
 #pragma once
 
-#include <coopiii/protocol.h>
-#include <coopiii/skin.h>
+#include <coopvc/protocol.h>
+#include <coopvc/skin.h>
 
 #include <cstddef>
 #include <cstdint>
 #include <vector>
 
-namespace coopiii {
+namespace coopvc {
 
 // A whole skin as pixels: RGBA, top row first.
 struct SkinImage {
@@ -135,4 +135,4 @@ private:
 	SkinInfo     m_wornInfo[MAX_PLAYERS] = {};
 };
 
-} // namespace coopiii
+} // namespace coopvc

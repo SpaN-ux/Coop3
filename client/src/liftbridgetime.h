@@ -20,7 +20,7 @@
 
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 
 // Transcribed from CBridge::Update, not from re3. `and edx,0FFFFh` on
 // `t - epoch`, then unsigned compares against these.
@@ -95,4 +95,4 @@ constexpr BridgeLinks LinksAfterBridgeUpdate(int32_t before, int32_t after, bool
 	return BridgeLinksLit(after) ? BridgeLinks::Light : BridgeLinks::PutOut;
 }
 
-} // namespace coopiii
+} // namespace coopvc

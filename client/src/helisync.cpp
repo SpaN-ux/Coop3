@@ -2,9 +2,9 @@
 
 #include "log.h"
 
-#include <coopiii/net.h>
+#include <coopvc/net.h>
 
-namespace coopiii {
+namespace coopvc {
 
 // ---- inbound ----------------------------------------------------------------
 
@@ -508,4 +508,4 @@ uint16_t HeliSync::NextSerial() {
 	return s;
 }
 
-} // namespace coopiii
+} // namespace coopvc

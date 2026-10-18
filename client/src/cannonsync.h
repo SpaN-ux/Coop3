@@ -21,14 +21,14 @@
 #include "clock.h"
 #include "log.h"
 
-#include <coopiii/net.h>
-#include <coopiii/protocol.h>
+#include <coopvc/net.h>
+#include <coopvc/protocol.h>
 
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 
 // A car's orientation the way the engine keeps it: CMatrix's right, forward
 // and up rows and its position.
@@ -277,4 +277,4 @@ private:
 	bool     m_saidSent    = false;
 };
 
-} // namespace coopiii
+} // namespace coopvc

@@ -13,7 +13,7 @@
 
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 
 // Transcribed from UpdateTrains, not from re3. The El loop takes
 // `(t + i * 0x10000) & 0x1FFFF` for its two trains, the subway
@@ -29,4 +29,4 @@ constexpr uint32_t TrainCycleMs(uint32_t clockMs, uint32_t periodMs, uint32_t in
 	return (clockMs + index * TRAIN_STAGGER_MS) & (periodMs - 1);
 }
 
-} // namespace coopiii
+} // namespace coopvc

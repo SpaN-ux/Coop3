@@ -17,12 +17,12 @@
 #include "log.h"
 #include "radiosync.h"
 
-#include <coopiii/sky.h>
+#include <coopvc/sky.h>
 
 #include <cmath>
 #include <cstring>
 
-namespace coopiii {
+namespace coopvc {
 
 bool Client::Start(const std::string &host, uint16_t port, const std::string &nick,
                    const WorldBridge &bridge) {
@@ -951,7 +951,7 @@ void Client::HandleMessage(const Message &msg) {
 		m_money.OnAward(*p, m_localPlayerId);
 	} else if (const S_MissionState *p = msg.as<S_MissionState>()) {
 		m_missions.OnState(*p, m_localPlayerId, WallClock::NowMs());
-		// A mission starting or ending moves the sky (coopiii/sky.h), and a
+		// A mission starting or ending moves the sky (coopvc/sky.h), and a
 		// world packet later in this same drain has to be read that way.
 		SyncSky();
 	} else if (const S_ContactMarkers *p = msg.as<S_ContactMarkers>()) {
@@ -1010,10 +1010,10 @@ void Client::OnWelcome(const S_Welcome &pkt) {
 		// On the HUD too: a player who pressed nothing and got no session wants
 		// to know which of the three it was, and only one of them is theirs to
 		// fix. The socket thread stops asking for the other two.
-		const char *why = pkt.reject == REJECT_BAD_VERSION ? "the server runs another CoopIII version"
+		const char *why = pkt.reject == REJECT_BAD_VERSION ? "the server runs another CoopVC version"
 		                  : pkt.reject == REJECT_FULL      ? "the server is full; asking again in a while"
 		                  : pkt.reject == REJECT_BAD_PASSWORD
-		                      ? "the server wants a password (CoopIII.ini, password)"
+		                      ? "the server wants a password (CoopVC.ini, password)"
 		                      : "the server turned us away";
 		Log("client: server rejected the connection (reason %u): %s", pkt.reject, why);
 		m_feed.Push(FeedKind::Notice, why, WallClock::NowMs());
@@ -1137,7 +1137,7 @@ void Client::OnSessionRules(const S_SessionRules &pkt) {
 		return;
 
 	Log("client: the session's rules%s: friendly fire %s, ammo sync %s, wanted level %s "
-	    "up to %u stars, rampages %u, cheats %u, CoopIII cheats %s",
+	    "up to %u stars, rampages %u, cheats %u, CoopVC cheats %s",
 	    first ? "" : " changed", ff ? "on" : "off", ammo ? "on" : "off",
 	    wanted == WANTED_RULE_SHARED ? "shared" : wanted == WANTED_RULE_OFF ? "off" : "per player",
 	    cap, rampage, cheats,
@@ -2003,7 +2003,7 @@ void Client::TickWanted() {
 		HoldWantedPeers(engine, now);
 
 	// Somebody else's respray or bribe that reaches us. Applied through the
-	// engine's own setter, and recorded as where CoopIII left the engine so
+	// engine's own setter, and recorded as where CoopVC left the engine so
 	// that PlanWanted does not read it back as something this player did.
 	if (m_wantedClearPending || m_wantedStarsOffPending) {
 		const bool    clear    = m_wantedClearPending;
@@ -2350,7 +2350,7 @@ void Client::UpdateLocalLife(const PlayerStateBody &body) {
 // ours to declare finished. docs/protocol.md §1.11.2 is the rule and why.
 // Riding in somebody else's car.
 //
-// Two halves, and only the first one is CoopIII's doing. Getting in is a key
+// Two halves, and only the first one is CoopVC's doing. Getting in is a key
 // the original game has no binding for, so it is polled and acted on here.
 // Getting out is the game's own exit key on a ped the engine knows is in a
 // car, so there is nothing to intercept - the seat simply goes empty and the
@@ -3745,7 +3745,7 @@ void Client::OnPickupDrop(const S_PickupDrop &pkt) {
 		m_bridge.PickupDropped(pkt.body);
 }
 
-// Only CoopIII's own peds are replicas, and both rosters are small. A remote
+// Only CoopVC's own peds are replicas, and both rosters are small. A remote
 // player's ped and an ambient replica get the same answer because they are
 // the same kind of thing here: an entity whose decisions belong to another
 // machine, which under docs/roadmap.md 5 includes deciding what it drops when
@@ -4093,7 +4093,7 @@ void Client::UpdateGarages() {
 
 	// Read back what our own state machine decided this frame. The seam
 	// samples it from inside CGarage::Update, at the one moment the state
-	// byte is the engine's own opinion rather than partly CoopIII's, so this
+	// byte is the engine's own opinion rather than partly CoopVC's, so this
 	// is a read of a number the frame already produced and not a second
 	// sweep over the array.
 	uint32_t mine = 0;
@@ -5168,7 +5168,7 @@ void Client::UpdateRemoteVehicles() {
 		    m_bridge.SpawnRemoteVehicle) {
 			// Ask for the model again, every pass, not just on the join
 			// packet. Nothing else in the game is holding a reference to a
-			// model only CoopIII's car was using, so the moment that car
+			// model only CoopVC's car was using, so the moment that car
 			// leaves the pool the streamer is free to throw the model out -
 			// and then this loop waits on an IsModelReady that will never
 			// come true again and the car is simply gone for the rest of the
@@ -5584,7 +5584,7 @@ void Client::CorrectRemoteVehicles(uint16_t only) {
 		// transform onto it after every single frame of physics. The engine
 		// turned the wheels, the suspension worked, the engine note changed,
 		// and the car never went anywhere, because the last thing before the
-		// frame drew was CoopIII putting it back.
+		// frame drew was CoopVC putting it back.
 		//
 		// An observer may animate what it is watching and may not decide
 		// where it ends up (vehicle.h). The converse is this: a driver decides
@@ -6298,7 +6298,7 @@ void Client::SendLocalEntering() {
 void Client::AdoptOurClaimedVehicle(const S_EnterVehicle &pkt) {
 	// Without the handle there is no way to say *which* CVehicle this netId
 	// names, and a row with no pool handle would be treated as a car waiting
-	// to be spawned - i.e. CoopIII would build a replica of the car the
+	// to be spawned - i.e. CoopVC would build a replica of the car the
 	// player is already sitting in. Say nothing and do nothing; the warning
 	// for a build with that callback missing is in SendLocalVehicle.
 	if (!m_bridge.SampleLocalVehicleHandle)
@@ -6313,7 +6313,7 @@ void Client::AdoptOurClaimedVehicle(const S_EnterVehicle &pkt) {
 
 	// Re-entering a car the session already told us about (a late joiner's
 	// case) finds the existing row, and that row already has everything -
-	// including a pool handle for a replica CoopIII built. Do not overwrite
+	// including a pool handle for a replica CoopVC built. Do not overwrite
 	// that handle with ours: they are the same CVehicle, and the row's is
 	// the one every other part of the client has been using.
 	const bool fresh = v->poolHandle < 0;
@@ -6599,7 +6599,7 @@ void Client::OnCarPromoted(const S_CarPromoted &pkt) {
 	if (v->spawnPending && m_bridge.RequestModel)
 		m_bridge.RequestModel(pkt.body.modelId);
 
-	// The one machine for which this is not CoopIII's object. `ours` is the
+	// The one machine for which this is not CoopVC's object. `ours` is the
 	// flag that keeps DespawnRemoteVehicle away from it - see the field.
 	v->ours = weHostedIt && handle >= 0;
 
@@ -10844,4 +10844,4 @@ void Client::OnPedSpeech(const S_PedSpeech &pkt) {
 	}
 }
 
-} // namespace coopiii
+} // namespace coopvc

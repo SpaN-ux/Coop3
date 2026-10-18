@@ -22,13 +22,13 @@
 
 #include "chatfeed.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
 
-namespace coopiii {
+namespace coopvc {
 
 // ---- the grid ---------------------------------------------------------------
 //
@@ -343,4 +343,4 @@ inline void FormatCount(char *out, size_t cap, unsigned here, unsigned of = MAX_
 		std::snprintf(out, cap, "%u/%u", here, of);
 }
 
-} // namespace coopiii
+} // namespace coopvc

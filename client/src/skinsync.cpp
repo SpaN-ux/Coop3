@@ -2,11 +2,11 @@
 
 #include "log.h"
 
-#include <coopiii/net.h>
+#include <coopvc/net.h>
 
 #include <cstring>
 
-namespace coopiii {
+namespace coopvc {
 
 namespace {
 
@@ -231,4 +231,4 @@ void SkinSync::Tick(uint8_t localPlayerId, uint32_t nowMs) {
 	}
 }
 
-} // namespace coopiii
+} // namespace coopvc

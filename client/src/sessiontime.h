@@ -29,7 +29,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 
 // session = local + offset, all modulo 2^32. The local clock is WallClock.
 class SessionTimeBase {
@@ -149,4 +149,4 @@ private:
 	bool     m_valid      = false;
 };
 
-} // namespace coopiii
+} // namespace coopvc

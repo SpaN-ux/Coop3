@@ -17,7 +17,7 @@
 
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 
 // Transcribed from UpdatePlanes, not from re3. Both the airliners and the
 // Dodos take `(t + i * 0x2AAAA) & 0x7FFFF` for plane i of three, so the whole
@@ -58,4 +58,4 @@ constexpr uint32_t MissionStartOnOurClock(uint32_t shiftedMs, uint32_t oursMs,
 	return shiftedMs - (sessionMs - oursMs);
 }
 
-} // namespace coopiii
+} // namespace coopvc

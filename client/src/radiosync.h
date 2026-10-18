@@ -26,11 +26,11 @@
 // side.
 #pragma once
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 
 // cMusicManager's track byte for "nothing" (addresses.h, MUSIC_NO_TRACK).
 constexpr uint8_t RADIO_NO_TRACK = 0xC5;
@@ -159,4 +159,4 @@ private:
 	bool     m_haveSteady    = false;
 };
 
-} // namespace coopiii
+} // namespace coopvc

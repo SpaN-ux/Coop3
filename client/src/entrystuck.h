@@ -18,11 +18,11 @@
 // Pure, so tools/clienttest drives every answer without a game.
 #pragma once
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 
 // One tick's reading of the local player's ped, as far as getting into a car
 // goes. Filled in by game/seat.cpp.
@@ -36,7 +36,7 @@ struct LocalEntryProbe {
 	bool     entering       = false;   // PED_ENTER_CAR or PED_CARJACK
 	bool     exiting        = false;   // PED_EXIT_CAR or PED_DRAG_FROM_CAR
 	bool     vehicleAnim    = false;   // m_pVehicleAnim is not null
-	bool     controlsOn     = false;   // CPad holds no lock on the player but CoopIII's own
+	bool     controlsOn     = false;   // CPad holds no lock on the player but CoopVC's own
 	uint32_t animMark       = 0;       // changes while an entry's animation plays
 	float    x = 0.0f, y = 0.0f;       // where the ped stands
 };
@@ -73,7 +73,7 @@ constexpr uint32_t SESSION_SEAT_STALE_MS  = 4000;
 
 class EntryStuckWatch {
 public:
-	// `ownEntry` is an entry CoopIII is driving by itself - the seat key's,
+	// `ownEntry` is an entry CoopVC is driving by itself - the seat key's,
 	// or a ride a script of ours started - which has a deadline of its own
 	// and is left to it. Returns what to undo, once; the timer that fired
 	// starts again from zero.
@@ -194,4 +194,4 @@ private:
 	uint32_t m_sinceMs = 0;
 };
 
-} // namespace coopiii
+} // namespace coopvc

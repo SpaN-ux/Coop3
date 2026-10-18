@@ -2,9 +2,9 @@
 
 #include "log.h"
 
-#include <coopiii/net.h>
+#include <coopvc/net.h>
 
-namespace coopiii {
+namespace coopvc {
 
 namespace {
 
@@ -372,4 +372,4 @@ void MoneySync::DropAcked(uint32_t ackSeq) {
 	m_pendingCount = keep;
 }
 
-} // namespace coopiii
+} // namespace coopvc

@@ -6,7 +6,7 @@
 #include <chrono>
 #include <cstring>
 
-namespace coopiii {
+namespace coopvc {
 
 namespace {
 
@@ -168,7 +168,7 @@ void NetThread::Run() {
 					Log("net: %s:%u turned us away (%s); not trying again until the game "
 					    "restarts",
 					    m_host.c_str(), m_port,
-					    m_rejected == REJECT_BAD_VERSION  ? "it runs a different CoopIII"
+					    m_rejected == REJECT_BAD_VERSION  ? "it runs a different CoopVC"
 					    : m_rejected == REJECT_KICKED     ? "we were kicked"
 					                                      : "the password is wrong or missing");
 				}
@@ -244,4 +244,4 @@ void NetThread::Run() {
 	client.Disconnect();
 }
 
-} // namespace coopiii
+} // namespace coopvc

@@ -3,11 +3,11 @@
 // goes up and when it comes down, from the packets and from the seat.
 #pragma once
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 
 // The longest a shot is held with no word from the driver. The jump plays at
 // a quarter speed on the driver's machine and USJ waits 600 ms of game time
@@ -46,4 +46,4 @@ inline bool StuntShotOver(const StuntShot &shot, bool ridingIt, uint32_t nowMs) 
 	return shot.Up() && (!ridingIt || nowMs - shot.sinceMs >= STUNT_SHOT_MAX_MS);
 }
 
-} // namespace coopiii
+} // namespace coopvc

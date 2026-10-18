@@ -7,14 +7,14 @@
 // exchange.
 #pragma once
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
 
-namespace coopiii {
+namespace coopvc {
 
 struct CutsceneSkipView {
 	// The cutscene we last told the server we are in; scope NONE for none.
@@ -150,4 +150,4 @@ inline size_t FormatSkipCounter(char *out, size_t cap, uint8_t yes, uint8_t vote
 	return static_cast<size_t>(n) < cap ? static_cast<size_t>(n) : cap - 1;
 }
 
-} // namespace coopiii
+} // namespace coopvc

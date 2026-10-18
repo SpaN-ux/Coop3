@@ -16,7 +16,7 @@
 
 #include <windows.h>
 
-namespace coopiii::presence {
+namespace coopvc::presence {
 
 namespace {
 
@@ -155,7 +155,7 @@ bool Connect() {
 	g_saidNoDiscord = false;
 	g_saidRefused   = false;
 	g_saidError     = false;
-	Log("discord: connected, showing CoopIII on the profile");
+	Log("discord: connected, showing CoopVC on the profile");
 	return true;
 }
 
@@ -231,4 +231,4 @@ void Stop() {
 	g_thread = nullptr;
 }
 
-} // namespace coopiii::presence
+} // namespace coopvc::presence

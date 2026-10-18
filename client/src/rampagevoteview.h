@@ -4,13 +4,13 @@
 // covers both without a game.
 #pragma once
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
 
-namespace coopiii {
+namespace coopvc {
 
 struct RampageVoteView {
 	bool            seen = false;   // anything since the session started
@@ -115,4 +115,4 @@ inline const char *RampageVoteResultText(uint8_t state) {
 	return state == RAMPAGE_VOTE_PASSED ? "Rampage vote passed" : "Rampage vote failed";
 }
 
-} // namespace coopiii
+} // namespace coopvc

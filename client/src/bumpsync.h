@@ -21,13 +21,13 @@
 
 #include "interp.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 
 // Less than this and nothing is sent: a car resting against ours.
 constexpr float    BUMP_MIN_IMPULSE   = 5.0f;
@@ -327,4 +327,4 @@ private:
 	PendingBump m_pending[MAX_PENDING_BUMPS];
 };
 
-} // namespace coopiii
+} // namespace coopvc

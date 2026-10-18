@@ -16,8 +16,8 @@
 
 #include "queue.h"
 
-#include <coopiii/net.h>
-#include <coopiii/protocol.h>
+#include <coopvc/net.h>
+#include <coopvc/protocol.h>
 
 #include <atomic>
 #include <cstdint>
@@ -25,7 +25,7 @@
 #include <thread>
 #include <vector>
 
-namespace coopiii {
+namespace coopvc {
 
 class NetThread {
 public:
@@ -100,4 +100,4 @@ private:
 	uint8_t m_rejected = REJECT_NONE;
 };
 
-} // namespace coopiii
+} // namespace coopvc

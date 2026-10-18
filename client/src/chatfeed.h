@@ -4,15 +4,15 @@
 // game/chat.cpp draws it and reads the keys.
 #pragma once
 
-#include <coopiii/protocol.h>
-#include <coopiii/version.h>
+#include <coopvc/protocol.h>
+#include <coopvc/version.h>
 
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
 
-namespace coopiii {
+namespace coopvc {
 
 // A line stays up this long after it arrives and spends the last part of it
 // fading. While the player is typing every line held is shown in full.
@@ -689,11 +689,11 @@ inline KickTarget ResolveKickTarget(const char *arg, const RosterEntry *roster, 
 
 // ---- the version mark --------------------------------------------------------
 //
-// "CoopIII 0.1.1", small and grey in the bottom-left corner, under the radar:
+// "CoopVC 0.1.1", small and grey in the bottom-left corner, under the radar:
 // which build is running, readable off any screenshot or video somebody sends
 // with a bug in it.
 
-constexpr const char *VERSION_MARK = "CoopIII " COOPIII_VERSION;
+constexpr const char *VERSION_MARK = "CoopVC " COOPVC_VERSION;
 
 struct MarkLayout {
 	float x      = 0.0f;
@@ -763,4 +763,4 @@ inline MarkLayout MeasureCornerMark(float screenW, float screenH, float cullY, f
 	return m;
 }
 
-} // namespace coopiii
+} // namespace coopvc

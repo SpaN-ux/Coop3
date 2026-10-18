@@ -15,7 +15,7 @@
 
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 
 // Transcribed from the three functions, not from re3. Each one is
 // `mov eax,[00885B48h] / and eax,3FFFh` followed by unsigned compares.
@@ -70,4 +70,4 @@ constexpr uint8_t PedLights(uint32_t clockMs) {
 	                                                    : PED_LIGHT_WALK_BLINK;
 }
 
-} // namespace coopiii
+} // namespace coopvc

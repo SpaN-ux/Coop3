@@ -3,7 +3,7 @@
 //
 // Both are things only one machine's engine ever changes. An alarm goes off
 // on the machine whose car generator parked the car armed, and nowhere else:
-// every other copy is one CoopIII built, and the constructor leaves it
+// every other copy is one CoopVC built, and the constructor leaves it
 // disarmed (protocol.h, S_VehicleAlarm). The tank's turret and the fire
 // truck's water cannon turn only for the car the local player is driving
 // (protocol.h, S_VehicleAim). So the machine simulating the car says, and
@@ -13,11 +13,11 @@
 // engine side.
 #pragma once
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstdint>
 
-namespace coopiii {
+namespace coopvc {
 
 // ---- the alarm --------------------------------------------------------------
 
@@ -121,4 +121,4 @@ constexpr bool AimShouldSend(bool sent, float sentLR, float sentUD, uint32_t sen
 	return static_cast<uint32_t>(nowMs - sentAtMs) >= AIM_REFRESH_MS;
 }
 
-} // namespace coopiii
+} // namespace coopvc
