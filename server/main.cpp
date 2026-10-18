@@ -132,9 +132,9 @@ int main(int argc, char **argv) {
 	if (!startup.gui) {
 		if (!OpenConsole()) {
 			MessageBoxW(nullptr,
-			            L"CoopIII Server was started with --nogui but could not open a "
+			            L"CoopVC Server was started with --nogui but could not open a "
 			            L"console to write to.",
-			            L"CoopIII Server", MB_ICONERROR | MB_OK);
+			            L"CoopVC Server", MB_ICONERROR | MB_OK);
 			return 1;
 		}
 		return RunConsole(startup);
