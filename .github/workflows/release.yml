@@ -3,12 +3,12 @@ name: Release
 # Push a tag v0.1.3 (or whatever is next); this builds everything on Windows,
 # runs the tests and stages the release files as a build artifact. It does not
 # publish anything: the release itself is made by hand from those files, with
-# CoopIII-Setup.exe under that exact name - which is the name the website's
+# CoopVC-Setup.exe under that exact name - which is the name the website's
 # download button links to:
 #
-#   https://github.com/noxxUY/CoopIII/releases/latest/download/CoopIII-Setup.exe
+#   https://github.com/YOUR-ACCOUNT/CoopVC/releases/latest/download/CoopVC-Setup.exe
 #
-# The Setup carries CoopIII.asi, the launcher and CoopIII.ini inside it, so
+# The Setup carries CoopVC.asi, the launcher and CoopVC.ini inside it, so
 # that one file is the whole download.
 
 on:
@@ -64,10 +64,10 @@ jobs:
         shell: bash
         run: |
           set -e
-          setup=build/windows/x86/release/CoopIII-Setup.exe
+          setup=build/windows/x86/release/CoopVC-Setup.exe
           test -f "$setup"
           size=$(stat -c%s "$setup")
-          echo "CoopIII-Setup.exe is $size bytes"
+          echo "CoopVC-Setup.exe is $size bytes"
           # It embeds the .asi and the launcher, so anything much smaller means
           # the payload did not go in.
           test "$size" -gt 2000000
@@ -75,7 +75,7 @@ jobs:
       # Everything the release carries, with the names the Setup and the
       # website expect: tools/release/stage.ps1 says what each file is for. It
       # checks every third-party file against components.json and refuses to
-      # stage a gta3.exe. Framerate Vigilante has no upstream download, so on
+      # stage a gta-vc.exe. Framerate Vigilante has no upstream download, so on
       # CI it is carried forward from the previous release; the very first
       # release has to be staged by hand, where the owner's copy is found.
       - name: Stage the release
@@ -84,5 +84,5 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: CoopIII-release
+          name: CoopVC-release
           path: build/release-staging/*
