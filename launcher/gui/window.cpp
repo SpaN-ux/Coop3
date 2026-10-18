@@ -56,8 +56,6 @@ struct State {
 	std::string startError;
 	bool        launched = false;
 	float       checkedAt = -10.0f;   // when the list was last re-run
-	// discordPresence in CoopVC.ini: the game shown as CoopVC in Discord.
-	bool        discord   = true;
 
 	// The lobby (docs/protocol.md 1.31): the right column shows it instead
 	// of the form while this is set.
