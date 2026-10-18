@@ -1,4 +1,4 @@
-// Addresses inside gta3.exe.
+// Addresses inside gta-vc.exe.
 //
 // ############################################################
 // #  EVERY ADDRESS HERE IS SPECIFIC TO ONE EXACT BUILD.      #
@@ -33,8 +33,8 @@ namespace coopiii::game {
 // ---- image identity -------------------------------------------------------
 
 constexpr uint32_t IMAGE_BASE = 0x00400000;
-constexpr uint32_t IMAGE_SIZE = 2383872;
-constexpr char     IMAGE_MD5[] = "85414BF9EB414D00AD81062360F0DB1F";
+constexpr uint32_t IMAGE_SIZE = 3088896;
+constexpr char IMAGE_MD5[] = "167A5C8B31B3E0DBEFA033CA24453D4E";
 
 // The PE's own internal name. Cheap sanity check that does not need hashing.
 constexpr char IMAGE_INTERNAL_NAME[] = "gta3_final.exe";
