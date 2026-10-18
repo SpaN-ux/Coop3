@@ -446,12 +446,8 @@ bool UpdateIni(const std::string &path, const std::string &host, int port,
 	                         {"nick", nick}});
 }
 
-bool UpdateIniDiscord(const std::string &path, bool on) {
-	return SetIniKeys(path, {{"discordPresence", on ? "true" : "false"}});
-}
-
 void ReadIni(const std::string &path, std::string *host, uint16_t *port, std::string *nick,
-             std::string *password, bool *discordPresence) {
+             std::string *password) {
 	FILE *fh = std::fopen(path.c_str(), "rb");
 	if (!fh)
 		return;
@@ -487,15 +483,6 @@ void ReadIni(const std::string &path, std::string *host, uint16_t *port, std::st
 			uint16_t parsed = 0;
 			if (ParsePort(value, &parsed))
 				*port = parsed;
-		} else if (discordPresence && _stricmp(key.c_str(), "discordPresence") == 0) {
-			// Spelled the ways the client reads it (client/src/config.cpp); anything
-			// else is left as it was.
-			for (const char *yes : {"1", "true", "yes", "on"})
-				if (_stricmp(value.c_str(), yes) == 0)
-					*discordPresence = true;
-			for (const char *no : {"0", "false", "no", "off"})
-				if (_stricmp(value.c_str(), no) == 0)
-					*discordPresence = false;
 		} else if (password && _stricmp(key.c_str(), "password") == 0) {
 			// PASSWORD_LEN is 32 including the terminator, so 31 travel.
 			password->clear();
