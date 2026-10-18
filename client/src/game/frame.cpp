@@ -1,158 +1,151 @@
 #include "frame.h"
 
 #include "addresses.h"
+#include "verify.h"
+
 #include "hook/hook.h"
 #include "log.h"
 
 #include <atomic>
+#include <vector>
 
 #ifdef _WIN32
 #include <windows.h>
 #endif
 
-namespace coopiii::game {
+namespace coopvc::game {
 
 namespace {
 
-Detour                g_detour;
-FrameFn               g_pre  = nullptr;
-FrameFn               g_post = nullptr;
-std::atomic<uint32_t> g_frames{0};
+using RsEventHandlerFn = int(__cdecl *)(int event, void *param);
 
-// CGame::Process is a static member (re3 Game.h), so __cdecl with no
-// arguments. Get this wrong and the stack corrupts every single frame.
-using ProcessFn = void(__cdecl *)();
+struct Callback {
+	FrameCallback fn;
+	void         *user;
+};
 
-void __cdecl HookedProcess() {
-	// A throw escaping into the engine would unwind through frames that
-	// know nothing about C++ exceptions. Contain it here instead - a
-	// dropped frame of multiplayer beats taking the whole game down.
-	if (g_pre) {
+std::vector<Callback>  g_callbacks;
+Detour                 g_detour;
+const volatile int    *g_state  = nullptr;
+std::atomic<uint64_t>  g_frames{0};
+std::atomic<bool>      g_warned{false};
+
+// Everything that happens after the game's own handling. A callback that
+// throws would unwind into the game's main loop, which has no idea what to do
+// with it, so none gets out: it is logged once and the frame carries on.
+void RunCallbacks() {
+	for (const Callback &c : g_callbacks) {
 		try {
-			g_pre();
+			c.fn(c.user);
 		} catch (...) {
-			Log("frame: pre-process callback threw; continuing");
+			if (!g_warned.exchange(true))
+				Log("frame: a callback threw. Caught, and the game carries on. "
+				    "Further throws are not logged.");
 		}
 	}
+}
 
-	g_detour.Original<ProcessFn>()();
+int __cdecl DetouredRsEventHandler(int event, void *param) {
+	const auto original = g_detour.Original<RsEventHandlerFn>();
+	const int  result   = original(event, param);
 
-	if (g_post) {
-		try {
-			g_post();
-		} catch (...) {
-			Log("frame: post-process callback threw; continuing");
-		}
+	if (g_state && IsFrameEvent(event, *g_state)) {
+		g_frames.fetch_add(1, std::memory_order_relaxed);
+		RunCallbacks();
 	}
-
-	g_frames.fetch_add(1, std::memory_order_relaxed);
+	return result;
 }
 
 } // namespace
 
-bool InstallFrameHook(FrameFn preProcess, FrameFn postProcess) {
-	g_pre  = preProcess;
-	g_post = postProcess;
+bool IsFrameEvent(int event, int gameState) {
+	return event == EVENT_IDLE && gameState == GS_PLAYING_GAME;
+}
 
-	if (!g_detour.Install("CGame::Process", reinterpret_cast<void *>(CGame__Process),
-	                      reinterpret_cast<void *>(&HookedProcess))) {
-		Log("frame: FAILED to hook CGame::Process at 0x%08X", CGame__Process);
-		for (const auto &f : HookFailures())
-			Log("frame:   %s: %s", f.name.c_str(), f.reason.c_str());
+void AddFrameCallback(FrameCallback callback, void *user) {
+	if (callback)
+		g_callbacks.push_back({callback, user});
+}
+
+void ClearFrameCallbacks() {
+	g_callbacks.clear();
+}
+
+bool InstallFrameHook(const FrameHookTarget &target) {
+	if (g_detour.IsInstalled()) {
+		Log("frame: the hook is already installed");
+		return false;
+	}
+	if (!target.function || !target.gameState) {
+		Log("frame: no target function or game state to attach to");
+		return false;
+	}
+	if (!HookInit()) {
+		Log("frame: the hook engine did not start");
 		return false;
 	}
 
-	Log("frame: hooked CGame::Process at 0x%08X", CGame__Process);
+	g_state = target.gameState;
+	g_frames.store(0);
+	g_warned.store(false);
+
+	if (!g_detour.Install("RsEventHandler", target.function,
+	                      reinterpret_cast<void *>(&DetouredRsEventHandler))) {
+		for (const HookFailure &f : HookFailures())
+			Log("frame: hook failure - %s: %s", f.name.c_str(), f.reason.c_str());
+		g_state = nullptr;
+		HookShutdown();
+		return false;
+	}
 	return true;
 }
 
-void RemoveFrameHook() {
-	if (!g_detour.IsInstalled())
-		return;
-	g_detour.Remove();
-	g_pre  = nullptr;
-	g_post = nullptr;
-	Log("frame: hook removed after %u frames", g_frames.load());
-}
-
-bool FrameHookInstalled() {
-	return g_detour.IsInstalled();
-}
-
-uint32_t FramesSeen() {
-	return g_frames.load(std::memory_order_relaxed);
-}
-
-bool WaitForGameLoop(uint32_t timeoutMs) {
-#ifdef _WIN32
-	// CTimer::Update does m_FrameCounter++ once per frame (re3 Timer.cpp:162),
-	// so a change here means the game loop is genuinely running, which in
-	// turn means every other ASI has finished patching. Waits for a *change*
-	// rather than a non-zero value, because the counter resets to 0 on new
-	// game / load (Timer.cpp:71), and 0 is also its .bss initial value.
-	const volatile uint32_t *counter =
-	    reinterpret_cast<const volatile uint32_t *>(CTimer__m_FrameCounter);
-
-	// ---- UNRESOLVED: does this counter advance in the frontend? -----------
-	//
-	// Don't "fix" either side of this without new evidence. Two honest
-	// readings disagree here, and this function's behaviour depends on
-	// which one is right.
-	//
-	// MEASURED, on the live game with the real mod stack, twice: it does
-	// NOT. Once with a 60 s timeout that expired with the main menu visible
-	// and "START GAME" highlighted, once with a 20 minute timeout that
-	// waited 115 s and only returned when the player loaded a save. This
-	// function returns on any single change, so that's a very low bar, and
-	// it still wasn't met.
-	//
-	// STATIC, from the retail image, says it should: WinMain's GS_FRONTEND
-	// case (0x00582E23) calls RsEventHandler(rsFRONTENDIDLE) every frame the
-	// window isn't minimised -> AppEventHandler (0x0048E800) -> FrontendIdle
-	// (0x0048E700), which opens with `call CTimer::Update` (0x004ACF70); and
-	// CTimer::Update ends at 0x004AD2F1 with an unconditional
-	// `inc dword [0x009412EC]` that both arms of the preceding branch fall
-	// through to. 0x009412EC's identity as m_FrameCounter is solid on its
-	// own: CTimer::Initialise zeroes it at 0x004ACF36, and a dozen sites read
-	// it as `movzx eax,[ebx+5Ah] / add eax,[9412ECh]`, which is re3's
-	// `CTimer::GetFrameCounter() + m_randomSeed`.
-	//
-	// Leading hypothesis: something in the installed stack patches this path
-	// at runtime - Framerate Vigilante exists to control frame pacing, which
-	// means owning exactly this code - so both readings could be correct
-	// about different binaries. That's the situation docs/compat.md §2.2
-	// exists for. Untested.
-	//
-	// CoopIII is unaffected either way - it wants a running game, and the
-	// measured behaviour gives it one. Anything that has to work on the menu
-	// too wants gGameState (0x008F5838) instead, which doesn't go through
-	// CTimer at all.
-	//
-	// What's NOT in doubt: CGame::Process is not called in the frontend. An
-	// earlier version of this comment asserted that and the frame-counter
-	// claim as one fact. They're two separate facts.
-	const uint32_t start = *counter;
-	const DWORD    began = GetTickCount();
-	DWORD          lastReport = began;
-
-	while (GetTickCount() - began < timeoutMs) {
-		if (*counter != start)
-			return true;
-
-		const DWORD now = GetTickCount();
-		if (now - lastReport >= 30000) {
-			lastReport = now;
-			Log("waiting for a game to start (%lu s so far). This is normal "
-			    "while you are on the menu",
-			    (now - began) / 1000);
-		}
-		Sleep(100);
+bool InstallFrameHookForGame() {
+	// The bytes are the proof the address is the function the proof says it
+	// is. A mismatch is not "another mod hooked it first" - that would still
+	// start with its own jump - it means this is not the build addresses.h is
+	// for, and a detour here would corrupt whatever is really at that address.
+	if (!GameBytesMatch(RsEventHandler, PROLOGUE_RS_EVENT_HANDLER,
+	                    sizeof(PROLOGUE_RS_EVENT_HANDLER))) {
+		Log("frame: RsEventHandler (0x%08X) does not start with the expected bytes. Not "
+		    "hooking. Either another mod got there first or this is not the supported build.",
+		    static_cast<unsigned>(RsEventHandler));
+		return false;
 	}
-	return false;
+
+	FrameHookTarget target;
+	target.function  = reinterpret_cast<void *>(RsEventHandler);
+	target.gameState = reinterpret_cast<const volatile int *>(game_state);
+	return InstallFrameHook(target);
+}
+
+bool WaitForGameStartup(uint32_t timeoutMs) {
+#ifdef _WIN32
+	const DWORD start = GetTickCount();
+	for (;;) {
+		int state = -1;
+		if (ReadGameInt(game_state, &state) && state >= GS_INIT_FRONTEND)
+			return true;
+		if (GetTickCount() - start >= timeoutMs)
+			return false;
+		Sleep(50);
+	}
 #else
 	(void)timeoutMs;
 	return false;
 #endif
 }
 
-} // namespace coopiii::game
+void RemoveFrameHook() {
+	if (!g_detour.IsInstalled())
+		return;
+	g_detour.Remove();
+	g_state = nullptr;
+	HookShutdown();
+}
+
+uint64_t FrameCount() {
+	return g_frames.load(std::memory_order_relaxed);
+}
+
+} // namespace coopvc::game

@@ -9,7 +9,7 @@
 //
 //   - it is written whole or not at all (WriteFileAtomic);
 //   - a file that was already there and is not the Setup's own is moved into
-//     CoopIII-Setup-backup first, so Uninstall can put it back;
+//     CoopVC-Setup-backup first, so Uninstall can put it back;
 //   - an .ini that is already there is left alone. It holds somebody's
 //     settings, and the one the archive carries is only the defaults.
 #include "installer/core.h"
@@ -29,7 +29,7 @@
 
 #pragma comment(lib, "ole32.lib")
 
-namespace coopiii::installer {
+namespace coopvc::installer {
 namespace {
 
 std::wstring Widen(const std::string &utf8) {
@@ -110,7 +110,7 @@ std::string FindLocalPatch(const std::string &md5) {
 }
 
 bool CanWriteTo(const std::string &dir) {
-	const std::string probe = launcher::Join(dir, "coopiii-setup-write-test.tmp");
+	const std::string probe = launcher::Join(dir, "coopvc-setup-write-test.tmp");
 	HANDLE h = CreateFileA(probe.c_str(), GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS,
 	                       FILE_ATTRIBUTE_TEMPORARY | FILE_FLAG_DELETE_ON_CLOSE, nullptr);
 	if (h == INVALID_HANDLE_VALUE)
@@ -126,7 +126,7 @@ void SetPayloadReader(PayloadReader reader) { g_payload = std::move(reader); }
 // ---- the game folder ------------------------------------------------------
 
 bool GameIsRunning(const std::string &gameDir) {
-	const std::string exe = launcher::Join(gameDir, "gta3.exe");
+	const std::string exe = launcher::Join(gameDir, "gta-vc.exe");
 	// An exe that is running is mapped as an image, and Windows refuses to
 	// open a mapped image for writing with a sharing violation. Nothing is
 	// written; the handle is closed at once.
@@ -142,7 +142,7 @@ bool GameIsRunning(const std::string &gameDir) {
 
 GameExe InspectGame(const std::string &gameDir, const Manifest &manifest) {
 	GameExe           g;
-	const std::string exe = launcher::Join(gameDir, "gta3.exe");
+	const std::string exe = launcher::Join(gameDir, "gta-vc.exe");
 	if (gameDir.empty() || !launcher::FileExists(exe))
 		return g;
 	g.present = true;
@@ -277,14 +277,14 @@ struct InstallJob::Impl {
 };
 
 bool InstallJob::Impl::Downgrade(size_t step, std::string *error) {
-	const std::string exe = launcher::Join(options.gameDir, "gta3.exe");
+	const std::string exe = launcher::Join(options.gameDir, "gta-vc.exe");
 	const GameExe     g   = InspectGame(options.gameDir, *manifest);
 	if (!g.present) {
-		*error = "there is no gta3.exe in the game folder";
+		*error = "there is no gta-vc.exe in the game folder";
 		return false;
 	}
 	if (g.isV10) {
-		Detail("ok", "gta3.exe is already v1.0 retail");
+		Detail("ok", "gta-vc.exe is already the supported build");
 		return true;
 	}
 
@@ -312,7 +312,7 @@ bool InstallJob::Impl::Downgrade(size_t step, std::string *error) {
 	if (patch.empty()) {
 		char size[32];
 		std::snprintf(size, sizeof(size), "%llu", static_cast<unsigned long long>(g.size));
-		*error = "no downgrade patch is known for this gta3.exe (" +
+		*error = "no downgrade patch is known for this gta-vc.exe (" +
 		         (g.buildName.empty() ? std::string("unrecognised build") : g.buildName) +
 		         ", MD5 " + g.md5 + ", " + size + " bytes)";
 		return false;
@@ -322,27 +322,27 @@ bool InstallJob::Impl::Downgrade(size_t step, std::string *error) {
 	if (!ReadPatchInfo(patch, &info, error))
 		return false;
 	if (info.newMd5 != launcher::GAME_MD5) {
-		*error = "that patch does not produce v1.0 retail";
+		*error = "that patch does not produce the supported build";
 		return false;
 	}
 
-	// The original goes to gta3.exe.bak, unless something else already lives
+	// The original goes to gta-vc.exe.bak, unless something else already lives
 	// there, in which case it gets a name of its own rather than evicting it.
-	std::string backup = "gta3.exe.bak";
+	std::string backup = "gta-vc.exe.bak";
 	{
 		const std::string at = launcher::Join(options.gameDir, backup.c_str());
 		if (launcher::FileExists(at) && launcher::Md5File(at) != g.md5)
-			backup = "gta3.exe." + g.md5.substr(0, 8) + ".bak";
+			backup = "gta-vc.exe." + g.md5.substr(0, 8) + ".bak";
 	}
-	Detail("..", "patching gta3.exe; the original is kept as " + backup);
+	Detail("..", "patching gta-vc.exe; the original is kept as " + backup);
 	if (!ApplyPatch(exe, patch, launcher::Join(options.gameDir, backup.c_str()), error))
 		return false;
 
-	if (RecordEntry *e = record.Find(RecordEntry::Kind::Exe, "gta3.exe")) {
+	if (RecordEntry *e = record.Find(RecordEntry::Kind::Exe, "gta-vc.exe")) {
 		e->hash   = g.md5;
 		e->backup = backup;
 	} else {
-		record.entries.push_back({RecordEntry::Kind::Exe, "gta3.exe", g.md5, backup});
+		record.entries.push_back({RecordEntry::Kind::Exe, "gta-vc.exe", g.md5, backup});
 	}
 	if (!SaveRecord(error))
 		return false;
@@ -352,7 +352,7 @@ bool InstallJob::Impl::Downgrade(size_t step, std::string *error) {
 		progress.downgraded = true;
 		progress.backup     = backup;
 	}
-	Detail("ok", "gta3.exe is now v1.0 retail");
+	Detail("ok", "gta-vc.exe is now the supported build");
 	return true;
 }
 
@@ -435,7 +435,7 @@ void InstallJob::Impl::Run() {
 		error = "the game folder does not exist";
 		stop  = true;
 	} else if (GameIsRunning(options.gameDir)) {
-		error = "GTA III is running. Close it and try again.";
+		error = "GTA Vice City is running. Close it and try again.";
 		stop  = true;
 	} else if (!CanWriteTo(options.gameDir)) {
 		error = "the Setup cannot write into the game folder. Run it as administrator, or "
@@ -478,8 +478,8 @@ void InstallJob::Impl::Run() {
 			// What was placed before a failure is still written down.
 			std::string ignored;
 			SaveRecord(&ignored);
-			if (!ok && c->required && c->id == "coopiii")
-				blocked = "Skipped: CoopIII itself did not install";
+			if (!ok && c->required && c->id == "coopvc")
+				blocked = "Skipped: CoopVC itself did not install";
 		}
 
 		const std::string name = progress.steps[i].name;
@@ -574,7 +574,7 @@ bool CreateDesktopShortcut(const std::string &target, const std::string &name,
 	    link) {
 		link->SetPath(Widen(target).c_str());
 		link->SetWorkingDirectory(Widen(workingDir).c_str());
-		link->SetDescription(L"Start GTA III with CoopIII");
+		link->SetDescription(L"Start GTA Vice City with CoopVC");
 
 		IPersistFile *file = nullptr;
 		if (SUCCEEDED(link->QueryInterface(IID_PPV_ARGS(&file))) && file) {
@@ -595,4 +595,4 @@ bool CreateDesktopShortcut(const std::string &target, const std::string &name,
 	return ok;
 }
 
-} // namespace coopiii::installer
+} // namespace coopvc::installer

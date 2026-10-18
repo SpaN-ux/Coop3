@@ -1,7 +1,7 @@
-set_project("CoopIII")
-set_version("0.1.3")
+set_project("CoopVC")
+set_version("0.0.1")
 
--- GTA III retail is a 32-bit executable; the client DLL must match its
+-- GTA Vice City retail is a 32-bit executable; the client DLL must match its
 -- bitness to be loadable in-process. Server/launcher don't strictly need to
 -- be x86, but keeping everything on one arch keeps the build simple for now.
 set_arch("x86")
@@ -13,7 +13,7 @@ add_rules("mode.debug", "mode.release")
 -- Static CRT everywhere. The installer has to be one self-contained exe, and
 -- everything else benefits for the same reason: a player who has never
 -- installed a Visual C++ redistributable still gets a launcher that starts,
--- and the .asi stops caring which CRT the other plugins in gta3.exe brought
+-- and the .asi stops caring which CRT the other plugins in gta-vc.exe brought
 -- with them. Packages have to match, or the link fails.
 set_runtimes(is_mode("debug") and "MTd" or "MT")
 
@@ -29,26 +29,24 @@ add_requires("imgui", {configs = {win32 = true, dx11 = true}})
 add_requires("stb")
 
 -- Wire protocol + ENet transport shared by client and server.
--- Layout contract lives in sdk/include/coopiii/protocol.h.
+-- Layout contract lives in sdk/include/coopvc/protocol.h.
 target("sdk")
     set_kind("static")
     add_files("sdk/src/*.cpp")
     add_includedirs("sdk/include", {public = true})
     add_packages("enet", {public = true})
 
--- Loaded into gta3.exe by the ASI loader the player already has (see
+-- Loaded into gta-vc.exe by the ASI loader the player already has (see
 -- docs/compat.md §2.1). Hooks the game loop, applies/sends net state.
 -- `.asi` is just a DLL with a different extension.
 target("client")
     set_kind("shared")
-    set_basename("CoopIII")
+    set_basename("CoopVC")
     set_extension(".asi")
     add_files("client/src/*.cpp", "client/src/hook/*.cpp", "client/src/game/*.cpp")
     add_includedirs("client/src")
     add_deps("sdk")
     add_packages("minhook")
-    -- user32 for the one key GTA III has no binding for: the passenger seat
-    -- (client/src/game/seat.cpp). Nothing else here talks to Windows.
     add_syslinks("user32")
 
 -- Standalone authoritative server process.
@@ -60,7 +58,7 @@ target("server-core")
     add_includedirs("server/core", {public = true})
     add_deps("sdk")
 
--- Finding the game, the pre-launch checks, CoopIII.ini and starting gta3.exe
+-- Finding the game, the pre-launch checks, CoopVC.ini and starting gta-vc.exe
 -- with the co-op marker (docs/roadmap.md §5.6). No interface attached, so the
 -- console launcher, the window and the installer all get the same answers.
 target("launcher-core")
@@ -96,7 +94,7 @@ target("ui")
     add_syslinks("d3d11", "dxgi", "dwmapi", "ole32", "shell32", "user32", "gdi32", "advapi32",
                  {public = true})
 
--- CoopIII-Server.ini: its defaults are docs/roadmap.md 5, and a default that
+-- CoopVC-Server.ini: its defaults are docs/roadmap.md 5, and a default that
 -- drifts is a settled decision being reopened by accident.
 target("configtest")
     set_kind("binary")
@@ -104,7 +102,7 @@ target("configtest")
     add_files("tools/configtest/*.cpp")
     add_deps("server-core")
 
--- Name and port validation, the CoopIII.ini rewrite that has to leave a
+-- Name and port validation, the CoopVC.ini rewrite that has to leave a
 -- hand-edited file alone, MD5, and the pre-launch checks.
 target("launchertest")
     set_kind("binary")
@@ -131,7 +129,7 @@ target("ui-gallery")
 
 -- The Setup's working parts: what it can install, the SHA-256 that proves a
 -- download is what its manifest said, and the patch that puts a Steam copy of
--- gta3.exe back to v1.0.
+-- gta-vc.exe back to v1.0.
 target("installer-core")
     set_kind("static")
     add_rules("utils.bin2c", {extensions = {".json"}})
@@ -144,7 +142,7 @@ target("installer-core")
 
 -- design/screens/Installer*.dc.html. One self-contained exe, which is why
 -- the whole project is on the static CRT.
--- What the Setup carries: CoopIII.asi, the launcher and CoopIII.ini, written
+-- What the Setup carries: CoopVC.asi, the launcher and CoopVC.ini, written
 -- into a header the Setup compiles in. A target of its own rather than a step
 -- inside the Setup's, so the ordering is the build graph's job: this one runs
 -- after the two artifacts exist, and the Setup runs after this one.
@@ -161,13 +159,11 @@ target("installer-payload")
         import("core.project.project")
 
         local payload = {
-            {name = "CoopIII.asi", path = project.target("client"):targetfile()},
-            {name = "coopiii-launcher.exe", path = project.target("launcher"):targetfile()},
-            {name = "CoopIII.ini", path = path.join(os.projectdir(), "CoopIII.ini")},
-            -- Written only where the player has none: the ASI loader's settings
-            -- CoopIII was tested with, and Framerate Vigilante's 60 FPS cap.
+            {name = "CoopVC.asi", path = project.target("client"):targetfile()},
+            {name = "coopvc-launcher.exe", path = project.target("launcher"):targetfile()},
+            {name = "CoopVC.ini", path = path.join(os.projectdir(), "CoopVC.ini")},
+            -- Written only where the player has none: the ASI loader's settings.
             {name = "global.ini", path = path.join(os.projectdir(), "installer", "assets", "global.ini")},
-            {name = "FramerateVigilante.ini", path = path.join(os.projectdir(), "installer", "assets", "FramerateVigilante.ini")},
         }
 
         local out = path.join(os.projectdir(), "build", ".gens", "installer", "payload.inc")
@@ -207,13 +203,13 @@ target("installer-payload")
 
 target("installer")
     set_kind("binary")
-    set_basename("CoopIII-Setup")
+    set_basename("CoopVC-Setup")
     add_files("installer/gui/*.cpp")
     add_deps("ui", "installer-core", "installer-payload")
     add_ldflags("/subsystem:windows", "/entry:mainCRTStartup", {force = true})
     add_includedirs("$(builddir)/.gens/installer", "sdk/include")
 
--- Turns two gta3.exe files into the patch the Setup ships. Run by whoever
+-- Turns two gta-vc.exe files into the patch the Setup ships. Run by whoever
 -- owns both copies; the repo carries neither.
 target("mkpatch")
     set_kind("binary")
@@ -244,20 +240,20 @@ target("server")
     add_syslinks("iphlpapi", "ws2_32", "winhttp", "ole32", "oleaut32", "shell32")
     add_ldflags("/subsystem:windows", "/entry:mainCRTStartup", {force = true})
 
--- One coopiii-launcher.exe with two front ends, the same way as the server:
+-- One coopvc-launcher.exe with two front ends, the same way as the server:
 -- the window of design/screens/Main.dc.html and LauncherBlocked.dc.html, and
--- the console behind --nogui. It starts gta3.exe with the co-op marker in its
+-- the console behind --nogui. It starts gta-vc.exe with the co-op marker in its
 -- environment (docs/roadmap.md §5.6).
 target("launcher")
     set_kind("binary")
-    set_basename("coopiii-launcher")
+    set_basename("coopvc-launcher")
     add_files("launcher/*.cpp", "launcher/cli/*.cpp", "launcher/gui/*.cpp")
     add_includedirs("launcher")
     add_deps("ui", "launcher-core", "launcher-lobby")
     add_ldflags("/subsystem:windows", "/entry:mainCRTStartup", {force = true})
 
 -- Headless protocol test. Drives real clients against a running server.exe,
--- so the wire format can be tested without GTA III. See tools/nettest.
+-- so the wire format can be tested without GTA Vice City. See tools/nettest.
 target("nettest")
     set_kind("binary")
     set_default(false)
@@ -281,33 +277,7 @@ target("basetest")
     add_includedirs("client/src")
     add_deps("sdk")
 
--- Roster, two-phase spawn and the engine seam, with no socket and no game.
-target("clienttest")
-    set_kind("binary")
-    set_default(false)
-    add_files("tools/clienttest/*.cpp",
-              "client/src/client.cpp", "client/src/netthread.cpp",
-              "client/src/interp.cpp", "client/src/log.cpp",
-              "client/src/game/sessionclock.cpp",
-              "client/src/helisync.cpp", "client/src/moneysync.cpp", "client/src/skinsync.cpp",
-              "client/src/missionsync.cpp")
-    add_includedirs("client/src")
-    add_deps("sdk")
 
--- Breakable street objects (docs/objects.md). The identity matcher runs over
--- a pool this test builds by hand out of the same offsets and the same 0x19C
--- stride the engine uses, so the lookup is the real one walking real bytes
--- rather than a mock of itself.
-target("objecttest")
-    set_kind("binary")
-    set_default(false)
-    add_files("tools/objecttest/*.cpp",
-              "client/src/game/object.cpp",
-              "client/src/hook/hook.cpp", "client/src/hook/pattern.cpp",
-              "client/src/log.cpp")
-    add_includedirs("client/src")
-    add_deps("sdk")
-    add_packages("minhook")
 
 target("patterntest")
     set_kind("binary")
@@ -315,6 +285,26 @@ target("patterntest")
     add_files("tools/patterntest/*.cpp", "client/src/hook/pattern.cpp")
     add_includedirs("client/src")
     add_deps("sdk")
+
+-- The once-a-frame hook with a real MinHook detour on a stand-in for the
+-- game's function, and a variable for the game-state global. The addresses
+-- themselves are checked against the exe by tools/vcexe/check.py.
+target("frametest")
+    set_kind("binary")
+    set_default(false)
+    add_files("tools/frametest/*.cpp", "client/src/game/frame.cpp", "client/src/game/verify.cpp",
+              "client/src/hook/*.cpp", "client/src/log.cpp")
+    add_includedirs("client/src")
+    add_deps("sdk")
+    add_packages("minhook")
+
+-- The world-reading code (player, pools, clock) against a world built from
+-- addresses.h's own numbers. That the numbers are right is check.py's job.
+target("worldtest")
+    set_kind("binary")
+    set_default(false)
+    add_files("tools/worldtest/*.cpp", "client/src/game/world.cpp", "client/src/game/verify.cpp")
+    add_includedirs("client/src")
 
 -- Generates runtime-scannable patterns from addresses found during analysis,
 -- and proves each one is unique inside .text.

@@ -2,33 +2,33 @@
 //
 // The CLI and the window are two front ends over this, so a check can only
 // ever have one answer and the installer can reuse the same ones rather than
-// growing a second opinion about what a good GTA III folder looks like.
+// growing a second opinion about what a good GTA Vice City folder looks like.
 #pragma once
 
 #include <cstdint>
 #include <string>
 #include <vector>
 
-namespace coopiii::launcher {
+namespace coopvc::launcher {
 
-// The build CoopIII targets. Kept in step with client/src/game/addresses.h -
+// The build CoopVC targets. Kept in step with client/src/game/addresses.h -
 // duplicated rather than shared, since the launcher should not pull in the
 // client's engine headers. A drift between the two would let a wrong exe slip
 // through, so both cite the same build.
-constexpr unsigned long long GAME_SIZE_BYTES = 2383872;
-constexpr const char        *GAME_MD5        = "85414BF9EB414D00AD81062360F0DB1F";
+constexpr unsigned long long GAME_SIZE_BYTES = 3088896;
+constexpr const char        *GAME_MD5        = "167A5C8B31B3E0DBEFA033CA24453D4E";
 
 // The marker the launcher puts in the game's environment, and the client looks
 // for before it installs anything - docs/roadmap.md §5.6. Environment blocks
 // are inherited by CreateProcess children, so this needs no IPC and cannot be
 // set by accident.
-constexpr const char *ENV_LAUNCHED = "COOPIII_LAUNCHED";
+constexpr const char *ENV_LAUNCHED = "COOPVC_LAUNCHED";
 constexpr const char *ENV_LAUNCHED_VALUE = "1";
 
 // The lobby's host started everybody's game into a new game (docs/protocol.md
 // 1.31): the client starts one from the menu by itself, the way the menu's
 // own New Game does. Only ever set alongside ENV_LAUNCHED.
-constexpr const char *ENV_NEW_GAME = "COOPIII_NEW_GAME";
+constexpr const char *ENV_NEW_GAME = "COOPVC_NEW_GAME";
 
 // ---- checks ---------------------------------------------------------------
 
@@ -61,11 +61,11 @@ struct Checks {
 // is what the Browse button is for.
 std::vector<std::string> CandidateGameDirs();
 
-// The first candidate that holds a gta3.exe, or empty.
+// The first candidate that holds a gta-vc.exe, or empty.
 std::string FindGameDir();
 
 // Runs all four checks against `gameDir`. The order is the design's:
-// gta3.exe, ASI loader, CoopIII.asi, CoopIII.ini.
+// gta-vc.exe, ASI loader, CoopVC.asi, CoopVC.ini.
 Checks RunChecks(const std::string &gameDir);
 
 // ---- config ---------------------------------------------------------------
@@ -76,7 +76,7 @@ Checks RunChecks(const std::string &gameDir);
 bool UpdateIni(const std::string &path, const std::string &host, int port,
                const std::string &nick);
 
-// The same, for `discordPresence`: whether the game shows as CoopIII in
+// The same, for `discordPresence`: whether the game shows as CoopVC in
 // Discord (client/src/presence.h).
 bool UpdateIniDiscord(const std::string &path, bool on);
 
@@ -104,9 +104,9 @@ bool ValidHost(const std::string &text);
 
 // ---- starting the game ----------------------------------------------------
 
-// Starts gta3.exe from `gameDir` with the co-op marker in its environment,
+// Starts gta-vc.exe from `gameDir` with the co-op marker in its environment,
 // and with `newGame` the lobby's word to start a new game (ENV_NEW_GAME). The
-// working directory is the game folder, because GTA III resolves its data
+// working directory is the game folder, because GTA Vice City resolves its data
 // paths relative to it.
 bool LaunchGame(const std::string &gameDir, std::string *error, bool newGame = false);
 
@@ -126,4 +126,4 @@ std::string Md5File(const std::string &path);
 // about to write before it writes it, which is the whole point of the check.
 std::string Md5Buffer(const void *data, size_t length);
 
-} // namespace coopiii::launcher
+} // namespace coopvc::launcher

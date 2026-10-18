@@ -1,16 +1,16 @@
-﻿# Puts every file a CoopIII release carries into one folder, with the exact
+﻿# Puts every file a CoopVC release carries into one folder, with the exact
 # names the Setup and the website expect, and a SHA256SUMS.txt beside them.
 # Nothing is uploaded: whoever owns the release looks at the folder and
-# attaches its contents to a GitHub release of noxxUY/CoopIII.
+# attaches its contents to a GitHub release of YOUR-ACCOUNT/CoopVC.
 #
 #   powershell -ExecutionPolicy Bypass -File tools\release\stage.ps1
 #   powershell -ExecutionPolicy Bypass -File tools\release\stage.ps1 -SkipBuild
-#   powershell -ExecutionPolicy Bypass -File tools\release\stage.ps1 -Patch C:\x\gta3-<build>-v10.c3patch
+#   powershell -ExecutionPolicy Bypass -File tools\release\stage.ps1 -Patch C:\x\vc-<build>.c3patch
 #
 # What lands in build\release-staging:
 #
-#   CoopIII-Setup.exe       the download the website's button points at
-#   CoopIII.asi, coopiii-launcher.exe, server.exe
+#   CoopVC-Setup.exe       the download the website's button points at
+#   CoopVC.asi, coopvc-launcher.exe, server.exe
 #                           the same builds on their own, for people who
 #                           install by hand and for running a server
 #   mirror-*.zip            byte-identical copies of the MIT components'
@@ -25,7 +25,7 @@
 #
 # Every third-party file is checked against the SHA-256 in
 # installer/assets/components.json before it is staged, and the script
-# refuses to stage anything whose MD5 is a gta3.exe build the manifest knows.
+# refuses to stage anything whose MD5 is a gta-vc.exe build the manifest knows.
 param(
     [string]$Out = "",
     [string]$VigilanteAsi = "$env:USERPROFILE\Downloads\essentials-mod-pack_1741967254_825844 (1)\essentials-mod-pack_1741967254_825844\modloader\_ESSENTIALS\FramerateVigilante\FramerateVigilante.III.asi",
@@ -42,7 +42,7 @@ $root = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
 if ($Out -eq "") { $Out = Join-Path $root "build\release-staging" }
 $bin      = Join-Path $root "build\windows\x86\release"
 $upstream = Join-Path $root "build\upstream"
-$ours     = "https://github.com/noxxUY/CoopIII/releases/"
+$ours     = "https://github.com/YOUR-ACCOUNT/CoopVC/releases/"
 
 function Sha256Of([string]$path) { (Get-FileHash -Algorithm SHA256 -LiteralPath $path).Hash.ToLower() }
 function Md5Of([string]$path)    { (Get-FileHash -Algorithm MD5 -LiteralPath $path).Hash.ToUpper() }
@@ -79,7 +79,7 @@ if (Test-Path -LiteralPath $Out) { Remove-Item -Recurse -Force -LiteralPath $Out
 New-Item -ItemType Directory -Force $Out | Out-Null
 
 Write-Host "our own builds"
-foreach ($f in "CoopIII-Setup.exe", "CoopIII.asi", "coopiii-launcher.exe", "server.exe") {
+foreach ($f in "CoopVC-Setup.exe", "CoopVC.asi", "coopvc-launcher.exe", "server.exe") {
     $src = Join-Path $bin $f
     if (-not (Test-Path -LiteralPath $src)) { throw "$src is missing; build first" }
     Copy-Item -LiteralPath $src -Destination (Join-Path $Out $f)
@@ -90,8 +90,8 @@ $manifest = Get-Content -Raw -LiteralPath (Join-Path $root "installer\assets\com
 
 Write-Host "third-party files"
 $notices = New-Object System.Collections.Generic.List[string]
-$notices.Add("CoopIII-Setup installs the following components. They are the work of their")
-$notices.Add("authors, not of CoopIII. Each is fetched from its authors' own release; the")
+$notices.Add("CoopVC-Setup installs the following components. They are the work of their")
+$notices.Add("authors, not of CoopVC. Each is fetched from its authors' own release; the")
 $notices.Add("files named mirror-* in this release are unmodified copies of MIT-licensed")
 $notices.Add("releases, used only if the original download is unavailable.")
 $notices.Add("")
@@ -126,7 +126,7 @@ foreach ($c in $manifest.components) {
             $src = $VigilanteAsi
         } else {
             # The manifest deliberately pins third-party assets to the first
-            # public release. Do not silently move them with CoopIII's latest
+            # public release. Do not silently move them with CoopVC's latest
             # tag: the recorded hash and tested mod stack are immutable.
             $src = Fetch $c.url $c.sha256
         }
@@ -148,7 +148,7 @@ if ($manifest.patches) {
         # game rather than a patch, and it does not go out.
         $bytes = [IO.File]::ReadAllBytes((Resolve-Path -LiteralPath $given).Path)
         if ($bytes.Length -lt 124 -or [Text.Encoding]::ASCII.GetString($bytes, 0, 8) -ne "C3PATCH2") {
-            throw "$given is not a CoopIII downgrade patch"
+            throw "$given is not a CoopVC downgrade patch"
         }
         $newSize = [BitConverter]::ToUInt32($bytes, 44)
         $stored  = [BitConverter]::ToUInt32($bytes, 100)
@@ -164,9 +164,9 @@ if ($manifest.patches) {
 # The one rule this project never bends: no Rockstar executable goes out.
 $known = @($manifest.builds | ForEach-Object { $_.md5.ToUpper() })
 foreach ($f in Get-ChildItem -LiteralPath $Out -File) {
-    if ($f.Name -ieq "gta3.exe" -or $known -contains (Md5Of $f.FullName)) {
+    if ($f.Name -ieq "gta-vc.exe" -or $known -contains (Md5Of $f.FullName)) {
         Remove-Item -Recurse -Force -LiteralPath $Out
-        throw "$($f.Name) is a gta3.exe build; nothing was staged"
+        throw "$($f.Name) is a gta-vc.exe build; nothing was staged"
     }
 }
 

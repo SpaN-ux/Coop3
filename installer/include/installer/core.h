@@ -1,6 +1,6 @@
 // The Setup's working parts, with no interface attached: what it can install,
 // how it proves a download is what it claims to be, how it puts a Steam copy
-// of GTA III back to v1.0, and how it takes all of that out again.
+// of GTA Vice City back to v1.0, and how it takes all of that out again.
 //
 // The window is installer/gui. Everything here is testable without one, which
 // matters most for the things that touch a player's files: the patch, the
@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 
-namespace coopiii::installer {
+namespace coopvc::installer {
 
 // ---- SHA-256 --------------------------------------------------------------
 //
@@ -38,7 +38,7 @@ struct ExtractRule {
 };
 
 // A file the Setup carries that is written only when the player has none.
-// The ASI loader's global.ini is one: the settings CoopIII was tested with,
+// The ASI loader's global.ini is one: the settings CoopVC was tested with,
 // and nobody's own settings overwritten.
 struct DefaultFile {
 	std::string file;   // name in the Setup's payload
@@ -57,7 +57,7 @@ struct Component {
 
 	// Where the files come from.
 	//
-	//   local     carried inside the Setup; that is CoopIII itself
+	//   local     carried inside the Setup; that is CoopVC itself
 	//   download  fetched from `url` (then each of `mirrors` if that fails)
 	//             and checked against `sha256` before anything is unpacked
 	std::string source;
@@ -87,7 +87,7 @@ struct Component {
 	std::vector<std::string> Sources() const;   // url then mirrors, empties dropped
 };
 
-// A gta3.exe the Setup can put a name to.
+// A gta-vc.exe the Setup can put a name to.
 struct Build {
 	std::string md5;       // uppercase hex
 	uint64_t    size = 0;
@@ -96,7 +96,7 @@ struct Build {
 
 // A downgrade patch the Setup knows how to fetch.
 struct PatchSource {
-	std::string from;      // MD5 of the gta3.exe it applies to, uppercase
+	std::string from;      // MD5 of the gta-vc.exe it applies to, uppercase
 	std::string name;      // which build that is, for the window
 	std::string file;      // the name it is saved under
 	std::string url;
@@ -104,10 +104,10 @@ struct PatchSource {
 	std::string sha256;    // of the patch file
 };
 
-// Where a player is sent when their gta3.exe has no patch: a guide to
+// Where a player is sent when their gta-vc.exe has no patch: a guide to
 // downgrading it themselves, which they follow before running the Setup
 // again. A Steam exe is wrapped in SteamStub, so a patch from it would have to
-// carry most of v1.0 as it is (or strip the wrapper), and CoopIII does
+// carry most of v1.0 as it is (or strip the wrapper), and CoopVC does
 // neither. Kept in the manifest so the recommendation can change without new
 // code. Only pages, never a file: Parse refuses a url that looks like a
 // download, and an empty url means the window offers no link at all.
@@ -139,8 +139,8 @@ const Manifest &BuiltInManifest(std::string *error = nullptr);
 
 // ---- the downgrader -------------------------------------------------------
 //
-// A patch turns one exact gta3.exe into the v1.0 retail one. The repo carries
-// no gta3.exe and never will; it carries the patch, built by tools/mkpatch
+// A patch turns one exact gta-vc.exe into the v1.0 retail one. The repo carries
+// no gta-vc.exe and never will; it carries the patch, built by tools/mkpatch
 // from two copies the project owner has, and published as a release asset.
 //
 // The differ is bsdiff's: it finds where the old file lines up with the new
@@ -248,19 +248,19 @@ bool FetchVerified(const std::vector<std::string> &sources, const std::string &s
                    const std::function<bool()> &cancelled,
                    const std::function<void(const std::string &)> &log, std::string *error);
 
-// Where downloads are kept between runs: %LOCALAPPDATA%\CoopIII\Setup\downloads.
+// Where downloads are kept between runs: %LOCALAPPDATA%\CoopVC\Setup\downloads.
 std::string DefaultCacheDir();
 
 // ---- the install record ---------------------------------------------------
 //
 // Every file the Setup writes into a game folder is listed in
-// CoopIII-Setup.record there, with the hash it wrote and where the file it
+// CoopVC-Setup.record there, with the hash it wrote and where the file it
 // replaced was put. Uninstall reads it back: what is still exactly what the
-// Setup wrote is removed, what was replaced comes back, and gta3.exe goes back
+// Setup wrote is removed, what was replaced comes back, and gta-vc.exe goes back
 // to the build it was before the downgrade.
 
-constexpr const char *kRecordName = "CoopIII-Setup.record";
-constexpr const char *kBackupDir  = "CoopIII-Setup-backup";
+constexpr const char *kRecordName = "CoopVC-Setup.record";
+constexpr const char *kBackupDir  = "CoopVC-Setup-backup";
 
 struct RecordEntry {
 	enum class Kind : uint8_t { File, Dir, Exe };
@@ -306,11 +306,11 @@ struct Progress {
 	bool   cancelled = false;
 	bool   failed    = false;
 	bool   downgraded = false;
-	std::string backup;                  // where the original gta3.exe went
+	std::string backup;                  // where the original gta-vc.exe went
 };
 
-// The id of the step that downgrades gta3.exe, when it is asked for.
-constexpr const char *kDowngradeId = "gta3-downgrade";
+// The id of the step that downgrades gta-vc.exe, when it is asked for.
+constexpr const char *kDowngradeId = "vc-downgrade";
 
 struct InstallOptions {
 	std::string              gameDir;
@@ -350,7 +350,7 @@ private:
 
 // ---- the game folder ------------------------------------------------------
 
-// What the Setup can tell about a gta3.exe before doing anything to it.
+// What the Setup can tell about a gta-vc.exe before doing anything to it.
 struct GameExe {
 	bool        present = false;
 	std::string md5;
@@ -369,7 +369,7 @@ struct GameExe {
 
 GameExe InspectGame(const std::string &gameDir, const Manifest &manifest);
 
-// True while something holds gta3.exe open for execution.
+// True while something holds gta-vc.exe open for execution.
 bool GameIsRunning(const std::string &gameDir);
 
 // ---- odds and ends the window needs ---------------------------------------
@@ -402,4 +402,4 @@ bool WriteFileAtomic(const std::string &path, const std::vector<uint8_t> &bytes,
 
 bool EnsureDir(const std::string &path);
 
-} // namespace coopiii::installer
+} // namespace coopvc::installer

@@ -1,6 +1,6 @@
 // The city map background - design/DESIGN.md §5, the signature element.
 //
-// An abstract Liberty City: a grid of blocks rotated -16 degrees, with a
+// An abstract city: a grid of blocks rotated -16 degrees, with a
 // dotted route between two player dots. It appears behind the launcher's left
 // column, the installer's left column and the server's header.
 //

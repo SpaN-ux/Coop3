@@ -1,78 +1,72 @@
-// Guarding CWorld's own lists against the entities CoopIII puts in them, and
-// against the engine limit CoopIII can drive a clump past.
+// Reading the game's world: the player, the pools, the clock.
 //
-// CoopIII creates and destroys entities the engine did not ask for, at a rate
-// it never would, and GTA III has now faulted at 0x004B1B25 three times -
-// inside CWorld::Process, on the first of the four walks it makes over
-// CWorld::ms_listMovingEntityPtrs (0x008F433C):
+// Read-only by design. Nothing here writes to the game; spawning and moving
+// things is a later file, and it gets its own proofs. Every read goes through
+// a reader that cannot fault: a wrong address yields `false`, never a crash.
 //
-//     004B1B20  mov ebp,[edi]        node->item
-//     004B1B22  mov edi,[edi+8]      node->next
-//     004B1B25  mov eax,[ebp+4Ch]    entity->m_rwObject    <-- fault
-//
-// This is the seatbelt. It sweeps the list the engine is about to walk and
-// takes out anything the engine would fault on.
-//
-// **Where it runs is the whole point of this file.** It used to run from
-// PreFrame, i.e. before CGame::Process. It never once fired, in any session,
-// including the one whose crash dump had node->item == 0 - a value
-// LooksLikeGameObject(0) rejects on sight. A sweep that cannot see the thing
-// it is looking for is not evidence that the thing is absent, it is evidence
-// that it is looking in the wrong place: everything CGame::Process does
-// before CWorld::Process - CTheScripts::Process, CPopulation, CCarCtrl, the
-// fire and explosion managers - happens in the gap. So the sweep is now a
-// detour on CWorld::Process itself (0x004B1A60) and runs on entry, with
-// nothing between it and the dereference. That closes the window rather than
-// narrowing it.
-//
-// The second half is the bound the engine does not check. Walk 1 is the walk
-// that calls RpAnimBlendClumpUpdateAnimations (0x004024B0), and that function
-// indexes a twelve-slot node array with no bound at all: past eleven
-// associations on one clump it writes over its own saved registers and then
-// hands CWorld::Process's walk back a node cursor made of animation data.
-// addresses.h has the stack map and the arithmetic. So every entity the
-// sweep passes is also handed to an inspector, and the client's inspector is
-// the one that keeps a clump under that limit - any clump, not just the ones
-// CoopIII drives, because CoopIII is not the only thing that adds to them.
-//
-// The walk itself is in game/movinglist.h, header-only and parameterised on
-// the list head, so tools/clienttest runs the real splice code rather than a
-// copy of it. The predicates it uses (LooksLikeGameObject,
-// MovingListNodeIsSane) are in addresses.h and covered there too.
+// The offsets and layouts are addresses.h's, and tools/vcexe/check.py proves
+// them against the exe. This code assumes they are right; tools/worldtest
+// proves it uses them consistently, against a world built from the same
+// numbers.
 #pragma once
 
+#include <cstddef>
 #include <cstdint>
 
-#include "movinglist.h"
+namespace coopvc::game {
 
-namespace coopiii::game {
+struct Vec3 {
+	float x = 0, y = 0, z = 0;
+};
 
-// Walk CWorld::ms_listMovingEntityPtrs and unlink anything CWorld::Process
-// would fault on, without logging. The entity inspector is not run.
-MovingListAudit AuditMovingList();
+// How memory is read. The default is the real game's (verify.h's ReadGameBytes);
+// tests install their own so the logic runs against a world they built.
+using MemoryReader = bool (*)(uintptr_t va, void *out, size_t len);
+void SetMemoryReader(MemoryReader reader);   // null restores the default
 
-// The same audit with the entity inspector, the logging and the
-// once-per-occurrence rate limit. Returns how many nodes it took out.
-uint32_t GuardMovingList();
+// A snapshot of a pool's header. Cheap to take; take a fresh one each frame
+// rather than keeping one, because the pool is the game's and it may be rebuilt
+// (a new game builds new pools).
+struct Pool {
+	uintptr_t entries   = 0;
+	uintptr_t flags     = 0;
+	int32_t   size      = 0;
+	uint32_t  entrySize = 0;
 
-// What every surviving entity gets handed to. Set once at startup; null
-// means the sweep only checks links. It lives behind a setter so this file
-// keeps no dependency on game/ped.cpp - which in turn is what lets
-// tools/clienttest link the walk.
-void SetMovingListEntityInspector(EntityInspectFn fn);
+	// Slot `index` holds a live object: in range, and the free bit is clear.
+	bool     InUse(int index) const;
+	uintptr_t Entry(int index) const;     // address of slot `index`, whether or not it is in use
+	uint32_t Handle(int index) const;     // (index << 8) | flag byte; 0 for a slot that is not in use
+	// CPool::GetAt: the object for a handle, or 0 when the handle is stale or free.
+	uintptr_t GetAt(int32_t handle) const;
+	int      CountInUse() const;
+};
 
-// Detour CWorld::Process (0x004B1A60) and sweep on entry. This is the one
-// that matters; GuardMovingList from PreFrame is the fallback for when this
-// fails to install.
-bool InstallWorldProcessGuard();
-void RemoveWorldProcessGuard();
-bool WorldProcessGuardInstalled();
+// `poolGlobal` is one of addresses.h's ms_p*Pool: the address of the variable
+// that holds the CPool pointer.
+bool ReadPool(uintptr_t poolGlobal, uint32_t entrySize, Pool *out);
+bool ReadPedPool(Pool *out);
+bool ReadVehiclePool(Pool *out);
 
-// Microseconds the last sweep took, and the worst one seen. Read by the
-// frame heartbeat so the cost of this is a number in the log rather than an
-// opinion in a comment.
-uint32_t LastSweepMicros();
-uint32_t WorstSweepMicros();
-uint32_t LastSweepNodes();
+// The local player. All of these are false until a game is running, and for
+// as long as the player has no ped.
+bool PlayerPed(uintptr_t *ped);
 
-} // namespace coopiii::game
+struct PlayerState {
+	uintptr_t ped      = 0;
+	uintptr_t vehicle  = 0;     // the car under the player, when in one
+	bool      inVehicle = false;
+	Vec3      position;         // the vehicle's when in one, as FindPlayerCoors says
+};
+bool ReadPlayer(PlayerState *out);
+
+// The game clock. `ms` advances only while the game is unpaused; `step` is the
+// frame's time step (0 while paused).
+struct GameClock {
+	uint32_t ms     = 0;
+	uint32_t prevMs = 0;
+	float    step   = 0;
+};
+bool ReadClock(GameClock *out);
+
+} // namespace coopvc::game

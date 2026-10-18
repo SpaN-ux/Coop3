@@ -1,7 +1,7 @@
 // The Setup's working parts, with no window.
 //
 // The ones that matter most touch a player's files: the downgrade patch,
-// which rewrites their gta3.exe, SHA-256, which is the only thing between a
+// which rewrites their gta-vc.exe, SHA-256, which is the only thing between a
 // download and their game folder, the zip reader, and the install record that
 // Uninstall trusts to put everything back.
 //
@@ -13,7 +13,7 @@
 //                                  builds a patch between two real files and
 //                                  reports its size, without writing it
 //
-// The downgrade round trip needs a real v1.0 gta3.exe, from COOPIII_GTA3_EXE
+// The downgrade round trip needs a real v1.0 gta-vc.exe, from COOPVC_GAME_EXE
 // (the same variable clienttest reads). Without it that part is skipped.
 #include "installer/core.h"
 
@@ -31,8 +31,8 @@
 #include <thread>
 #include <vector>
 
-using namespace coopiii;
-using namespace coopiii::installer;
+using namespace coopvc;
+using namespace coopvc::installer;
 
 namespace {
 
@@ -243,9 +243,9 @@ void TestPatch() {
 	      "while one between two builds of the same program is far under it");
 
 	// The file level: backup first, then the rename.
-	const std::string dir = TempDir("coopiii-installtest-patchfile");
-	const std::string exe = launcher::Join(dir, "gta3.exe");
-	const std::string bak = launcher::Join(dir, "gta3.exe.bak");
+	const std::string dir = TempDir("coopvc-installtest-patchfile");
+	const std::string exe = launcher::Join(dir, "gta-vc.exe");
+	const std::string bak = launcher::Join(dir, "gta-vc.exe.bak");
 	const std::string pat = launcher::Join(dir, "x.c3patch");
 	MakePatchBuffers(oldBytes, newBytes, &patch, &error);
 	WriteWhole(exe, oldBytes);
@@ -270,40 +270,29 @@ void TestManifest() {
 	Check(why.empty() && !m.components.empty(), "the built-in manifest parses" +
 	                                                (why.empty() ? std::string() : ": " + why));
 
-	const Component *coop = m.Find("coopiii");
+	const Component *coop = m.Find("coopvc");
 	Check(coop && coop->required && coop->source == "local" && coop->Ready() &&
 	          coop->files.size() == 3,
-	      "CoopIII is in it, required, carried by the Setup, three files");
+	      "CoopVC is in it, required, carried by the Setup, three files");
 
-	for (const char *id : {"asiloader", "silentpatch"}) {
+	for (const char *id : {"asiloader"}) {
 		const Component *c = m.Find(id);
 		Check(c && c->required && c->Downloadable(), std::string(id) + " is required");
 	}
 
-	// Only MIT components may have a copy in CoopIII's release. These three
-	// are fetched from their authors and nowhere else.
-	for (const char *id : {"sacarcam", "ginput", "cleo"}) {
+	// Components are fetched from their authors; none is rehosted.
+	for (const char *id : {"asiloader", "windowed"}) {
 		const Component *c = m.Find(id);
-		Check(c && c->mirrors.empty() && c->url.find("noxxUY") == std::string::npos,
-		      std::string(id) + " is only ever fetched from its author");
+		Check(c && c->mirrors.empty(), std::string(id) + " is only ever fetched from its author");
 	}
-	if (const Component *cam = m.Find("sacarcam"))
-		Check(!cam->required && !cam->selected && cam->saveAs == "SACarCam.asi",
-		      "SACarCam is optional, off by default, and lands as an .asi");
+	if (const Component *w = m.Find("windowed"))
+		Check(!w->required && !w->selected, "Windowed Mode is optional and off by default");
 
-	Check(m.FindBuild(launcher::GAME_MD5) != nullptr, "v1.0 retail is a known build");
-	Check(m.FindBuild("85414bf9eb414d00ad81062360f0db1f") != nullptr, "looked up in any case");
+	Check(m.FindBuild(launcher::GAME_MD5) != nullptr, "the supported build is a known build");
+	Check(m.FindBuild("167a5c8b31b3e0dbefa033ca24453d4e") != nullptr, "looked up in any case");
 
-	// The Steam exe is known by name and has no patch, on purpose: it is
-	// wrapped in SteamStub, and a patch from it would be most of the game.
-	const Build *steam = m.FindBuild("12BDB699AA2F4922240C454C2E567F3F");
-	Check(steam && steam->name == "Steam" && steam->size == 2801664, "the Steam exe is a known build");
-	Check(!m.FindPatch("12BDB699AA2F4922240C454C2E567F3F"), "and there is no patch for it");
-	Check(m.patches.empty(), "there is no downgrade patch in the manifest at all");
-	Check(m.downgrader.url.rfind("https://gtaforums.com/", 0) == 0 &&
-	          m.downgrader.infoUrl.rfind("https://www.pcgamingwiki.com/", 0) == 0 &&
-	          !m.downgrader.name.empty(),
-	      "players of it are sent to a guide and a wiki page, by name");
+
+	Check(m.patches.empty(), "CoopVC ships no downgrade patch: there is exactly one supported exe");
 
 	bool allReady = true, allHttps = true, zipsHaveRules = true, mirrorsOurs = true,
 	     haveLicence = true;
@@ -316,7 +305,7 @@ void TestManifest() {
 			if (!Https(s))
 				allHttps = false;
 		for (const std::string &s : c.mirrors)
-			if (s.rfind("https://github.com/noxxUY/CoopIII/releases/", 0) != 0)
+			if (s.rfind("https://github.com/YOUR-ACCOUNT/CoopVC/releases/", 0) != 0)
 				mirrorsOurs = false;
 		if (c.archive == "zip" && c.extract.empty())
 			zipsHaveRules = false;
@@ -325,7 +314,7 @@ void TestManifest() {
 	}
 	Check(allReady, "every component has a download and a hash, so all of them can install");
 	Check(allHttps, "every source is https");
-	Check(mirrorsOurs, "every mirror is a CoopIII release asset");
+	Check(mirrorsOurs, "every mirror is a CoopVC release asset");
 	Check(zipsHaveRules, "every zip says which files to take out of it");
 	Check(haveLicence, "every component names its licence");
 
@@ -356,7 +345,7 @@ void TestManifest() {
 
 	const std::string oneComponent =
 	    "\"components\": [{\"id\": \"x\", \"name\": \"X\", \"source\": \"local\"}]}";
-	for (const char *url : {"https://example.com/gta3.exe", "https://example.com/Downgrader.ZIP",
+	for (const char *url : {"https://example.com/gta-vc.exe", "https://example.com/Downgrader.ZIP",
 	                        "https://example.com/d.7z?dl=1", "http://example.com/guide"}) {
 		Check(!bad.Parse(std::string("{\"downgrader\": {\"name\": \"x\", \"url\": \"") + url +
 		                     "\"}, " + oneComponent,
@@ -436,14 +425,14 @@ void TestArchive() {
 
 void TestRecord() {
 	std::printf("the install record\n");
-	const std::string dir = TempDir("coopiii-installtest-record");
+	const std::string dir = TempDir("coopvc-installtest-record");
 
 	InstallRecord r;
 	r.entries.push_back({RecordEntry::Kind::Dir, "CLEO", "", ""});
 	r.entries.push_back({RecordEntry::Kind::File, "CLEO\\a.cleo", std::string(64, 'a'), ""});
 	r.entries.push_back({RecordEntry::Kind::File, "dinput8.dll", std::string(64, 'b'),
-	                     "CoopIII-Setup-backup\\dinput8.dll"});
-	r.entries.push_back({RecordEntry::Kind::Exe, "gta3.exe", std::string(32, 'C'), "gta3.exe.bak"});
+	                     "CoopVC-Setup-backup\\dinput8.dll"});
+	r.entries.push_back({RecordEntry::Kind::Exe, "gta-vc.exe", std::string(32, 'C'), "gta-vc.exe.bak"});
 	std::string error;
 	Check(r.Save(dir, &error), "it saves");
 	Check(HasInstallRecord(dir), "and is found");
@@ -481,7 +470,7 @@ std::string CacheName(const std::string &sha, const std::string &leaf) {
 
 void BuildFixture(Fixture *f, const char *leaf) {
 	f->game  = TempDir(leaf);
-	f->cache = launcher::Join(f->game, "..\\coopiii-installtest-cache");
+	f->cache = launcher::Join(f->game, "..\\coopvc-installtest-cache");
 	RemoveTree(f->cache);
 	CreateDirectoryA(f->cache.c_str(), nullptr);
 
@@ -497,8 +486,8 @@ void BuildFixture(Fixture *f, const char *leaf) {
 
 	const std::string json =
 	    "{\"components\": ["
-	    "{\"id\": \"coopiii\", \"name\": \"CoopIII\", \"source\": \"local\", \"required\": true,"
-	    " \"files\": [\"CoopIII.asi\", \"CoopIII.ini\", \"coopiii-launcher.exe\"]},"
+	    "{\"id\": \"coopvc\", \"name\": \"CoopVC\", \"source\": \"local\", \"required\": true,"
+	    " \"files\": [\"CoopVC.asi\", \"CoopVC.ini\", \"coopvc-launcher.exe\"]},"
 	    "{\"id\": \"loader\", \"name\": \"Loader\", \"source\": \"download\", \"license\": \"MIT\","
 	    " \"url\": \"https://example.invalid/loader.zip\", \"sha256\": \"" + loaderSha + "\","
 	    " \"archive\": \"zip\", \"extract\": [{\"from\": \"dinput8.dll\", \"to\": \"dinput8.dll\"}],"
@@ -519,19 +508,19 @@ void TestInstallJob() {
 	std::printf("installing\n");
 
 	const std::vector<uint8_t> asi = Bytes("C3ASI build 1");
-	const std::vector<uint8_t> ini = Bytes("[coopiii]\r\n");
+	const std::vector<uint8_t> ini = Bytes("[coopvc]\r\n");
 	const std::vector<uint8_t> exe(4096, 0xCC);
 	const std::vector<uint8_t> globalIni = Bytes("[GlobalSets]\r\n");
 	SetPayloadReader([&](const std::string &name, std::vector<uint8_t> *out) {
-		if (name == "CoopIII.asi") { *out = asi; return true; }
-		if (name == "CoopIII.ini") { *out = ini; return true; }
-		if (name == "coopiii-launcher.exe") { *out = exe; return true; }
+		if (name == "CoopVC.asi") { *out = asi; return true; }
+		if (name == "CoopVC.ini") { *out = ini; return true; }
+		if (name == "coopvc-launcher.exe") { *out = exe; return true; }
 		if (name == "global.ini") { *out = globalIni; return true; }
 		return false;
 	});
 
 	Fixture f;
-	BuildFixture(&f, "coopiii-installtest-game");
+	BuildFixture(&f, "coopvc-installtest-game");
 	const std::string G = f.game;
 	auto at = [&](const char *rel) { return launcher::Join(G, rel); };
 
@@ -539,7 +528,7 @@ void TestInstallJob() {
 	const std::vector<uint8_t> theirGame   = Noise(5000, 42);
 	const std::vector<uint8_t> theirLoader = Bytes("the player's own dinput8");
 	const std::vector<uint8_t> theirIni    = Bytes("[player's settings]");
-	WriteWhole(at("gta3.exe"), theirGame);
+	WriteWhole(at("gta-vc.exe"), theirGame);
 	WriteWhole(at("dinput8.dll"), theirLoader);
 	WriteWhole(at("Mod.ini"), theirIni);
 	const std::vector<std::string> before = Tree(G);
@@ -548,7 +537,7 @@ void TestInstallJob() {
 	o.gameDir    = G;
 	o.cacheDir   = f.cache;
 	o.manifest   = &f.manifest;
-	o.components = {"mod", "coopiii", "loader"};   // out of order on purpose
+	o.components = {"mod", "coopvc", "loader"};   // out of order on purpose
 
 	{
 		InstallJob job;
@@ -557,28 +546,28 @@ void TestInstallJob() {
 		if (p.failed)
 			PrintDetails(p);
 		Check(!p.running && !p.failed && p.finished == 3 && p.total == 3, "three components install clean");
-		Check(p.steps.size() == 3 && p.steps[0].id == "coopiii" && p.steps[1].id == "loader" &&
+		Check(p.steps.size() == 3 && p.steps[0].id == "coopvc" && p.steps[1].id == "loader" &&
 		          p.steps[2].id == "mod",
 		      "in the manifest's order, not the order they were asked for");
 	}
 
-	Check(ReadWhole(at("CoopIII.asi")) == asi && ReadWhole(at("CoopIII.ini")) == ini &&
-	          ReadWhole(at("coopiii-launcher.exe")) == exe,
-	      "CoopIII's own files landed byte for byte");
+	Check(ReadWhole(at("CoopVC.asi")) == asi && ReadWhole(at("CoopVC.ini")) == ini &&
+	          ReadWhole(at("coopvc-launcher.exe")) == exe,
+	      "CoopVC's own files landed byte for byte");
 	Check(ReadWhole(at("dinput8.dll")) == Bytes("the loader"), "the loader came out of its zip");
-	Check(ReadWhole(at("CoopIII-Setup-backup\\dinput8.dll")) == theirLoader,
+	Check(ReadWhole(at("CoopVC-Setup-backup\\dinput8.dll")) == theirLoader,
 	      "and the player's own dinput8.dll was backed up, not lost");
 	Check(ReadWhole(at("scripts\\global.ini")) == globalIni, "the default global.ini was written");
 	Check(!launcher::FileExists(at("readme.txt")), "a file no rule names stayed in the archive");
 	Check(ReadWhole(at("Mod.ini")) == theirIni, "an .ini the player already had was kept as it was");
 	Check(ReadWhole(at("moddata\\data\\deep\\b.dat")) == Bytes("b"), "a folder rule kept its tree");
-	Check(ReadWhole(at("gta3.exe")) == theirGame, "gta3.exe was not touched without a downgrade");
+	Check(ReadWhole(at("gta-vc.exe")) == theirGame, "gta-vc.exe was not touched without a downgrade");
 
 	InstallRecord r;
 	std::string   error;
 	r.Load(G, &error);
 	Check(r.Find(RecordEntry::Kind::File, "dinput8.dll") &&
-	          r.Find(RecordEntry::Kind::File, "dinput8.dll")->backup == "CoopIII-Setup-backup\\dinput8.dll",
+	          r.Find(RecordEntry::Kind::File, "dinput8.dll")->backup == "CoopVC-Setup-backup\\dinput8.dll",
 	      "the record knows where the replaced file went");
 	Check(!r.Find(RecordEntry::Kind::File, "Mod.ini"), "and does not claim the player's .ini");
 	Check(r.Find(RecordEntry::Kind::Dir, "moddata\\data\\deep") && r.Find(RecordEntry::Kind::Dir, "scripts"),
@@ -594,7 +583,7 @@ void TestInstallJob() {
 	}
 	r.Load(G, &error);
 	Check(r.entries.size() == entries, "and does not add to the record");
-	Check(ReadWhole(at("CoopIII-Setup-backup\\dinput8.dll")) == theirLoader,
+	Check(ReadWhole(at("CoopVC-Setup-backup\\dinput8.dll")) == theirLoader,
 	      "or overwrite the backup with the Setup's own file");
 
 	// A cache entry that has been tampered with is not used.
@@ -672,18 +661,18 @@ void TestInstallJob() {
 
 // Stands a different build up from the real v1.0 exe: a block inserted in
 // the middle and a few bytes changed elsewhere. Close enough to a second
-// compile to exercise everything the Setup does with a real gta3.exe.
+// compile to exercise everything the Setup does with a real gta-vc.exe.
 void TestDowngrade() {
-	std::printf("the downgrade, on a real v1.0 gta3.exe\n");
+	std::printf("the downgrade, on a real v1.0 gta-vc.exe\n");
 
-	const char *path = std::getenv("COOPIII_GTA3_EXE");
+	const char *path = std::getenv("COOPVC_GAME_EXE");
 	if (!path || !launcher::FileExists(path)) {
-		std::printf("  (COOPIII_GTA3_EXE is not set; skipped)\n");
+		std::printf("  (COOPVC_GAME_EXE is not set; skipped)\n");
 		return;
 	}
 	const std::vector<uint8_t> v10 = ReadWhole(path);
 	if (launcher::Md5Buffer(v10.data(), v10.size()) != launcher::GAME_MD5) {
-		Check(false, "COOPIII_GTA3_EXE is v1.0 retail");
+		Check(false, "COOPVC_GAME_EXE is v1.0 retail");
 		return;
 	}
 
@@ -705,7 +694,7 @@ void TestDowngrade() {
 	Check(info.extraBytes < 1024, line);
 
 	Fixture f;
-	BuildFixture(&f, "coopiii-installtest-downgrade");
+	BuildFixture(&f, "coopvc-installtest-downgrade");
 	const std::string patchSha = Sha256(patch.data(), patch.size());
 	WriteWhole(launcher::Join(f.cache, "test.c3patch"), patch);
 	PatchSource source;
@@ -718,7 +707,7 @@ void TestDowngrade() {
 	f.manifest.builds.push_back({otherMd5, other.size(), "Test build"});
 
 	const std::string G = f.game;
-	WriteWhole(launcher::Join(G, "gta3.exe"), other);
+	WriteWhole(launcher::Join(G, "gta-vc.exe"), other);
 	const std::vector<std::string> before = Tree(G);
 
 	const GameExe g = InspectGame(G, f.manifest);
@@ -734,7 +723,7 @@ void TestDowngrade() {
 	o.cacheDir   = f.cache;
 	o.manifest   = &f.manifest;
 	o.downgrade  = true;
-	o.components = {"coopiii"};
+	o.components = {"coopvc"};
 	{
 		InstallJob job;
 		job.Start(o);
@@ -743,11 +732,11 @@ void TestDowngrade() {
 			PrintDetails(p);
 		Check(!p.failed && p.finished == 2 && p.steps[0].id == kDowngradeId,
 		      "the downgrade runs first, then the components");
-		Check(p.downgraded && p.backup == "gta3.exe.bak", "and reports where the original went");
+		Check(p.downgraded && p.backup == "gta-vc.exe.bak", "and reports where the original went");
 	}
-	Check(launcher::Md5File(launcher::Join(G, "gta3.exe")) == launcher::GAME_MD5,
-	      "gta3.exe is now v1.0 retail");
-	Check(ReadWhole(launcher::Join(G, "gta3.exe.bak")) == other, "and the original is gta3.exe.bak");
+	Check(launcher::Md5File(launcher::Join(G, "gta-vc.exe")) == launcher::GAME_MD5,
+	      "gta-vc.exe is now v1.0 retail");
+	Check(ReadWhole(launcher::Join(G, "gta-vc.exe.bak")) == other, "and the original is gta-vc.exe.bak");
 	Check(InspectGame(G, f.manifest).isV10, "which the Setup now sees");
 
 	// A second downgrade has nothing to do.
@@ -760,11 +749,11 @@ void TestDowngrade() {
 
 	std::vector<std::string> log;
 	Check(Uninstall(G, &log, &error), "uninstall succeeds: " + error);
-	Check(ReadWhole(launcher::Join(G, "gta3.exe")) == other, "and puts the original gta3.exe back");
+	Check(ReadWhole(launcher::Join(G, "gta-vc.exe")) == other, "and puts the original gta-vc.exe back");
 	Check(Tree(G) == before, "leaving the folder as it was found");
 
 	// An exe nobody has a patch for.
-	WriteWhole(launcher::Join(G, "gta3.exe"), Noise(9000, 77));
+	WriteWhole(launcher::Join(G, "gta-vc.exe"), Noise(9000, 77));
 	{
 		InstallJob job;
 		job.Start(o);
@@ -784,16 +773,16 @@ void TestDowngrade() {
 // ---- a known build with no patch --------------------------------------------
 
 // What a Steam player meets: the Setup names the build, offers no downgrade,
-// and if asked to install anyway leaves gta3.exe byte for byte as it was.
+// and if asked to install anyway leaves gta-vc.exe byte for byte as it was.
 void TestKnownBuildWithoutPatch() {
 	std::printf("a known build the Setup has no patch for\n");
 
 	Fixture f;
-	BuildFixture(&f, "coopiii-installtest-nopatch");
+	BuildFixture(&f, "coopvc-installtest-nopatch");
 	const std::vector<uint8_t> exe = Noise(7000, 31);
 	const std::string          md5 = launcher::Md5Buffer(exe.data(), exe.size());
 	f.manifest.builds.push_back({md5, exe.size(), "Steam"});
-	WriteWhole(launcher::Join(f.game, "gta3.exe"), exe);
+	WriteWhole(launcher::Join(f.game, "gta-vc.exe"), exe);
 
 	const GameExe g = InspectGame(f.game, f.manifest);
 	Check(g.present && !g.isV10 && g.buildName == "Steam", "it is recognised by name");
@@ -809,17 +798,17 @@ void TestKnownBuildWithoutPatch() {
 	o.cacheDir   = f.cache;
 	o.manifest   = &f.manifest;
 	o.downgrade  = true;
-	o.components = {"coopiii"};
+	o.components = {"coopvc"};
 	InstallJob job;
 	job.Start(o);
 	const Progress p = RunToCompletion(job);
 	Check(p.failed && !p.downgraded && p.steps.size() == 2 &&
 	          p.steps[1].state == StepState::Skipped,
 	      "an install asked for anyway stops at the downgrade and installs nothing");
-	Check(ReadWhole(launcher::Join(f.game, "gta3.exe")) == exe &&
-	          !launcher::FileExists(launcher::Join(f.game, "gta3.exe.bak")) &&
-	          !launcher::FileExists(launcher::Join(f.game, "CoopIII.asi")),
-	      "gta3.exe is untouched, no backup was made, no mod was written");
+	Check(ReadWhole(launcher::Join(f.game, "gta-vc.exe")) == exe &&
+	          !launcher::FileExists(launcher::Join(f.game, "gta-vc.exe.bak")) &&
+	          !launcher::FileExists(launcher::Join(f.game, "CoopVC.asi")),
+	      "gta-vc.exe is untouched, no backup was made, no mod was written");
 
 	SetPayloadReader(nullptr);
 	RemoveTree(f.cache);
@@ -831,9 +820,9 @@ void TestKnownBuildWithoutPatch() {
 int Online(const std::string &root) {
 	std::printf("the real Essential Pack, from the internet\n");
 
-	const char *path = std::getenv("COOPIII_GTA3_EXE");
+	const char *path = std::getenv("COOPVC_GAME_EXE");
 	if (!path || launcher::Md5File(path) != launcher::GAME_MD5) {
-		std::printf("  COOPIII_GTA3_EXE has to name a v1.0 gta3.exe\n");
+		std::printf("  COOPVC_GAME_EXE has to name a v1.0 gta-vc.exe\n");
 		return 2;
 	}
 
@@ -843,7 +832,7 @@ int Online(const std::string &root) {
 	RemoveTree(game);
 	RemoveTree(cache);
 	EnsureDir(game);
-	WriteWhole(launcher::Join(game, "gta3.exe"), ReadWhole(path));
+	WriteWhole(launcher::Join(game, "gta-vc.exe"), ReadWhole(path));
 	const std::vector<std::string> before = Tree(game);
 
 	SetPayloadReader([](const std::string &name, std::vector<uint8_t> *out) {
@@ -861,14 +850,14 @@ int Online(const std::string &root) {
 	for (const Component &c : m.components)
 		o.components.push_back(c.id);
 
-	// Framerate Vigilante has only the CoopIII mirror as a source, and that
+	// Framerate Vigilante has only the CoopVC mirror as a source, and that
 	// does not exist until the first release; everything else is upstream.
 	InstallJob job;
 	job.Start(o);
 	const Progress p = RunToCompletion(job, 600000);
 	PrintDetails(p);
 	for (const StepProgress &s : p.steps)
-		Check(s.state == StepState::Done || s.id == "vigilante",
+		Check(s.state == StepState::Done,
 		      s.name + ": " + (s.state == StepState::Done ? "installed" : s.note));
 
 	std::printf("  the game folder now holds:\n");
@@ -878,13 +867,13 @@ int Online(const std::string &root) {
 	// A mirror is only used when the first source fails.
 	Manifest    fallback;
 	std::string error;
-	const Component *sp = m.Find("silentpatch");
+	const Component *sp = m.Find("asiloader");
 	const std::string json =
-	    "{\"components\": [{\"id\": \"sp\", \"name\": \"SilentPatch via a fallback\","
+	    "{\"components\": [{\"id\": \"sp\", \"name\": \"ASI loader via a fallback\","
 	    " \"source\": \"download\", \"license\": \"MIT\","
-	    " \"url\": \"https://github.com/noxxUY/CoopIII/releases/download/no-such-tag/nothing.zip\","
+	    " \"url\": \"https://github.com/YOUR-ACCOUNT/CoopVC/releases/download/no-such-tag/nothing.zip\","
 	    " \"mirrors\": [\"" + sp->url + "\"], \"sha256\": \"" + sp->sha256 + "\","
-	    " \"archive\": \"zip\", \"extract\": [{\"from\": \"SilentPatchIII.asi\", \"to\": \"x/SilentPatchIII.asi\"}]}]}";
+	    " \"archive\": \"zip\", \"extract\": [{\"from\": \"dinput8.dll\", \"to\": \"x/dinput8.dll\"}]}]}";
 	Check(fallback.Parse(json, &error), "a manifest with a dead first source parses");
 	const std::string cache2 = launcher::Join(root, "cache2");
 	RemoveTree(cache2);
@@ -903,7 +892,7 @@ int Online(const std::string &root) {
 	Check(Uninstall(game, &log, &error), "uninstall succeeds: " + error);
 	for (const std::string &line : log)
 		std::printf("      %s\n", line.c_str());
-	Check(Tree(game) == before, "and the scratch game folder is back to just gta3.exe");
+	Check(Tree(game) == before, "and the scratch game folder is back to just gta-vc.exe");
 
 	SetPayloadReader(nullptr);
 	return g_failures == 0 ? 0 : 1;

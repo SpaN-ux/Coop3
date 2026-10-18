@@ -7,17 +7,18 @@
 
 #include <windows.h>
 
-namespace coopiii::launcher {
+namespace coopvc::launcher {
 namespace {
 
 // Absolute file offsets. The exe isn't relocated, image base is 0x400000.
-// "ESIOTRUT" is how v1.0 spells the armour cheat; v1.1 and the Steam build
-// spell it "ESIOTROT" instead, which is exactly why it works as a version
-// anchor.
-constexpr long        OFF_VERSION_MAGIC = 0x1F4DF4;
+// Two read-only-in-practice strings in the supported gta-vc.exe (MD5 in
+// launcher/core.h). The first is the magic peds.col is checked against, the
+// second names the data file the game boots from. Both verified against the
+// file itself; with the exact size they pin the supported build.
+constexpr long        OFF_VERSION_MAGIC = 0x28B9E8;   // VA 0x0068DFE8
 constexpr const char *STR_VERSION_MAGIC = "grandtheftauto3";
-constexpr long        OFF_CHEAT_ARMOUR  = 0x1F6618;
-constexpr const char *STR_CHEAT_ARMOUR  = "ESIOTRUT";
+constexpr long        OFF_BUILD_MARKER  = 0x28BF9C;   // VA 0x0068E59C
+constexpr const char *STR_BUILD_MARKER  = "DATA\\GTA_VC.DAT";
 
 unsigned long long FileSize(const std::string &path) {
 	WIN32_FILE_ATTRIBUTE_DATA d;
@@ -210,24 +211,24 @@ std::string Md5File(const std::string &path) {
 std::vector<std::string> CandidateGameDirs() {
 	std::vector<std::string> dirs;
 
-	// Beside the launcher itself, if the whole CoopIII folder got dropped
+	// Beside the launcher itself, if the whole CoopVC folder got dropped
 	// straight into the game directory.
 	dirs.push_back(ExeDir());
 
 	static const char *roots[] = {
-	    "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Grand Theft Auto 3",
-	    "C:\\Program Files\\Steam\\steamapps\\common\\Grand Theft Auto 3",
-	    "C:\\Program Files (x86)\\Rockstar Games\\GTAIII",
-	    "C:\\Program Files\\Rockstar Games\\GTAIII",
-	    "C:\\Program Files (x86)\\Grand Theft Auto 3",
-	    "C:\\GTA3",
+	    "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Grand Theft Auto Vice City",
+	    "C:\\Program Files\\Steam\\steamapps\\common\\Grand Theft Auto Vice City",
+	    "C:\\Program Files (x86)\\Rockstar Games\\Grand Theft Auto Vice City",
+	    "C:\\Program Files\\Rockstar Games\\Grand Theft Auto Vice City",
+	    "C:\\Program Files (x86)\\Grand Theft Auto Vice City",
+	    "C:\\GTAVC",
 	};
 	for (const char *r : roots)
 		dirs.push_back(r);
 
 	// Worth a shot: a Steam library living on another drive isn't rare.
 	for (char drive = 'D'; drive <= 'K'; ++drive) {
-		std::string s = "X:\\SteamLibrary\\steamapps\\common\\Grand Theft Auto 3";
+		std::string s = "X:\\SteamLibrary\\steamapps\\common\\Grand Theft Auto Vice City";
 		s[0]          = drive;
 		dirs.push_back(s);
 	}
@@ -236,7 +237,7 @@ std::vector<std::string> CandidateGameDirs() {
 
 std::string FindGameDir() {
 	for (const std::string &d : CandidateGameDirs())
-		if (DirExists(d) && FileExists(Join(d, "gta3.exe")))
+		if (DirExists(d) && FileExists(Join(d, "gta-vc.exe")))
 			return d;
 	return std::string();
 }
@@ -247,32 +248,32 @@ namespace {
 
 Check CheckGameExe(const std::string &gameDir) {
 	Check c;
-	const std::string exe = Join(gameDir, "gta3.exe");
+	const std::string exe = Join(gameDir, "gta-vc.exe");
 
 	if (!FileExists(exe)) {
 		c.state  = Check::State::Fail;
-		c.title  = "gta3.exe is not in this folder";
-		c.detail = "Point at the folder that holds gta3.exe.";
+		c.title  = "gta-vc.exe is not in this folder";
+		c.detail = "Point at the folder that holds gta-vc.exe.";
 		return c;
 	}
 
 	if (!BytesAt(exe, OFF_VERSION_MAGIC, STR_VERSION_MAGIC)) {
 		c.state  = Check::State::Fail;
-		c.title  = "This does not look like GTA III";
-		c.detail = "The file is named gta3.exe but is not the game.";
+		c.title  = "This does not look like GTA Vice City";
+		c.detail = "The file is named gta-vc.exe but is not the game.";
 		return c;
 	}
 
 	const unsigned long long size = FileSize(exe);
-	if (BytesAt(exe, OFF_CHEAT_ARMOUR, STR_CHEAT_ARMOUR) && size == GAME_SIZE_BYTES) {
+	if (BytesAt(exe, OFF_BUILD_MARKER, STR_BUILD_MARKER) && size == GAME_SIZE_BYTES) {
 		c.state = Check::State::Ok;
-		c.title = "gta3.exe is v1.0 retail";
+		c.title = "gta-vc.exe is the supported build";
 		return c;
 	}
 
 	c.state     = Check::State::Fail;
-	c.title     = "gta3.exe is not v1.0 retail";
-	c.detail    = "Steam ships a 1.1-lineage exe. CoopIII needs a v1.0 downgrade.";
+	c.title     = "gta-vc.exe is not the supported build";
+	c.detail    = "CoopVC's addresses belong to one exact gta-vc.exe. Other builds are not supported yet.";
 	c.monoLabel = "Expected MD5";
 	c.mono      = GAME_MD5;
 	return c;
@@ -293,7 +294,7 @@ Check CheckAsiLoader(const std::string &gameDir) {
 	}
 	c.state    = Check::State::Fail;
 	c.title    = "No ASI loader found";
-	c.detail   = "CoopIII.asi would never load. Install Ultimate ASI Loader in the game folder.";
+	c.detail   = "CoopVC.asi would never load. Install Ultimate ASI Loader in the game folder.";
 	c.linkText = "Ultimate ASI Loader";
 	c.link     = "https://github.com/ThirteenAG/Ultimate-ASI-Loader/releases";
 	return c;
@@ -302,24 +303,24 @@ Check CheckAsiLoader(const std::string &gameDir) {
 Check CheckClient(const std::string &gameDir) {
 	Check c;
 	// Could be in the game root or under modloader/. See docs/compat.md §3.
-	const std::string places[] = {Join(gameDir, "CoopIII.asi"),
-	                              Join(gameDir, "scripts\\CoopIII.asi"),
-	                              Join(gameDir, "modloader\\CoopIII\\CoopIII.asi")};
-	const char       *shown[]  = {"CoopIII.asi", "scripts\\CoopIII.asi",
-	                              "modloader\\CoopIII\\CoopIII.asi"};
+	const std::string places[] = {Join(gameDir, "CoopVC.asi"),
+	                              Join(gameDir, "scripts\\CoopVC.asi"),
+	                              Join(gameDir, "modloader\\CoopVC\\CoopVC.asi")};
+	const char       *shown[]  = {"CoopVC.asi", "scripts\\CoopVC.asi",
+	                              "modloader\\CoopVC\\CoopVC.asi"};
 
 	for (int i = 0; i < 3; ++i) {
 		if (FileExists(places[i])) {
 			c.state = Check::State::Ok;
-			c.title = "CoopIII.asi installed";
+			c.title = "CoopVC.asi installed";
 			c.meta  = shown[i];
 
 			// A real trap: a stale .asi next to a newer launcher means the log
 			// ends up describing an older build's behaviour.
-			const std::string built = Join(ExeDir(), "CoopIII.asi");
+			const std::string built = Join(ExeDir(), "CoopVC.asi");
 			if (FileExists(built) && built != places[i] &&
 			    FileSize(built) != FileSize(places[i])) {
-				c.detail = "The CoopIII.asi next to this launcher is a different build "
+				c.detail = "The CoopVC.asi next to this launcher is a different build "
 				           "from the installed one.";
 			}
 			return c;
@@ -327,21 +328,21 @@ Check CheckClient(const std::string &gameDir) {
 	}
 
 	c.state  = Check::State::Fail;
-	c.title  = "CoopIII.asi is not installed";
-	c.detail = "Copy it, and CoopIII.ini, next to gta3.exe.";
+	c.title  = "CoopVC.asi is not installed";
+	c.detail = "Copy it, and CoopVC.ini, next to gta-vc.exe.";
 	return c;
 }
 
 Check CheckIni(const std::string &gameDir) {
 	Check c;
-	if (FileExists(Join(gameDir, "CoopIII.ini"))) {
+	if (FileExists(Join(gameDir, "CoopVC.ini"))) {
 		c.state = Check::State::Ok;
-		c.title = "CoopIII.ini found";
+		c.title = "CoopVC.ini found";
 		return c;
 	}
 	// Informational only: the launcher writes it on start.
 	c.state = Check::State::Info;
-	c.title = "CoopIII.ini will be created on start";
+	c.title = "CoopVC.ini will be created on start";
 	return c;
 }
 
@@ -355,7 +356,7 @@ Checks RunChecks(const std::string &gameDir) {
 		Check c;
 		c.state  = Check::State::Fail;
 		c.title  = gameDir.empty() ? "No game folder chosen" : "That folder is not there";
-		c.detail = "Browse to the folder GTA III is installed in.";
+		c.detail = "Browse to the folder GTA Vice City is installed in.";
 		out.items.push_back(c);
 		out.problems = 1;
 		return out;
@@ -390,9 +391,9 @@ bool SetIniKeys(const std::string &path,
 	}
 
 	// A file we are creating gets the section header, so the result reads like
-	// the CoopIII.ini in the repo rather than three bare keys.
+	// the CoopVC.ini in the repo rather than three bare keys.
 	if (text.empty())
-		text = "; CoopIII. Written by the launcher; safe to edit by hand.\n\n[CoopIII]\n";
+		text = "; CoopVC. Written by the launcher; safe to edit by hand.\n\n[CoopVC]\n";
 
 	auto replaceKey = [&text](const char *key, const std::string &value) {
 		const size_t keyLen = std::strlen(key);
@@ -561,7 +562,7 @@ bool ValidHost(const std::string &text) {
 // ---- starting the game ----------------------------------------------------
 
 bool LaunchGame(const std::string &gameDir, std::string *error, bool newGame) {
-	const std::string exe = Join(gameDir, "gta3.exe");
+	const std::string exe = Join(gameDir, "gta-vc.exe");
 
 	// docs/roadmap.md §5.6: the mod only activates when the game was started
 	// from here. The marker rides in the child's environment, which
@@ -581,7 +582,7 @@ bool LaunchGame(const std::string &gameDir, std::string *error, bool newGame) {
 	PROCESS_INFORMATION pi = {};
 	std::string         cmd = "\"" + exe + "\"";
 
-	// Working directory has to be the game folder: GTA III resolves its data
+	// Working directory has to be the game folder: GTA Vice City resolves its data
 	// paths relative to it.
 	const BOOL ok = CreateProcessA(exe.c_str(), &cmd[0], nullptr, nullptr, FALSE, 0, nullptr,
 	                               gameDir.c_str(), &si, &pi);
@@ -594,7 +595,7 @@ bool LaunchGame(const std::string &gameDir, std::string *error, bool newGame) {
 	if (!ok) {
 		if (error) {
 			char buf[128];
-			std::snprintf(buf, sizeof(buf), "could not start gta3.exe (error %lu)",
+			std::snprintf(buf, sizeof(buf), "could not start gta-vc.exe (error %lu)",
 			              GetLastError());
 			*error = buf;
 		}
@@ -606,4 +607,4 @@ bool LaunchGame(const std::string &gameDir, std::string *error, bool newGame) {
 	return true;
 }
 
-} // namespace coopiii::launcher
+} // namespace coopvc::launcher

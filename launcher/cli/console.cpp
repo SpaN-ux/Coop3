@@ -1,17 +1,17 @@
-// CoopIII launcher, the console front end: `coopiii-launcher --nogui`.
+// CoopVC launcher, the console front end: `coopvc-launcher --nogui`.
 //
 // Job here is to catch the things that can go wrong before the game even
 // starts, and fail here with a plain sentence, rather than twenty seconds
 // later inside some hook:
 //
 //   1. the game is not where we think it is
-//   2. the exe is not the build CoopIII targets
-//   3. there is no ASI loader, so CoopIII.asi would never be loaded at all
-//   4. CoopIII.asi is missing, or is an older build than this launcher
+//   2. the exe is not the build CoopVC targets
+//   3. there is no ASI loader, so CoopVC.asi would never be loaded at all
+//   4. CoopVC.asi is missing, or is an older build than this launcher
 //   5. the player has not said which server to join
 //
 // Does NOT inject itself. Player already has an ASI loader
-// (docs/compat.md §2.1), and letting that do the loading keeps CoopIII a
+// (docs/compat.md §2.1), and letting that do the loading keeps CoopVC a
 // well-behaved guest next to their other mods. So this just checks things,
 // reports what it found, and starts the game.
 //
@@ -26,7 +26,7 @@
 #include <cstdio>
 #include <string>
 
-namespace coopiii::launcher {
+namespace coopvc::launcher {
 namespace {
 
 void Say(const char *fmt, ...) {
@@ -65,14 +65,14 @@ void Report(const Check &check) {
 int RunConsole(const Startup &startup) {
 	std::string gameDir = startup.gameDir;
 
-	Say("CoopIII launcher");
+	Say("CoopVC launcher");
 	Say("");
 
 	if (gameDir.empty()) {
 		gameDir = FindGameDir();
 		if (gameDir.empty()) {
-			Say("Could not find GTA III.");
-			Say("Point at it:  coopiii-launcher --nogui --game \"C:\\path\\to\\GTA3\"");
+			Say("Could not find GTA Vice City.");
+			Say("Point at it:  coopvc-launcher --nogui --game \"C:\\path\\to\\Grand Theft Auto Vice City\"");
 			return 1;
 		}
 	}
@@ -81,7 +81,7 @@ int RunConsole(const Startup &startup) {
 		return 1;
 	}
 
-	Say("game: %s", Join(gameDir, "gta3.exe").c_str());
+	Say("game: %s", Join(gameDir, "gta-vc.exe").c_str());
 	const Checks checks = RunChecks(gameDir);
 	for (const Check &c : checks.items)
 		Report(c);
@@ -92,11 +92,11 @@ int RunConsole(const Startup &startup) {
 			Say("  [warn] name trimmed to \"%s\" (23 characters travel on the wire)",
 			    clean.c_str());
 
-		const std::string ini = Join(gameDir, "CoopIII.ini");
+		const std::string ini = Join(gameDir, "CoopVC.ini");
 		if (UpdateIni(ini, startup.host, startup.port, clean))
 			Say("  [ ok ] updated %s", ini.c_str());
 		else
-			Say("  [warn] could not write CoopIII.ini");
+			Say("  [warn] could not write CoopVC.ini");
 	}
 
 	Say("");
@@ -111,7 +111,7 @@ int RunConsole(const Startup &startup) {
 	if (startup.check)
 		return 0;
 
-	Say("Starting GTA III...");
+	Say("Starting GTA Vice City...");
 	std::string error;
 	if (!LaunchGame(gameDir, &error)) {
 		Say("%s", error.c_str());
@@ -119,9 +119,9 @@ int RunConsole(const Startup &startup) {
 	}
 
 	Say("");
-	Say("If anything goes wrong, read CoopIII.log in the game folder for what "
+	Say("If anything goes wrong, read CoopVC.log in the game folder for what "
 	    "the client did and why it stopped.");
 	return 0;
 }
 
-} // namespace coopiii::launcher
+} // namespace coopvc::launcher

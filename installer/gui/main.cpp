@@ -1,14 +1,14 @@
-// CoopIII Setup.
+// CoopVC Setup.
 //
 // Four screens, in design/screens/InstallerDowngrade, Installer,
 // InstallerProgress and InstallerDone. Which one opens depends on the game:
-// a copy that is already v1.0 retail skips the downgrade entirely.
+// a copy that is already the supported build skips the downgrade entirely.
 //
 // The work is installer-core, on a thread of its own. This file is layout and
 // the one question the Setup keeps asking: what is actually in the player's
 // game folder right now.
 #include "installer/core.h"
-#include <coopiii/version.h>
+#include <coopvc/version.h>
 
 #include "launcher/core.h"
 
@@ -30,10 +30,10 @@
 #include <vector>
 
 using namespace ui;
-using namespace coopiii;
-using namespace coopiii::installer;
+using namespace coopvc;
+using namespace coopvc::installer;
 
-namespace coopiii::installer { void RegisterPayload(); }
+namespace coopvc::installer { void RegisterPayload(); }
 
 namespace {
 
@@ -56,7 +56,7 @@ struct State {
 	Screen screen = Screen::Components;
 
 	char    gameDir[MAX_PATH] = "";
-	GameExe game;               // what gta3.exe is, and whether it can be downgraded
+	GameExe game;               // what gta-vc.exe is, and whether it can be downgraded
 	bool    downgrade = false;  // the player said yes on the downgrade screen
 	bool    hasRecord = false;  // the Setup has installed into this folder before
 
@@ -149,9 +149,9 @@ void DrawLeft(App &app, const Theme &theme, ImVec2 screen) {
 	              static_cast<int>(Components().components.size()));
 
 	const Step steps[4] = {
-	    {"Game version", g_state.game.isV10 ? "v1.0 retail"
+	    {"Game version", g_state.game.isV10 ? "the supported build"
 	                     : g_state.downgrade ? "Downgrade planned"
-	                                         : "Needs v1.0 retail"},
+	                                         : "Needs the supported build"},
 	    {"Components", componentsNote},
 	    {"Install", "Copies files into the game folder"},
 	    {"Done", "Open the launcher and play"},
@@ -264,7 +264,7 @@ float DrawGameFolder(const Theme &theme, float x, float y, float width) {
 		LookAtGame();
 	if (OutlineButton("##browse", {ImVec2(box.Max().x + 8.0f, box.pos.y), ImVec2(browseW, 44.0f)},
 	                  "Browse", Icon::Folder, theme)) {
-		const std::string picked = App::PickFolder("Where is GTA III installed?", g_state.gameDir);
+		const std::string picked = App::PickFolder("Where is GTA Vice City installed?", g_state.gameDir);
 		if (!picked.empty()) {
 			std::snprintf(g_state.gameDir, sizeof(g_state.gameDir), "%s", picked.c_str());
 			LookAtGame();
@@ -277,21 +277,21 @@ float DrawGameFolder(const Theme &theme, float x, float y, float width) {
 	Icon        icon;
 	ImU32       colour;
 	if (!g.present) {
-		verdict = "no gta3.exe in this folder";
+		verdict = "no gta-vc.exe in this folder";
 		icon    = Icon::CircleX;
 		colour  = theme.statusFail;
 	} else if (g.running) {
-		verdict = "GTA III is running. Close it before installing.";
+		verdict = "GTA Vice City is running. Close it before installing.";
 		icon    = Icon::CircleX;
 		colour  = theme.statusFail;
 	} else if (g.isV10) {
-		verdict = "gta3.exe is v1.0 retail";
+		verdict = "gta-vc.exe is the supported build";
 		icon    = Icon::CircleCheck;
 		colour  = theme.statusOk;
 	} else {
 		verdict = g.buildName.empty()
-		              ? "gta3.exe is a build the Setup does not recognise (MD5 " + ShortMd5(g.md5) + ")"
-		              : "gta3.exe is the " + g.buildName + " build";
+		              ? "gta-vc.exe is a build the Setup does not recognise (MD5 " + ShortMd5(g.md5) + ")"
+		              : "gta-vc.exe is the " + g.buildName + " build";
 		icon   = Icon::TriangleAlert;
 		colour = theme.statusWarn;
 	}
@@ -319,15 +319,15 @@ void DrawDowngrade(App &app, const Theme &theme, ImVec2 screen, float x, float w
 	                                   ? "Downgrade your own copy with a community guide"
 	                                   : "Downgrade your own copy following the guide";
 	const std::string  intro =
-	    patchable ? std::string("CoopIII's addresses only match GTA III v1.0 retail. This copy is "
+	    patchable ? std::string("CoopVC's addresses only match one exact build of GTA Vice City. This copy is "
 	                            "another build, so the Setup patches it back to v1.0 as the first "
 	                            "step of the install.")
-	    : (g.buildName.empty() ? std::string("This gta3.exe is not a build the Setup knows.")
-	                           : "Your GTA III is the " + g.buildName + " version.") +
-	          " CoopIII needs v1.0. " + howTo +
-	          ", keep a backup of the original gta3.exe, then press Check again.";
+	    : (g.buildName.empty() ? std::string("This gta-vc.exe is not a build the Setup knows.")
+	                           : "Your GTA Vice City is the " + g.buildName + " version.") +
+	          " CoopVC needs that build. " + howTo +
+	          ", keep a backup of the original gta-vc.exe, then press Check again.";
 
-	y += DrawHeading(theme, x, y, width, patchable ? "Downgrade to v1.0" : "Downgrade GTA III first",
+	y += DrawHeading(theme, x, y, width, patchable ? "Downgrade to v1.0" : "Downgrade GTA Vice City first",
 	                 intro.c_str());
 	y += 22.0f;
 	y += DrawGameFolder(theme, x, y, width);
@@ -369,7 +369,7 @@ void DrawDowngrade(App &app, const Theme &theme, ImVec2 screen, float x, float w
 		bool        mono;
 	};
 	const Row rows[3] = {
-	    {"Build", g.buildName.empty() ? "Not recognised" : g.buildName, "v1.0 retail", false},
+	    {"Build", g.buildName.empty() ? "Not recognised" : g.buildName, "the supported build", false},
 	    {"Size", g.present ? sizeNow : "-", expectedSize, false},
 	    {"MD5", g.present ? ShortMd5(g.md5) : "-", launcher::GAME_MD5, true},
 	};
@@ -395,7 +395,7 @@ void DrawDowngrade(App &app, const Theme &theme, ImVec2 screen, float x, float w
 		const float keptW =
 		    Text(ImVec2(x, y), Type::Body, theme.textSecondary, "The original is kept as ");
 		const float bakW =
-		    Text(ImVec2(x + keptW, y + 1.0f), Type::Mono, theme.textPrimary, "gta3.exe.bak");
+		    Text(ImVec2(x + keptW, y + 1.0f), Type::Mono, theme.textPrimary, "gta-vc.exe.bak");
 		Text(ImVec2(x + keptW + bakW, y), Type::Body, theme.textSecondary,
 		     ", and Uninstall puts it back.");
 		y += 18.0f + 20.0f;
@@ -409,18 +409,18 @@ void DrawDowngrade(App &app, const Theme &theme, ImVec2 screen, float x, float w
 		       "or a file check; if the launcher says the version is wrong again, run the Setup once "
 		       "more.";
 	else if (g.knownPatch)
-		note = "The patch for this build is downloaded from CoopIII's release and checked before it "
+		note = "The patch for this build is downloaded from CoopVC's release and checked before it "
 		       "is applied. Steam can put the newer exe back after an update or a file check; if the "
 		       "launcher says the version is wrong again, run the Setup once more.";
 	else if (!g.buildName.empty())
-		note = "The Setup leaves this gta3.exe exactly as it is. The " + g.buildName +
+		note = "The Setup leaves this gta-vc.exe exactly as it is. The " + g.buildName +
 		       " exe is wrapped in the store's copy protection, so it cannot be turned into v1.0 by "
-		       "a small patch, and CoopIII does not try. Steam can put the newer exe back after an "
+		       "a small patch, and CoopVC does not try. Steam can put the newer exe back after an "
 		       "update or a file check; if the launcher says the version is wrong again, downgrade "
 		       "again and press Check again.";
 	else
-		note = "The Setup leaves this gta3.exe exactly as it is. Its MD5 is " + g.md5 +
-		       ", which is neither v1.0 nor a build CoopIII knows. Once it is v1.0, press Check "
+		note = "The Setup leaves this gta-vc.exe exactly as it is. Its MD5 is " + g.md5 +
+		       ", which is neither the supported build nor a build CoopVC knows. Once it is the supported build, press Check "
 		       "again.";
 	const float noteH = MeasureWrapped(Type::BodySmall, width - 60.0f, note.c_str()).y;
 	const Rect  noteBox{ImVec2(x, y), ImVec2(width, noteH + 28.0f)};
@@ -452,7 +452,7 @@ void DrawDowngrade(App &app, const Theme &theme, ImVec2 screen, float x, float w
 	float       left  = x + width - mainW - 10.0f;
 
 	if (!patchable) {
-		// Re-reads gta3.exe: the player has just run the downgrader, or has
+		// Re-reads gta-vc.exe: the player has just run the downgrader, or has
 		// not yet, and either way the screen should say which.
 		const float checkW = 150.0f;
 		left -= checkW;
@@ -463,8 +463,8 @@ void DrawDowngrade(App &app, const Theme &theme, ImVec2 screen, float x, float w
 			g_state.message =
 			    g_state.game.isV10 ? std::string()
 			    : !g_state.game.present
-			        ? "There is no gta3.exe in that folder."
-			        : "gta3.exe is still not v1.0 (MD5 " + ShortMd5(g_state.game.md5) + ").";
+			        ? "There is no gta-vc.exe in that folder."
+			        : "gta-vc.exe is still not the supported build (MD5 " + ShortMd5(g_state.game.md5) + ").";
 		}
 		left -= 10.0f;
 	}
@@ -485,7 +485,7 @@ void DrawDowngrade(App &app, const Theme &theme, ImVec2 screen, float x, float w
 
 	// Nothing is patched here: the downgrade is the install's first step, so it
 	// shows in the same progress as everything else and a failure stops the
-	// rest rather than leaving mods on an exe CoopIII cannot use.
+	// rest rather than leaving mods on an exe CoopVC cannot use.
 	if (PrimaryButton("##downgrade", {ImVec2(x + width - mainW, footerY), ImVec2(mainW, 56.0f)},
 	                  "Continue", Icon::RotateCcw, !g.running, theme)) {
 		g_state.downgrade = true;
@@ -573,9 +573,9 @@ void DrawComponents(App &app, const Theme &theme, ImVec2 screen, float x, float 
 
 	y += DrawHeading(theme, x, y, width, "Choose what to install",
 	                 g_state.downgrade && !g_state.game.isV10
-	                     ? "gta3.exe is downgraded first, then CoopIII goes in with the Essential "
+	                     ? "gta-vc.exe is downgraded first, then CoopVC goes in with the Essential "
 	                       "Pack. Untick anything you already manage yourself."
-	                     : "CoopIII goes in with the Essential Pack by default. Untick anything you "
+	                     : "CoopVC goes in with the Essential Pack by default. Untick anything you "
 	                       "already manage yourself.");
 	y += 22.0f;
 	y += DrawGameFolder(theme, x, y, width);
@@ -635,8 +635,8 @@ void DrawComponents(App &app, const Theme &theme, ImVec2 screen, float x, float 
 		            g_state.messageIsError ? theme.statusFail : theme.textTertiary,
 		            g_state.message.c_str());
 
-	// Everything the Setup wrote here is in CoopIII-Setup.record, so it can
-	// all come out again: files removed, replaced ones and gta3.exe put back.
+	// Everything the Setup wrote here is in CoopVC-Setup.record, so it can
+	// all come out again: files removed, replaced ones and gta-vc.exe put back.
 	if (g_state.hasRecord &&
 	    OutlineButton("##uninstall", {ImVec2(x, footerY), ImVec2(130.0f, 56.0f)}, "Uninstall",
 	                  Icon::RotateCcw, theme, false, Type::ButtonSmall)) {
@@ -684,7 +684,7 @@ void DrawInstalling(App &app, const Theme &theme, ImVec2 screen, float x, float 
 
 	float y = kTitleBar + kRightPadT;
 	y += DrawHeading(theme, x, y, width, "Installing",
-	                 "Keep this window open until it finishes. GTA III should stay closed "
+	                 "Keep this window open until it finishes. GTA Vice City should stay closed "
 	                 "meanwhile.");
 	y += 24.0f;
 
@@ -797,7 +797,7 @@ void DrawInstalling(App &app, const Theme &theme, ImVec2 screen, float x, float 
 	} else {
 		g_state.direction = 1.0f;
 		g_state.screen    = Screen::Done;
-		// What the folder holds now, once, rather than an MD5 of gta3.exe every frame.
+		// What the folder holds now, once, rather than an MD5 of gta-vc.exe every frame.
 		g_state.game      = InspectGame(g_state.gameDir, Components());
 		g_state.hasRecord = HasInstallRecord(g_state.gameDir);
 	}
@@ -822,11 +822,11 @@ void DrawDone(App &app, const Theme &theme, ImVec2 screen, float x, float width)
 	const bool allDone = !p.failed && p.finished == p.total;
 	y += DrawHeading(theme, x, y, width,
 	                 allDone ? "Ready to play co-op" : "Finished, with problems",
-	                 allDone ? "CoopIII and the Essential Pack are installed. Start GTA III from "
+	                 allDone ? "CoopVC and the Essential Pack are installed. Start GTA Vice City from "
 	                           "the launcher whenever you want to play together. Started any "
 	                           "other way, it stays single player."
 	                         : "Some components did not install. The details on the previous "
-	                           "screen say which, and why. CoopIII itself is what matters: if "
+	                           "screen say which, and why. CoopVC itself is what matters: if "
 	                           "that one went in, the launcher will start.");
 	y += 24.0f;
 
@@ -843,12 +843,12 @@ void DrawDone(App &app, const Theme &theme, ImVec2 screen, float x, float width)
 	const Row rows[4] = {
 	    {"Game folder", g_state.gameDir, true},
 	    {"Game version",
-	     !v10              ? "Not v1.0 - the downgrade did not finish"
-	     : p.downgraded    ? "v1.0 retail, original kept as " + p.backup
-	                       : std::string("v1.0 retail"),
+	     !v10              ? "Not the supported build - the downgrade did not finish"
+	     : p.downgraded    ? "the supported build, original kept as " + p.backup
+	                       : std::string("the supported build"),
 	     false},
 	    {"Installed", installed, false},
-	    {"Launcher", "coopiii-launcher.exe", true},
+	    {"Launcher", "coopvc-launcher.exe", true},
 	};
 
 	const float rowH = 49.0f;
@@ -886,13 +886,13 @@ void DrawDone(App &app, const Theme &theme, ImVec2 screen, float x, float width)
 		app.Close();
 
 	const std::string launcherPath =
-	    launcher::Join(g_state.gameDir, "coopiii-launcher.exe");
+	    launcher::Join(g_state.gameDir, "coopvc-launcher.exe");
 	const bool haveLauncher = launcher::FileExists(launcherPath);
 
 	if (PrimaryButton("##open", {ImVec2(x + width - openW, footerY), ImVec2(openW, 56.0f)},
 	                  "Open launcher", Icon::Play, haveLauncher, theme)) {
 		if (g_state.shortcut &&
-		    !CreateDesktopShortcut(launcherPath, "CoopIII", g_state.gameDir))
+		    !CreateDesktopShortcut(launcherPath, "CoopVC", g_state.gameDir))
 			g_state.message = "The shortcut could not be created, but everything else is in.";
 		ShellExecuteA(nullptr, "open", launcherPath.c_str(), nullptr, g_state.gameDir,
 		              SW_SHOWNORMAL);
@@ -904,7 +904,7 @@ void DrawDone(App &app, const Theme &theme, ImVec2 screen, float x, float width)
 
 int main() {
 	AppOptions options;
-	options.title          = "CoopIII Setup";
+	options.title          = "CoopVC Setup";
 	options.width          = static_cast<int>(kWindowW);
 	options.height         = static_cast<int>(kWindowH);
 	options.resizable      = false;
@@ -914,13 +914,13 @@ int main() {
 	App app(options);
 	if (!app.Ok()) {
 		MessageBoxW(nullptr,
-		            L"CoopIII Setup could not create its window. A Direct3D 11 capable display "
+		            L"CoopVC Setup could not create its window. A Direct3D 11 capable display "
 		            L"driver is needed.",
-		            L"CoopIII Setup", MB_ICONERROR | MB_OK);
+		            L"CoopVC Setup", MB_ICONERROR | MB_OK);
 		return 1;
 	}
 
-	// The files this Setup carries inside itself: CoopIII and its defaults.
+	// The files this Setup carries inside itself: CoopVC and its defaults.
 	RegisterPayload();
 
 	std::snprintf(g_state.gameDir, sizeof(g_state.gameDir), "%s",
@@ -954,7 +954,7 @@ int main() {
 		                                          theme.bgPanel);
 		DrawLeft(app, theme, screen);
 
-		const TitleBarResult bar = TitleBar(app, "Installer", "v" COOPIII_VERSION, false);
+		const TitleBarResult bar = TitleBar(app, "Installer", "v" COOPVC_VERSION, false);
 		if (bar.minimise) app.Minimize();
 		if (bar.close)    app.Close();
 		if (bar.theme)    app.SetTheme(!app.IsLight());

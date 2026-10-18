@@ -7,12 +7,12 @@
 #include <io.h>
 #include <windows.h>
 
-namespace coopiii {
+namespace coopvc {
 namespace {
 
-// "CIIIPRG" and the format's number. A build that writes something else
+// "CVCPRG_" and the format's number. A build that writes something else
 // changes the number, and an older build then leaves the file alone.
-constexpr char     kMagic[8]      = {'C', 'I', 'I', 'I', 'P', 'R', 'G', '1'};
+constexpr char     kMagic[8]      = {'C', 'V', 'C', 'P', 'R', 'G', '_', '1'};
 constexpr uint32_t kFormat        = 1;
 
 struct Header {
@@ -135,7 +135,7 @@ std::string ProgressPath() {
 	std::string s(buf, n);
 	const size_t slash = s.find_last_of("\\/");
 	return (slash == std::string::npos ? std::string() : s.substr(0, slash + 1)) +
-	       "CoopIII-Progress.dat";
+	       "CoopVC-Progress.dat";
 }
 
 bool ReadProgressFile(const std::string &path, std::string *out) {
@@ -181,4 +181,4 @@ bool SetProgressFileAside(const std::string &path, const char *suffix) {
 	                   MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH) != 0;
 }
 
-} // namespace coopiii
+} // namespace coopvc

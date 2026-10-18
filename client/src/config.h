@@ -1,22 +1,22 @@
-// CoopIII.ini, read from next to the .asi.
+// CoopVC.ini, read from next to the .asi.
 //
 // Kept to the few things a player actually needs to set. Anything that's a
 // protocol constant (snapshot rate, max players, channel layout) lives in
 // protocol.h instead and isn't configurable - that's contract, not preference.
 #pragma once
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <string>
 
-namespace coopiii {
+namespace coopvc {
 
 struct Config {
 	std::string host = "127.0.0.1";
 	uint16_t    port = DEFAULT_PORT;
 	std::string nick = "Player";
 
-	// Written to CoopIII.log next to the .asi. On by default - with this many
+	// Written to CoopVC.log next to the .asi. On by default - with this many
 	// plugins patching the same binary (docs/compat.md), the log is usually
 	// the only thing that explains a failed start.
 	bool logToFile = true;
@@ -38,7 +38,7 @@ struct Config {
 	float nametagScale = 1.0f;
 
 	// Which key asks for a passenger seat in somebody else's car. A letter, a
-	// digit or F1 to F12 in the ini, stored as its virtual-key code. GTA III has
+	// digit or F1 to F12 in the ini, stored as its virtual-key code. GTA Vice City has
 	// no binding of its own for this, so there is nothing to clash with inside
 	// the game - but plenty outside it, which is why it is settable.
 	int seatKey = 'G';
@@ -55,7 +55,7 @@ struct Config {
 	int listKey = 0x78;   // F9
 
 	// Held to show the scoreboard; the list key above pins it. Tab, which GTA
-	// III has no default binding for (game/scoreboard.h).
+	// Vice City has no default binding for.
 	int scoreboardKey = 0x09;   // VK_TAB
 
 	// The version in the bottom-left corner of the HUD. On by default, since
@@ -73,7 +73,7 @@ struct Config {
 	// sends nothing, which is what a server without one expects.
 	std::string password;
 
-	// Discord Rich Presence (presence.h): "Playing CoopIII" on the profile, with
+	// Discord Rich Presence (presence.h): "Playing CoopVC" on the profile, with
 	// whether this is a session, its mission and how many are in it. On by
 	// default and does nothing without Discord running. discordAppId is the
 	// Discord application to show as; 0 keeps the built-in one
@@ -96,14 +96,14 @@ struct Config {
 
 	// Environment overrides, applied after the file so they win.
 	//
-	// These exist for the multi-instance case, nothing else. CoopIII.ini is
+	// These exist for the multi-instance case, nothing else. CoopVC.ini is
 	// only ever read, never written, so two copies of the game sharing one
 	// file is harmless - but they'd then share a nick, and two players both
 	// called "Player" in one session isn't a working test. The launcher (or
-	// a test script) sets COOPIII_NICK per process instead of maintaining
+	// a test script) sets COOPVC_NICK per process instead of maintaining
 	// two ini files and swapping them in and out of one game folder.
 	//
-	//   COOPIII_HOST, COOPIII_PORT, COOPIII_NICK
+	//   COOPVC_HOST, COOPVC_PORT, COOPVC_NICK
 	void ApplyEnvOverrides();
 
 	// Same thing but with values passed in directly, so it's testable
@@ -111,7 +111,7 @@ struct Config {
 	// field alone; an unparseable port is just ignored.
 	void ApplyOverrides(const char *host, const char *port, const char *nick);
 
-	// Where CoopIII.ini is read from: COOPIII_INI if set, otherwise beside
+	// Where CoopVC.ini is read from: COOPVC_INI if set, otherwise beside
 	// the .asi. That way two instances out of one game folder can be given
 	// different configs without either editing the other's.
 	static std::string IniPath();
@@ -127,4 +127,4 @@ struct Config {
 	static std::string PathNextToModule(const char *filename);
 };
 
-} // namespace coopiii
+} // namespace coopvc

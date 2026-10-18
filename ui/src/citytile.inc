@@ -1,7 +1,7 @@
 // Generated from design/screens/Main.dc.html, the <pattern id="cqTile"> body.
 // Do not edit by hand: regenerate if the design's tile ever changes.
 //
-// One seamless 900 x 900 tile of Liberty City blocks, in tile space, before
+// One seamless 900 x 900 tile of city blocks, in tile space, before
 // the -16 degree rotation the pattern applies. Kind: 0 block (bg.subtle),
 // 1 accent block (map.block2), 2 empty lot (outline in map.lot).
 //
