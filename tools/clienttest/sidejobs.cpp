@@ -15,8 +15,8 @@
 #include <string>
 #include <vector>
 
-using namespace coopiii;
-using namespace coopiii::game;
+using namespace coopvc;
+using namespace coopvc::game;
 
 namespace {
 
@@ -30,11 +30,11 @@ void Check(bool cond, const char *what) {
 
 bool LoadScm(std::vector<uint8_t> &scm) {
 	std::vector<std::string> candidates;
-	if (const char *env = std::getenv("COOPIII_MAIN_SCM"))
+	if (const char *env = std::getenv("COOPVC_MAIN_SCM"))
 		candidates.push_back(env);
 	candidates.push_back("reference/scm/Compiled SCM/main.scm");
 	candidates.push_back("../../../../reference/scm/Compiled SCM/main.scm");
-	candidates.push_back("D:/CoopIII/reference/scm/Compiled SCM/main.scm");
+	candidates.push_back("D:/CoopVC/reference/scm/Compiled SCM/main.scm");
 	for (const std::string &path : candidates) {
 		FILE *fh = std::fopen(path.c_str(), "rb");
 		if (!fh)
@@ -129,7 +129,7 @@ void TestAgainstMainScm() {
 	std::printf("\nthe side jobs, against the retail main.scm\n");
 	std::vector<uint8_t> scm;
 	if (!LoadScm(scm)) {
-		std::printf("  [skipped] no main.scm; set COOPIII_MAIN_SCM to check the tables against one\n");
+		std::printf("  [skipped] no main.scm; set COOPVC_MAIN_SCM to check the tables against one\n");
 		return;
 	}
 	Check(ScriptCodeHash(scm.data(), scripts::MAIN_SCRIPT_SIZE) == sideprogress::RETAIL_SCRIPT_HASH,

@@ -32,7 +32,7 @@ if [ ! -f "$DATA/object.dat" ]; then
 	exit 1
 fi
 
-TMP="${TMPDIR:-/tmp}/coopiii-mapobjects.$$"
+TMP="${TMPDIR:-/tmp}/coopvc-mapobjects.$$"
 mkdir -p "$TMP"
 trap 'rm -rf "$TMP"' EXIT
 

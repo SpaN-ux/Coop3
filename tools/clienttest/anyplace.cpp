@@ -14,8 +14,8 @@
 #include <string>
 #include <vector>
 
-using namespace coopiii;
-using namespace coopiii::game;
+using namespace coopvc;
+using namespace coopvc::game;
 
 namespace {
 
@@ -301,7 +301,7 @@ constexpr size_t   IMAGE_SIZE = 2383872;
 
 bool LoadExe(std::vector<uint8_t> &image) {
 	std::vector<std::string> candidates;
-	if (const char *env = std::getenv("COOPIII_GTA3_EXE"))
+	if (const char *env = std::getenv("COOPVC_GAME_EXE"))
 		candidates.push_back(env);
 	candidates.push_back("reference/bin/gta3.exe");
 	candidates.push_back("../../../../reference/bin/gta3.exe");
@@ -343,7 +343,7 @@ void TestTheZones() {
 	std::printf("\nCTheZones, for IS_PLAYER_IN_ZONE asked of a participant\n");
 	std::vector<uint8_t> img;
 	if (!LoadExe(img)) {
-		std::printf("  [skipped] no retail gta3.exe; set COOPIII_GTA3_EXE to check it\n");
+		std::printf("  [skipped] no retail gta3.exe; set COOPVC_GAME_EXE to check it\n");
 		return;
 	}
 	using namespace game::zones;

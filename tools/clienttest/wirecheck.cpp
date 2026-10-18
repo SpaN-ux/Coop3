@@ -12,9 +12,9 @@
 #include "missionsync.h"
 #include "quat.h"
 
-#include <coopiii/mission.h>
-#include <coopiii/net.h>
-#include <coopiii/protocol.h>
+#include <coopvc/mission.h>
+#include <coopvc/net.h>
+#include <coopvc/protocol.h>
 
 #include <cmath>
 #include <cstdio>
@@ -25,8 +25,8 @@
 #include <string>
 #include <vector>
 
-using namespace coopiii;
-using namespace coopiii::game;
+using namespace coopvc;
+using namespace coopvc::game;
 
 namespace {
 
@@ -353,7 +353,7 @@ void TestWildNumbers() {
 
 bool LoadExe(std::vector<uint8_t> &image) {
 	std::vector<std::string> candidates;
-	if (const char *env = std::getenv("COOPIII_GTA3_EXE"))
+	if (const char *env = std::getenv("COOPVC_GAME_EXE"))
 		candidates.push_back(env);
 	candidates.push_back("reference/bin/gta3.exe");
 	candidates.push_back("../../../../reference/bin/gta3.exe");
@@ -385,7 +385,7 @@ void TestTheBytesInTheImage() {
 	std::printf("\nwhat the checks above read, in the retail exe\n");
 	std::vector<uint8_t> img;
 	if (!LoadExe(img)) {
-		std::printf("  [skipped] no retail gta3.exe; set COOPIII_GTA3_EXE to check the bytes\n");
+		std::printf("  [skipped] no retail gta3.exe; set COOPVC_GAME_EXE to check the bytes\n");
 		return;
 	}
 	// CREATE_OBJECT's handler, range 200's entry 49: a negative model read

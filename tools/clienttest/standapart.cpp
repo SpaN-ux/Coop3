@@ -7,8 +7,8 @@
 #include <cmath>
 #include <cstdio>
 
-using namespace coopiii;
-using namespace coopiii::game;
+using namespace coopvc;
+using namespace coopvc::game;
 
 namespace {
 

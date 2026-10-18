@@ -1,4 +1,4 @@
-// Every place CoopIII rewrites the game's code, in one table, checked against
+// Every place CoopVC rewrites the game's code, in one table, checked against
 // each other and against the retail gta3.exe.
 //
 // The per-feature tests each pin their own sites. What none of them can see
@@ -27,8 +27,8 @@
 #include <string>
 #include <vector>
 
-using namespace coopiii;
-using namespace coopiii::game;
+using namespace coopvc;
+using namespace coopvc::game;
 
 namespace {
 
@@ -40,8 +40,8 @@ void Check(bool cond, const char *what) {
 		++g_patchFailures;
 }
 
-// A `call rel32` CoopIII rewrites, and the function it must still reach
-// when CoopIII finds it.
+// A `call rel32` CoopVC rewrites, and the function it must still reach
+// when CoopVC finds it.
 struct Site {
 	uintptr_t   at;
 	uintptr_t   calls;
@@ -268,7 +268,7 @@ std::vector<Span> AllSpans() {
 }
 
 void TestNothingOverlaps() {
-	std::printf("\npatch sites: no two of CoopIII's own patches share a byte\n");
+	std::printf("\npatch sites: no two of CoopVC's own patches share a byte\n");
 	const std::vector<Span> spans = AllSpans();
 	int                     clashes = 0;
 	for (size_t i = 1; i < spans.size(); ++i)
@@ -290,7 +290,7 @@ void TestNothingOverlaps() {
 
 bool LoadExe(std::vector<uint8_t> &image, std::string &from) {
 	std::vector<std::string> candidates;
-	if (const char *env = std::getenv("COOPIII_GTA3_EXE"))
+	if (const char *env = std::getenv("COOPVC_GAME_EXE"))
 		candidates.push_back(env);
 	candidates.push_back("reference/bin/gta3.exe");
 	candidates.push_back("../../../../reference/bin/gta3.exe");
@@ -340,7 +340,7 @@ void TestAgainstTheImage() {
 	std::vector<uint8_t> img;
 	std::string          from;
 	if (!LoadExe(img, from)) {
-		std::printf("  [skipped] no retail gta3.exe; set COOPIII_GTA3_EXE to check every patch "
+		std::printf("  [skipped] no retail gta3.exe; set COOPVC_GAME_EXE to check every patch "
 		            "site against one\n");
 		return;
 	}
@@ -353,7 +353,7 @@ void TestAgainstTheImage() {
 			std::printf("  %s at 0x%08X is not `call 0x%08X`\n", s.name,
 			            static_cast<unsigned>(s.at), static_cast<unsigned>(s.calls));
 		}
-	Check(wrong == 0, "every call CoopIII redirects is, in the retail image, a call to the "
+	Check(wrong == 0, "every call CoopVC redirects is, in the retail image, a call to the "
 	                  "function it verifies before taking it");
 
 	const uint32_t first = 0x00401000, last = 0x005E3000;
@@ -377,7 +377,7 @@ void TestAgainstTheImage() {
 				            static_cast<unsigned>(va), static_cast<unsigned>(to), d.name);
 			}
 	}
-	Check(into == 0, "nothing in the image jumps into the middle of a prologue CoopIII "
+	Check(into == 0, "nothing in the image jumps into the middle of a prologue CoopVC "
 	                 "detours; the trampoline would run half an instruction");
 }
 

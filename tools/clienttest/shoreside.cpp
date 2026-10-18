@@ -18,9 +18,9 @@ void Check(bool ok, const char *what) {
 	}
 }
 
-namespace nearchar = coopiii::game::nearchar;
-namespace standin  = coopiii::game::standin;
-namespace anyplace = coopiii::game::anyplace;
+namespace nearchar = coopvc::game::nearchar;
+namespace standin  = coopvc::game::standin;
+namespace anyplace = coopvc::game::anyplace;
 
 void TestCarLocates() {
 	using nearchar::CarLocate;

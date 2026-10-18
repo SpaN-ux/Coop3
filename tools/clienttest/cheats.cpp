@@ -15,7 +15,7 @@
 #include "game/vehicle.h"
 #include "game/wreckqueue.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cmath>
 #include <cstdio>
@@ -24,8 +24,8 @@
 #include <string>
 #include <vector>
 
-using namespace coopiii;
-using namespace coopiii::game;
+using namespace coopvc;
+using namespace coopvc::game;
 
 namespace {
 
@@ -174,7 +174,7 @@ struct ChatKeyboard {
 	bool                     open = false;
 	std::string              line;
 	std::vector<uint8_t>     fired;   // the game's, by CheatId
-	std::vector<std::string> coop;    // CoopIII's own, as typed: "TPTO3"
+	std::vector<std::string> coop;    // CoopVC's own, as typed: "TPTO3"
 	std::vector<std::string> sent;
 
 	ChatKeyboard() = default;
@@ -468,9 +468,9 @@ void TestTheCheatsNoxxTypes() {
 	Check(nine.coop.empty() && nine.open, "TPTO9 is nobody's number on an eight-player list");
 }
 
-// CoopIII's table.
+// CoopVC's table.
 void TestOurOwnCheats() {
-	std::printf("\nCoopIII's own cheats\n");
+	std::printf("\nCoopVC's own cheats\n");
 
 	char    buffer[KEYBOARD_CHEAT_STRING_LEN] = {};
 	CoopCheatHit hit;
@@ -884,7 +884,7 @@ void TestGesundheitLeavesSomebodyElsesCarAlone() {
 }
 
 void TestReplicasDoNotLookForThreats() {
-	std::printf("\nScanForThreats on a ped CoopIII built\n");
+	std::printf("\nScanForThreats on a ped CoopVC built\n");
 	Check(MayScanForThreats(false, false), "the engine's own pedestrians scan as always");
 	Check(!MayScanForThreats(true, false), "a remote player does not");
 	Check(!MayScanForThreats(false, true), "a replica pedestrian does not");
@@ -1201,12 +1201,12 @@ void TestTheRuleIsKeptEvenIfTheServerDoesNot() {
 
 // ---- the table against the real exe ----------------------------------------------------
 
-// Opt-in: COOPIII_GTA3_EXE names a retail 1.0 gta3.exe, or reference/bin/
+// Opt-in: COOPVC_GAME_EXE names a retail 1.0 gta3.exe, or reference/bin/
 // gta3.exe is found from the working directory or four levels above it (the
 // build output). Without one this says so and checks nothing.
 bool LoadExe(std::vector<uint8_t> &image, std::string &from) {
 	std::vector<std::string> candidates;
-	if (const char *env = std::getenv("COOPIII_GTA3_EXE"))
+	if (const char *env = std::getenv("COOPVC_GAME_EXE"))
 		candidates.push_back(env);
 	candidates.push_back("reference/bin/gta3.exe");
 	candidates.push_back("../../../../reference/bin/gta3.exe");
@@ -1241,7 +1241,7 @@ void TestTheTableAgainstTheImage() {
 	std::vector<uint8_t> img;
 	std::string          from;
 	if (!LoadExe(img, from)) {
-		std::printf("  [skipped] no retail gta3.exe; set COOPIII_GTA3_EXE to check the "
+		std::printf("  [skipped] no retail gta3.exe; set COOPVC_GAME_EXE to check the "
 		            "table against one\n");
 		return;
 	}

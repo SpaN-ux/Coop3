@@ -1,4 +1,4 @@
-// A car camera mod beside CoopIII (client/src/game/carcam.h).
+// A car camera mod beside CoopVC (client/src/game/carcam.h).
 //
 // The chained call can't run here. What can is who a call site is said to
 // belong to, when the gun of the followed car is kept, and, with a retail exe
@@ -15,8 +15,8 @@
 #include <string>
 #include <vector>
 
-using namespace coopiii;
-using namespace coopiii::game;
+using namespace coopvc;
+using namespace coopvc::game;
 
 namespace {
 
@@ -63,7 +63,7 @@ void TestWhoseGun() {
 
 bool LoadExe(std::vector<uint8_t> &image, std::string &from) {
 	std::vector<std::string> candidates;
-	if (const char *env = std::getenv("COOPIII_GTA3_EXE"))
+	if (const char *env = std::getenv("COOPVC_GAME_EXE"))
 		candidates.push_back(env);
 	candidates.push_back("reference/bin/gta3.exe");
 	candidates.push_back("../../../../reference/bin/gta3.exe");
@@ -143,7 +143,7 @@ void TestAgainstTheImage() {
 	std::vector<uint8_t> img;
 	std::string          from;
 	if (!LoadExe(img, from)) {
-		std::printf("  [skipped] no retail gta3.exe; set COOPIII_GTA3_EXE to check the "
+		std::printf("  [skipped] no retail gta3.exe; set COOPVC_GAME_EXE to check the "
 		            "car camera's call against one\n");
 		return;
 	}

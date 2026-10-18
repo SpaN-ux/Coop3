@@ -15,8 +15,8 @@
 #include <string>
 #include <vector>
 
-using namespace coopiii;
-using namespace coopiii::game;
+using namespace coopvc;
+using namespace coopvc::game;
 
 namespace {
 
@@ -182,7 +182,7 @@ void TestTheModelsGoAheadOfTheScene() {
 
 bool LoadExe(std::vector<uint8_t> &image, std::string &from) {
 	std::vector<std::string> candidates;
-	if (const char *env = std::getenv("COOPIII_GTA3_EXE"))
+	if (const char *env = std::getenv("COOPVC_GAME_EXE"))
 		candidates.push_back(env);
 	candidates.push_back("reference/bin/gta3.exe");
 	candidates.push_back("../../../../reference/bin/gta3.exe");
@@ -236,7 +236,7 @@ void TestTheLoadAgainstTheImage(std::string &exePath) {
 	std::printf("\nLOAD_CUTSCENE in gta3.exe\n");
 	std::vector<uint8_t> img;
 	if (!LoadExe(img, exePath)) {
-		std::printf("  [skipped] no retail gta3.exe; set COOPIII_GTA3_EXE to check the "
+		std::printf("  [skipped] no retail gta3.exe; set COOPVC_GAME_EXE to check the "
 		            "bytes against one\n");
 		exePath.clear();
 		return;
@@ -306,7 +306,7 @@ void TestEveryStockScene(const std::string &exePath) {
 	                ? nullptr
 	                : std::fopen((root + "anim/cuts.img").c_str(), "rb");
 	if (!img) {
-		std::printf("  [skipped] no anim\\cuts.dir and cuts.img beside COOPIII_GTA3_EXE\n");
+		std::printf("  [skipped] no anim\\cuts.dir and cuts.img beside COOPVC_GAME_EXE\n");
 		return;
 	}
 	size_t scenes = 0, read = 0;

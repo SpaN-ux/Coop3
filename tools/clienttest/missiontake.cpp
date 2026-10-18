@@ -7,13 +7,13 @@
 #include "client.h"
 #include "game/missiontake.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstdio>
 #include <cstring>
 
-using namespace coopiii;
-using namespace coopiii::game;
+using namespace coopvc;
+using namespace coopvc::game;
 
 namespace {
 

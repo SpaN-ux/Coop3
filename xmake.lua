@@ -43,7 +43,13 @@ target("client")
     set_kind("shared")
     set_basename("CoopVC")
     set_extension(".asi")
-    add_files("client/src/*.cpp", "client/src/hook/*.cpp", "client/src/game/*.cpp")
+    -- Milestone 3a: only the files that were ported to Vice City. The rest of
+    -- client/src is still the GTA III client (it needs III's addresses.h, which
+    -- the VC one does not have yet); widen this list as each file is ported
+    -- (docs/porting.md), not with a glob that cannot compile.
+    add_files("client/src/dllmain.cpp", "client/src/config.cpp", "client/src/log.cpp",
+              "client/src/game/frame.cpp", "client/src/game/world.cpp",
+              "client/src/game/verify.cpp", "client/src/hook/*.cpp")
     add_includedirs("client/src")
     add_deps("sdk")
     add_packages("minhook")

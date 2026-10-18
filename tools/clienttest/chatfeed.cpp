@@ -12,7 +12,7 @@
 #include <cstring>
 #include <string>
 
-using namespace coopiii;
+using namespace coopvc;
 
 namespace {
 
@@ -552,8 +552,8 @@ void TestTheCommands() {
 
 void TestTheVersionMark() {
 	std::printf("\nthe version mark\n");
-	Check(std::string(VERSION_MARK) == std::string("CoopIII ") + COOPIII_VERSION,
-	      "it says CoopIII and the version");
+	Check(std::string(VERSION_MARK) == std::string("CoopVC ") + COOPVC_VERSION,
+	      "it says CoopVC and the version");
 	Check(Copied(VERSION_MARK) == VERSION_MARK, "and CFont can draw every character of it");
 	for (const float h : {448.0f, 480.0f, 720.0f, 1080.0f, 2160.0f}) {
 		const MarkLayout m = Mark(h * 16.0f / 9.0f, h);

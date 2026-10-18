@@ -9,7 +9,7 @@
 #include "game/rampagevote.h"
 #include "rampagevoteview.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cmath>
 #include <cstdio>
@@ -18,8 +18,8 @@
 #include <string>
 #include <vector>
 
-using namespace coopiii;
-using namespace coopiii::game;
+using namespace coopvc;
+using namespace coopvc::game;
 
 namespace {
 
@@ -368,7 +368,7 @@ void TestNotOntoAnotherPlayersCar() {
 void TestBoundRadiusAgainstTheImage() {
 	std::printf("\nCEntity::GetBoundRadius, against gta3.exe\n");
 	std::vector<std::string> paths;
-	if (const char *env = std::getenv("COOPIII_GTA3_EXE"))
+	if (const char *env = std::getenv("COOPVC_GAME_EXE"))
 		paths.push_back(env);
 	paths.push_back("reference/bin/gta3.exe");
 	std::vector<uint8_t> img;
@@ -386,7 +386,7 @@ void TestBoundRadiusAgainstTheImage() {
 		img.clear();
 	}
 	if (img.empty()) {
-		std::printf("  [skipped] no retail gta3.exe; set COOPIII_GTA3_EXE to check it\n");
+		std::printf("  [skipped] no retail gta3.exe; set COOPVC_GAME_EXE to check it\n");
 		return;
 	}
 	// movsx ecx,word [ecx+5Ch] / mov edx,[ecx*4+0083D408h] / mov eax,[edx+1Ch] /

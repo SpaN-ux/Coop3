@@ -41,7 +41,7 @@
 #include "planetime.h"
 #include "traintime.h"
 
-#include <coopiii/sky.h>
+#include <coopvc/sky.h>
 
 #include <chrono>
 #include <cmath>
@@ -52,7 +52,7 @@
 #include <thread>
 #include <vector>
 
-using namespace coopiii;
+using namespace coopvc;
 
 namespace {
 
@@ -281,7 +281,7 @@ struct Recorder {
 	// SampleLocalVehicleHandle would report it. -1 is "a car from our own
 	// world", which is every car for anybody who was in the session when it
 	// was claimed; a handle matching a spawned RemoteVehicle is the late
-	// joiner's case, where the car in the street is one CoopIII made.
+	// joiner's case, where the car in the street is one CoopVC made.
 	int32_t  localVehicleHandle = -1;
 
 	// The extras on the car the local player is driving, as its own engine
@@ -1013,9 +1013,9 @@ void RecApplyRemoteAmmo(RemotePlayer &p, const AmmoSlotBody &slot) {
 
 // ---- the wanted level -----------------------------------------------------
 //
-// A stand-in CWanted: one number CoopIII reads and sometimes writes. The
+// A stand-in CWanted: one number CoopVC reads and sometimes writes. The
 // write counter is what most of these tests actually check, because the thing
-// that goes wrong quietly is CoopIII writing the level it just read - which
+// that goes wrong quietly is CoopVC writing the level it just read - which
 // in the real engine resets the player's accumulated chaos and stops them
 // ever reaching the next star.
 
@@ -2145,7 +2145,7 @@ void TestHideoutDoors() {
 	Check(DoorSlideTargetOpen(staunton, 2, 103.8125f, -482.75f, 16.25f) == -1,
 	      "and there is no third half");
 
-	// Every operand CoopIII writes into its own SLIDE_OBJECT or ROTATE_OBJECT
+	// Every operand CoopVC writes into its own SLIDE_OBJECT or ROTATE_OBJECT
 	// has to survive a script float, a 16-bit fixed point over 16.
 	auto fits = [](float v) {
 		return static_cast<float>(static_cast<int16_t>(v * 16.0f)) / 16.0f == v;
@@ -2501,7 +2501,7 @@ void TestDisconnectReleasesEveryDoor() {
 // whether the engine's own arm may run.
 void TestAPassengersResprayIsTheDrivers() {
 	std::printf("\ngarages: a respray of a car we ride in is its driver's to paint\n");
-	using namespace coopiii::game;
+	using namespace coopvc::game;
 	Check(PassengerKeepsPaint(false, true),
 	      "riding beside another player: our own arm's colours give way to his C_Respray");
 	Check(!PassengerKeepsPaint(true, false) && !PassengerKeepsPaint(true, true),
@@ -2512,7 +2512,7 @@ void TestAPassengersResprayIsTheDrivers() {
 
 void TestGarageHoldDecisions() {
 	std::printf("\ngarages: holding one open, and holding one shut\n");
-	using namespace coopiii::game;
+	using namespace coopvc::game;
 
 	// Nobody is asking: never touch anything.
 	Check(DecideGarageHold(GARAGE_HIDEOUT_ONE, GS_FULLYCLOSED, false, true) ==
@@ -2585,7 +2585,7 @@ void TestGarageHoldDecisions() {
 // get cleared, because a stranger across the city paid for a paint job.
 void TestServicedGarageArmIsSuppressed() {
 	std::printf("\ngarages: an observer does not finish somebody else's respray\n");
-	using namespace coopiii::game;
+	using namespace coopvc::game;
 
 	Check(GarageUpdateMayRun(GARAGE_RESPRAY, GS_FULLYCLOSED, false),
 	      "unheld, the arm always runs - this is single player");
@@ -2619,7 +2619,7 @@ void TestServicedGarageArmIsSuppressed() {
 // taken, and the guest's door left open by the owner's own hold.
 void TestNobodyWaitsAtALockUp() {
 	std::printf("\ngarages: nobody waits for ever at a lock-up\n");
-	using namespace coopiii::game;
+	using namespace coopvc::game;
 
 	Check(LocalCloseStarted(GARAGE_MISSION, GS_OPENED, GS_CLOSING, true),
 	      "our engine closing an open lock-up is a close of our own");
@@ -2653,7 +2653,7 @@ void TestNobodyWaitsAtALockUp() {
 
 void TestGarageDeviationIsWhatTravels() {
 	std::printf("\ngarages: one bit, and what it means\n");
-	using namespace coopiii::game;
+	using namespace coopvc::game;
 
 	// A safehouse garage: open is news, shut is not.
 	Check(!GarageDeviates(GARAGE_HIDEOUT_ONE, GS_FULLYCLOSED), "shut is where it rests");
@@ -2684,9 +2684,9 @@ void TestGarageDeviationIsWhatTravels() {
 
 	// And the width of the thing. Thirty-two is CGarages::Update's own loop
 	// bound, a literal `cmp ebx,20h`, not CGarages::NumGarages.
-	Check(coopiii::game::NUM_GARAGES == 32 && coopiii::NUM_GARAGES == 32,
+	Check(coopvc::game::NUM_GARAGES == 32 && coopvc::NUM_GARAGES == 32,
 	      "the engine's 32 garages and the wire's mask agree");
-	Check(coopiii::game::SIZEOF_GARAGE == 0x8C,
+	Check(coopvc::game::SIZEOF_GARAGE == 0x8C,
 	      "and the stride the OPEN_GARAGE handler multiplies by");
 }
 
@@ -2856,7 +2856,7 @@ void TestCleanPlayerLook() {
 
 void TestLookSlotPicking() {
 	std::printf("\nwhich body a remote Claude is built from\n");
-	using namespace coopiii::game;
+	using namespace coopvc::game;
 
 	LookSlot slots[LOOK_SLOTS];
 	auto name = [&](int i, const char *n) {
@@ -3951,7 +3951,7 @@ S_StuntCamera MakeStuntShot(uint16_t netId, bool on, uint8_t driver = 1) {
 
 void TestARiderTakesTheDriversJumpShot() {
 	std::printf("\na unique jump's shot, on the screen of somebody riding in the car\n");
-	using coopiii::STUNT_SHOT_MAX_MS;
+	using coopvc::STUNT_SHOT_MAX_MS;
 	Client c;
 	c.SetBridge(RecordingBridge());
 	PutACarNextToUs(c);
@@ -4739,7 +4739,7 @@ void TestWreckIsStillHeldInPlace() {
 void TestVehicleModelIsAskedForAgainOnRespawn() {
 	std::printf("\na lost car asks for its model again\n");
 	// This is the half of the reported bug that made it permanent. Nothing
-	// else in the game holds a reference to a model only CoopIII's car was
+	// else in the game holds a reference to a model only CoopVC's car was
 	// using, so once that car leaves the pool the streamer is free to throw
 	// the model out - and the respawn loop then waits on an IsModelReady that
 	// will never come true again. Reconnecting brought the car back because
@@ -4807,7 +4807,7 @@ void TestExtrasAreClampedToTheModel() {
 	// bytes arrive over a socket. This is the same class of bug as the
 	// four-entry animation group and the twelve-slot node array, and it is
 	// the third time, so the bound is pinned here rather than trusted.
-	// Qualified because `using namespace coopiii::game` is further down this
+	// Qualified because `using namespace coopvc::game` is further down this
 	// file than these tests are.
 	using game::ClampVehicleExtra;
 	constexpr int8_t NONE = game::VEHICLE_EXTRA_NONE;
@@ -5272,7 +5272,7 @@ void TestPedLostToTheEngineIsRespawned() {
 
 void TestNoBridgeIsSafe() {
 	std::printf("\nrunning without a bridge\n");
-	// Area B has not landed: CoopIII must still keep an accurate roster
+	// Area B has not landed: CoopVC must still keep an accurate roster
 	// rather than crashing on a null function pointer.
 	Client c;
 	c.SetBridge(WorldBridge{});
@@ -5900,7 +5900,7 @@ void TestTheDragLatch() {
 // animId and doesn't bounds-check, and CPed::m_weapons is indexed with a
 // weapon type straight off the wire. docs/protocol.md §1.8.1.
 
-using namespace coopiii::game;
+using namespace coopvc::game;
 
 // The numbers a real session would produce: ASSOCGRP_STD holds the whole
 // AnimationId namespace, a style group holds four locomotion anims.
@@ -6069,7 +6069,7 @@ void TestDamageDecisions() {
 // The check that would have caught the crash at 0x004B1B25.
 //
 // That was a CPtrNode left in CWorld::ms_listMovingEntityPtrs pointing at a
-// ped CoopIII had just destroyed, dereferenced by CWorld::Process on the next
+// ped CoopVC had just destroyed, dereferenced by CWorld::Process on the next
 // frame. No unit test can walk the engine's own list, so what gets pinned
 // here is the decision that leads to it: whether the engine's teardown is
 // going to do the unlink, or whether it has to be done by hand first.
@@ -6115,7 +6115,7 @@ void TestMovingListTeardown() {
 // dump: `node->item` was 0x0000020E. 526. A small integer sitting where an
 // entity pointer belongs, in a node the moving list still held.
 //
-// CoopIII cannot walk the engine's list from here, and it cannot know why a
+// CoopVC cannot walk the engine's list from here, and it cannot know why a
 // bad node appeared. What it can do is refuse to let CWorld::Process
 // dereference one, and the decision that makes that possible is arithmetic.
 void TestMovingListNodeSanity() {
@@ -6192,10 +6192,10 @@ void TestAnimClumpLimit() {
 	Check(MAX_CLUMP_ANIM_ASSOCS == ANIM_UPDATE_NODE_SLOTS - 1,
 	      "so the last safe count is one below it");
 
-	// And CoopIII keeps back room for the animations the engine adds on its
+	// And CoopVC keeps back room for the animations the engine adds on its
 	// own, which it does every frame without asking.
 	Check(MAX_REMOTE_ANIM_ASSOCS < MAX_CLUMP_ANIM_ASSOCS,
-	      "CoopIII stops short of the engine's limit");
+	      "CoopVC stops short of the engine's limit");
 
 	Check(AnimClumpHasRoom(0), "an empty clump has room");
 	Check(AnimClumpHasRoom(MAX_REMOTE_ANIM_ASSOCS - 1), "and one below the cap");
@@ -7762,7 +7762,7 @@ void TestDisconnectDropsTheHost() {
 	Check(c.HostPlayerId() == INVALID_PLAYER, "with nobody else holding it either");
 }
 
-// ---- whose sky it is (coopiii/sky.h) --------------------------------------------
+// ---- whose sky it is (coopvc/sky.h) --------------------------------------------
 
 S_MissionState MakeMissionState(uint8_t state, uint8_t owner, uint16_t number,
                                 uint8_t participants, uint8_t outcome = MISSION_OUTCOME_NONE) {
@@ -8491,7 +8491,7 @@ void TestAWreckedSpawnSaysSo() {
 //
 // This is the other half of what was reported, and it is a late-joiner
 // bug for a reason that is worth stating plainly: a car only ever arrives as
-// a CVehicle *CoopIII created* for somebody who was not in the session when
+// a CVehicle *CoopVC created* for somebody who was not in the session when
 // it was claimed. Everyone who was there has it as a car from their own
 // world. So with two clients started together this never happens, and the
 // first person to restart their game hits it the moment they get into
@@ -8589,7 +8589,7 @@ void TestACarWeDriveIsNotCorrectedUnderUs() {
 	c.Tick();
 	// This is the bug, as a number. Three frames, three corrections before,
 	// and the accelerator did nothing because the last thing to touch the
-	// car each frame was CoopIII putting it back.
+	// car each frame was CoopVC putting it back.
 	Check(g_rec.vehicleCorrections == corrections,
 	      "a car we are driving ourselves is not put back at all");
 	// Nor is the last driver's health, gear and engine flag written onto it.
@@ -8920,7 +8920,7 @@ void TestOurOwnCarSurvivesTheSessionEnding() {
 	Check(c.VehicleByNetId(364) != nullptr, "we have a row for our own car");
 
 	// DespawnRemoteVehicle runs the engine's deleting destructor. On a
-	// replica CoopIII built that is right; on one of this engine's own
+	// replica CoopVC built that is right; on one of this engine's own
 	// traffic cars - with the player quite possibly sitting in it - it is a
 	// CVehicle deleted underneath them because a socket closed.
 	const int despawns = g_rec.vehicleDespawns;
@@ -9020,7 +9020,7 @@ void TestArrowSpriteSize() {
 	      "24 at 1920, where the truncation happens to be exact");
 
 	// No floor under the truncation, deliberately. The game's own arrow
-	// disappears at the same width for the same reason, and an arrow CoopIII
+	// disappears at the same width for the same reason, and an arrow CoopVC
 	// kept visible on a radar with no arrow on it would be worse than none.
 	Check(RadarSpriteHalf(40, 1.0f / HUD_REF_WIDTH) == 0.0f,
 	      "below about 80 px of screen the engine's own arrow truncates away too");
@@ -10019,8 +10019,8 @@ void TestADenialOnlyEndsTheClaim() {
 // may be told to the session at all.
 void TestAPackageSomebodyElseFoundCountsHere() {
 	std::printf("a hidden package somebody else found, counted here\n");
-	using coopiii::game::CountPackage;
-	using coopiii::game::PackagesReportable;
+	using coopvc::game::CountPackage;
+	using coopvc::game::PackagesReportable;
 	constexpr auto one = CountPackage(33, 100);
 	Check(one.collected == 34 && one.money == 1000 && !one.all,
 	      "one more found and $1000, and the 34 of 100 message");
@@ -10034,10 +10034,10 @@ void TestAPackageSomebodyElseFoundCountsHere() {
 	Check(!PackagesReportable(200, 0, 200), "nor more than the report can carry");
 
 	// A run of them says so once, with the last count.
-	using coopiii::game::kPackageBannerQuietFrames;
-	using coopiii::game::NotePackageBanner;
-	using coopiii::game::PackageBanner;
-	using coopiii::game::PackageBannerDue;
+	using coopvc::game::kPackageBannerQuietFrames;
+	using coopvc::game::NotePackageBanner;
+	using coopvc::game::PackageBanner;
+	using coopvc::game::PackageBannerDue;
 	{
 		PackageBanner b;
 		int said = 0;
@@ -10089,7 +10089,7 @@ void TestAPackageSomebodyElseFoundCountsHere() {
 	}
 
 	// What the session says is taken, kept for when it is lying here.
-	using coopiii::game::TakenPackageList;
+	using coopvc::game::TakenPackageList;
 	{
 		static TakenPackageList list;
 		PickupIdent p{};
@@ -10115,14 +10115,14 @@ void TestAPackageSomebodyElseFoundCountsHere() {
 
 void TestWhoMayMakeADrop() {
 	std::printf("who is allowed to make a ped's drop\n");
-	using coopiii::game::DecideDrop;
-	using coopiii::game::DropDecision;
+	using coopvc::game::DecideDrop;
+	using coopvc::game::DropDecision;
 
 	constexpr uint8_t RANDOM  = 1;   // CHAR_CREATED_BY_RANDOM
 	constexpr uint8_t MISSION = 2;   // CHAR_CREATED_BY_MISSION
 	constexpr uint8_t UNKNOWN = 0;
 
-	// A ped CoopIII built for somebody else. Refused whatever it is and
+	// A ped CoopVC built for somebody else. Refused whatever it is and
 	// whatever state the session is in - including while the connection is
 	// going down, which is why the replica test comes first and not last.
 	Check(DecideDrop(true, true, MISSION) == DropDecision::REFUSE,
@@ -11081,7 +11081,7 @@ void TestWhoMayDamageACar() {
 	Check(ClassifyCar(true, false, false, false, true) == CarOwner::Local &&
 	          ClassifyCar(true, false, true, false, false) == CarOwner::Local &&
 	          ClassifyCar(true, false, false, true, false) == CarOwner::Local,
-	      "CoopIII applying somebody's report is always let through");
+	      "CoopVC applying somebody's report is always let through");
 
 	// The two halves have to agree on every car, or a replica sits at zero
 	// health on fire (damage let through, blow-up refused) or blows up
@@ -12546,7 +12546,7 @@ void TestACorpseTheSessionReportedIsNotResurrected() {
 // microseconds to check here.
 //
 // The engine is a uint8. That is not a simplification of CWanted, it is what
-// CoopIII actually touches: one read and one call to the engine's own setter.
+// CoopVC actually touches: one read and one call to the engine's own setter.
 
 // Runs one tick of the decision over a tiny bit of state, the way Client
 // does, so a test can write a sequence of ticks and read the outcome.
@@ -12644,7 +12644,7 @@ void TestWhoLendsUsStars() {
 }
 
 void TestWantedIsInvisibleToALonePlayer() {
-	std::printf("\nnobody in your car: CoopIII never touches your stars\n");
+	std::printf("\nnobody in your car: CoopVC never touches your stars\n");
 	WantedSim s;
 
 	// The engine climbing on its own, a star at a time, the way a crime
@@ -12852,7 +12852,7 @@ void TestTheRulesChangeWithEverybodyIn() {
 	    CHEAT_RULE_PERSONAL);
 	changed.maxWanted = 3;
 	Check(c.CoopCheatRule() == COOP_CHEATS_OUTSIDE_MISSIONS,
-	      "CoopIII's own cheats start outside missions, an older server's zero");
+	      "CoopVC's own cheats start outside missions, an older server's zero");
 	changed.coopCheats = COOP_CHEATS_ALWAYS;
 	c.HandleMessage(Wrap(changed, CH_EVENT));
 	Check(c.CoopCheatRule() == COOP_CHEATS_ALWAYS, "and the server can let them into missions");
@@ -12870,7 +12870,7 @@ void TestTheRulesChangeWithEverybodyIn() {
 
 	c.HandleMessage(Wrap(MakeWelcome(0), CH_EVENT));
 	Check(c.MaxWanted() == WANTED_LEVEL_CEILING, "a new session starts from six again");
-	Check(c.CoopCheatRule() == COOP_CHEATS_OUTSIDE_MISSIONS, "and CoopIII's cheats from the default");
+	Check(c.CoopCheatRule() == COOP_CHEATS_OUTSIDE_MISSIONS, "and CoopVC's cheats from the default");
 }
 
 void TestOnlyTheCarYouAreInLendsYouStars() {
@@ -13906,7 +13906,7 @@ void TestTheMachineThatMadeTheCarNeverDestroysIt() {
 	      "and the seam is told this one is our own engine's work");
 	Check(v != nullptr && v->ours,
 	      "which is what keeps the deleting destructor away from it - a car "
-	      "this engine made is not CoopIII's to destroy, possibly with a "
+	      "this engine made is not CoopVC's to destroy, possibly with a "
 	      "player in it, because a socket closed");
 
 	const int despawns = g_rec.vehicleDespawns;
@@ -17375,7 +17375,7 @@ void TestBeingTurnedAwaySaysWhy() {
 	c.HandleMessage(Wrap(no, CH_EVENT));
 	Check(c.Feed().Count() == 1 &&
 	          FeedLineIs(c, 0, FeedKind::Notice,
-	                     "the server wants a password (CoopIII.ini, password)"),
+	                     "the server wants a password (CoopVC.ini, password)"),
 	      "a wrong or missing password is on the HUD, with where to put it");
 	no.reject = REJECT_FULL;
 	c.HandleMessage(Wrap(no, CH_EVENT));
@@ -17891,7 +17891,7 @@ int RunWireCheckTests();
 // the numbers. The bytes are mostly the small values and edges a field is
 // checked against (0, 1, 2, 3, 7, 8, 0x7F, 0x80, 0xFF), and otherwise random,
 // from a fixed seed so a failure comes back the same way.
-#define COOPIII_CLIENT_PACKETS(X)                                                                 \
+#define COOPVC_CLIENT_PACKETS(X)                                                                 \
 	X(S_AmbientAdopt) X(S_CampaignDelta) X(S_CarDespawn) X(S_CarHit) X(S_CarLists)                \
 	X(S_CrowdGone) X(S_MissionRelease) X(S_PlayerView)                                                                 \
 	X(S_CarPromoted) X(S_CarSpawn) X(S_CraneState) X(S_CarStates) X(S_Chat) X(S_Cheat) X(S_CutsceneVote)          \
@@ -17924,9 +17924,9 @@ struct FuzzPacket {
 
 void TestNoPacketCrashesTheClient() {
 	std::printf("\nevery packet the client takes, with anything in it\n");
-#define COOPIII_FUZZ_ENTRY(T) FuzzPacket{T::OPCODE, sizeof(T)},
-	static const FuzzPacket kPackets[] = {COOPIII_CLIENT_PACKETS(COOPIII_FUZZ_ENTRY)};
-#undef COOPIII_FUZZ_ENTRY
+#define COOPVC_FUZZ_ENTRY(T) FuzzPacket{T::OPCODE, sizeof(T)},
+	static const FuzzPacket kPackets[] = {COOPVC_CLIENT_PACKETS(COOPVC_FUZZ_ENTRY)};
+#undef COOPVC_FUZZ_ENTRY
 	uint32_t seed = 0xC0091113u;
 	auto     next = [&seed]() {
 		seed ^= seed << 13;
@@ -19468,7 +19468,7 @@ S_JackingVehicle MakeJacking(uint8_t playerId, uint16_t netId, uint8_t door) {
 
 void TestTheJackRules() {
 	std::printf("\nwhen our engine is taking a ped out of its seat\n");
-	using namespace coopiii::game;
+	using namespace coopvc::game;
 	constexpr uint8_t LF = offs::CAR_DOOR_FLAG_LF;
 	constexpr uint8_t RF = offs::CAR_DOOR_FLAG_RF;
 	constexpr uint8_t JACKED = offs::VEH_IS_BEING_CARJACKED;

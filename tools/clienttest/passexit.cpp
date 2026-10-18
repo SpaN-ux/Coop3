@@ -16,8 +16,8 @@
 #include <string>
 #include <vector>
 
-using namespace coopiii;
-using namespace coopiii::game;
+using namespace coopvc;
+using namespace coopvc::game;
 
 namespace {
 
@@ -76,7 +76,7 @@ void TestANewDriver() {
 
 bool LoadExe(std::vector<uint8_t> &image, std::string &from) {
 	std::vector<std::string> candidates;
-	if (const char *env = std::getenv("COOPIII_GTA3_EXE"))
+	if (const char *env = std::getenv("COOPVC_GAME_EXE"))
 		candidates.push_back(env);
 	candidates.push_back("reference/bin/gta3.exe");
 	candidates.push_back("../../../../reference/bin/gta3.exe");
@@ -135,7 +135,7 @@ void TestAgainstTheImage() {
 	std::vector<uint8_t> img;
 	std::string          from;
 	if (!LoadExe(img, from)) {
-		std::printf("  [skipped] no retail gta3.exe; set COOPIII_GTA3_EXE to check the "
+		std::printf("  [skipped] no retail gta3.exe; set COOPVC_GAME_EXE to check the "
 		            "passenger's door against one\n");
 		return;
 	}
@@ -254,7 +254,7 @@ void TestAPassengerCanAlwaysGetOut() {
 	std::vector<uint8_t> img;
 	std::string          from;
 	if (!LoadExe(img, from)) {
-		std::printf("  [skipped] no retail gta3.exe; set COOPIII_GTA3_EXE to check CPlayerInfo's "
+		std::printf("  [skipped] no retail gta3.exe; set COOPVC_GAME_EXE to check CPlayerInfo's "
 		            "exit key against one\n");
 		return;
 	}

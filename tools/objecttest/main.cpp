@@ -32,10 +32,10 @@
 #include <cstring>
 #include <vector>
 
-using namespace coopiii;
-using namespace coopiii::game;
+using namespace coopvc;
+using namespace coopvc::game;
 
-namespace obj = coopiii::game::object;
+namespace obj = coopvc::game::object;
 
 namespace {
 

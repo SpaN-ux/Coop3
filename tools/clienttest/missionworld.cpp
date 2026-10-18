@@ -3,7 +3,7 @@
 // (game/replay.h, game/effectshape.h, game/missionworld.h).
 //
 // The pure parts run everywhere. What the engine has to agree with is checked
-// against the retail gta3.exe when COOPIII_GTA3_EXE names one, the way
+// against the retail gta3.exe when COOPVC_GAME_EXE names one, the way
 // missions.cpp checks the rest of the script engine.
 
 #include "game/effectshape.h"
@@ -11,7 +11,7 @@
 #include "game/missionworld.h"
 #include "game/replay.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstdio>
 #include <cstdlib>
@@ -20,7 +20,7 @@
 #include <string>
 #include <vector>
 
-using namespace coopiii;
+using namespace coopvc;
 
 namespace {
 
@@ -529,7 +529,7 @@ void TestTheSceneAndTheOwnersPlayer() {
 
 bool LoadImage(std::vector<uint8_t> &image, std::string &from) {
 	std::vector<std::string> candidates;
-	if (const char *env = std::getenv("COOPIII_GTA3_EXE"))
+	if (const char *env = std::getenv("COOPVC_GAME_EXE"))
 		candidates.push_back(env);
 	candidates.push_back("reference/bin/gta3.exe");
 	candidates.push_back("../../../../reference/bin/gta3.exe");
@@ -595,7 +595,7 @@ void TestTheStreetsAgainstTheImage() {
 	std::vector<uint8_t> img;
 	std::string          from;
 	if (!LoadImage(img, from)) {
-		std::printf("  [skipped] no retail gta3.exe; set COOPIII_GTA3_EXE to check them against one\n");
+		std::printf("  [skipped] no retail gta3.exe; set COOPVC_GAME_EXE to check them against one\n");
 		return;
 	}
 	std::printf("  reading %s\n", from.c_str());

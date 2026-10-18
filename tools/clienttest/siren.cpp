@@ -12,12 +12,12 @@
 #include "game/horn.h"
 #include "game/siren.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstdio>
 
-using namespace coopiii;
-using namespace coopiii::game;
+using namespace coopvc;
+using namespace coopvc::game;
 
 namespace {
 

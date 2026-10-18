@@ -10,8 +10,8 @@
 #include <cstdio>
 #include <limits>
 
-using namespace coopiii;
-using namespace coopiii::game;
+using namespace coopvc;
+using namespace coopvc::game;
 
 namespace {
 

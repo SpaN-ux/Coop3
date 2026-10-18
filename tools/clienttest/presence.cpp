@@ -8,8 +8,8 @@
 #include <cstring>
 #include <string>
 
-using namespace coopiii;
-using namespace coopiii::presence;
+using namespace coopvc;
+using namespace coopvc::presence;
 
 namespace {
 
@@ -46,7 +46,7 @@ void TestTheHandshake() {
 	Check(HandshakeJson(1555279137592311990ull) ==
 	          "{\"v\":1,\"client_id\":\"1555279137592311990\"}",
 	      "version 1 and the application id as a string");
-	Check(DISCORD_APP_ID == 1555279137592311990ull, "the built-in application is CoopIII's");
+	Check(DISCORD_APP_ID == 1555279137592311990ull, "the built-in application is CoopVC's");
 }
 
 void TestTheEscapes() {
@@ -70,7 +70,7 @@ void TestSinglePlayer() {
 	Check(Has(j, "\"details\":\"Single player\""), "says single player");
 	Check(!Has(j, "\"state\""), "and nothing under it");
 	Check(Has(j, "\"timestamps\":{\"start\":1700000000}"), "timed from the start");
-	Check(Has(j, "\"large_image\":\"logo\"") && Has(j, "\"large_text\":\"CoopIII\""),
+	Check(Has(j, "\"large_image\":\"logo\"") && Has(j, "\"large_text\":\"CoopVC\""),
 	      "with the logo");
 	Check(!Has(j, "\"party\""), "and no party");
 	Check(Has(j, "\"nonce\":\"7\""), "the nonce goes along");

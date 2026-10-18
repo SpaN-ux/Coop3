@@ -18,9 +18,9 @@ void Check(bool ok, const char *what) {
 	}
 }
 
-using namespace coopiii::game::getaway;
-namespace anyplace = coopiii::game::anyplace;
-namespace scripts  = coopiii::game::scripts;
+using namespace coopvc::game::getaway;
+namespace anyplace = coopvc::game::anyplace;
+namespace scripts  = coopvc::game::scripts;
 
 constexpr size_t N = 4;
 
@@ -139,7 +139,7 @@ void TestPlaces() {
 
 void TestFlag() {
 	using scripts::ANDOR_NONE;
-	using coopiii::game::CompareFlagFor;
+	using coopvc::game::CompareFlagFor;
 	Check(CompareFlagFor(0, ANDOR_NONE, false, true) == 1 && CompareFlagFor(0, ANDOR_NONE, false, false) == 0,
 	      "a single condition: the answer");
 	Check(CompareFlagFor(0, ANDOR_NONE, true, true) == 0 && CompareFlagFor(0, ANDOR_NONE, true, false) == 1,

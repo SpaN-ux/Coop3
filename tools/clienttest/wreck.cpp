@@ -13,8 +13,8 @@
 #include <string>
 #include <vector>
 
-using namespace coopiii;
-using namespace coopiii::game;
+using namespace coopvc;
+using namespace coopvc::game;
 
 namespace {
 
@@ -51,7 +51,7 @@ void TestTheShellsPlan() {
 
 bool LoadExe(std::vector<uint8_t> &image, std::string &from) {
 	std::vector<std::string> candidates;
-	if (const char *env = std::getenv("COOPIII_GTA3_EXE"))
+	if (const char *env = std::getenv("COOPVC_GAME_EXE"))
 		candidates.push_back(env);
 	candidates.push_back("reference/bin/gta3.exe");
 	candidates.push_back("../../../../reference/bin/gta3.exe");
@@ -113,7 +113,7 @@ void TestTheShellAgainstTheImage() {
 	std::vector<uint8_t> img;
 	std::string          from;
 	if (!LoadExe(img, from)) {
-		std::printf("  [skipped] no retail gta3.exe; set COOPIII_GTA3_EXE to check the "
+		std::printf("  [skipped] no retail gta3.exe; set COOPVC_GAME_EXE to check the "
 		            "transcription against one\n");
 		return;
 	}
@@ -303,7 +303,7 @@ void TestTheRoofAgainstTheImage() {
 	          Bytes(img, ROOF_DRAIN_PLAYER_CAR_CALL + 5, {0x39, 0xC5, 0x74}) &&
 	          ROOF_DRAIN_PLAYER_CAR_CALL + 9 + Byte(img, ROOF_DRAIN_PLAYER_CAR_CALL + 8) ==
 	              ROOF_DRAIN_SKIP,
-	      "the gate CoopIII takes: FindPlayerVehicle against ebp, equal skips the drain alone");
+	      "the gate CoopVC takes: FindPlayerVehicle against ebp, equal skips the drain alone");
 	Check(Bytes(img, 0x0052F42F, {0x8A, 0x85}) &&
 	          Dword(img, 0x0052F431) == offs::AUTO_ROOF_FLAGS &&
 	          Bytes(img, 0x0052F435, {0x24, offs::AUTO_NOT_DAMAGED_UPSIDE_DOWN, 0x75}) &&

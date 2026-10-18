@@ -12,7 +12,7 @@
 #include "game/heli.h"
 #include "game/money.h"
 
-#include <coopiii/protocol.h>
+#include <coopvc/protocol.h>
 
 #include <cstdio>
 #include <cstdlib>
@@ -20,8 +20,8 @@
 #include <string>
 #include <vector>
 
-using namespace coopiii;
-using namespace coopiii::game;
+using namespace coopvc;
+using namespace coopvc::game;
 
 namespace {
 
@@ -927,7 +927,7 @@ void TestTheHelicoptersRewardFollowsTheRule() {
 
 bool LoadExe(std::vector<uint8_t> &image, std::string &from) {
 	std::vector<std::string> candidates;
-	if (const char *env = std::getenv("COOPIII_GTA3_EXE"))
+	if (const char *env = std::getenv("COOPVC_GAME_EXE"))
 		candidates.push_back(env);
 	candidates.push_back("reference/bin/gta3.exe");
 	candidates.push_back("../../../../reference/bin/gta3.exe");
@@ -965,7 +965,7 @@ void TestTheAwardAgainstTheImage() {
 	std::vector<uint8_t> img;
 	std::string          from;
 	if (!LoadExe(img, from)) {
-		std::printf("  [skipped] no retail gta3.exe; set COOPIII_GTA3_EXE to check the "
+		std::printf("  [skipped] no retail gta3.exe; set COOPVC_GAME_EXE to check the "
 		            "award against one\n");
 		return;
 	}
@@ -1176,7 +1176,7 @@ void TestTheRewardSeamsAgainstTheImage() {
 	std::vector<uint8_t> img;
 	std::string          from;
 	if (!LoadExe(img, from)) {
-		std::printf("  [skipped] no retail gta3.exe; set COOPIII_GTA3_EXE to check them\n");
+		std::printf("  [skipped] no retail gta3.exe; set COOPVC_GAME_EXE to check them\n");
 		return;
 	}
 	auto at = [&img](uint32_t va, std::initializer_list<uint8_t> bytes) {

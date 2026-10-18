@@ -17,8 +17,8 @@ void Check(bool ok, const char *what) {
 	}
 }
 
-using namespace coopiii::game::standin;
-namespace nearchar = coopiii::game::nearchar;
+using namespace coopvc::game::standin;
+namespace nearchar = coopvc::game::nearchar;
 
 void TestEscort() {
 	Check(EscortMission(15) && EscortMission(16) && EscortMission(17) && EscortMission(18),
@@ -266,7 +266,7 @@ void TestWalkedOut() {
 }
 
 void TestKenjisTargets() {
-	using namespace coopiii::game::nearchar;
+	using namespace coopvc::game::nearchar;
 	Check(AnswersForNearest(SHIMA) && AnswersForNearest(SMACK_DOWN),
 	      "Shima's gunman and Smack Down's dealers are near whoever is nearest them");
 	Check(!AnswersForNearest(49) && !AnswersForNearest(50) && !AnswersForNearest(51),

@@ -16,8 +16,8 @@
 #include <string>
 #include <vector>
 
-using namespace coopiii;
-using namespace coopiii::game;
+using namespace coopvc;
+using namespace coopvc::game;
 
 namespace {
 
@@ -154,7 +154,7 @@ void TestMoneyAndKills() {
 
 bool LoadExe(std::vector<uint8_t> &image) {
 	std::vector<std::string> candidates;
-	if (const char *env = std::getenv("COOPIII_GTA3_EXE"))
+	if (const char *env = std::getenv("COOPVC_GAME_EXE"))
 		candidates.push_back(env);
 	candidates.push_back("reference/bin/gta3.exe");
 	for (const std::string &path : candidates) {
@@ -192,7 +192,7 @@ void TestAgainstTheImage() {
 	std::printf("\nthe retail bytes under all of it\n");
 	std::vector<uint8_t> img;
 	if (!LoadExe(img)) {
-		std::printf("  [skipped] no retail gta3.exe; set COOPIII_GTA3_EXE\n");
+		std::printf("  [skipped] no retail gta3.exe; set COOPVC_GAME_EXE\n");
 		return;
 	}
 	Check(BytesAt(img, WINMAIN_WAITMESSAGE_CALL, WAITMESSAGE_CALL_BYTES,

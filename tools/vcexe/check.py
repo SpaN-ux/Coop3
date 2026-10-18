@@ -223,6 +223,37 @@ def main():
     check(img.read(0x4D1038, 10) == b"\xC7\x05" + le(consts["CTimer__TimeStep"]) + le(0),
           "which is zero while paused")
 
+    print("\nentity layout")
+    check(img.read(0x40654F, 4) == b"\x0F\xBF\x51" + bytes([consts["ENTITY_OFF_MODEL_INDEX"]]),
+          "a model index is an int16 at entity+0x5C (0x0040654F)")
+    check(img.read(0x406557, 7) == b"\x8B\x04\x95" + le(consts["CModelInfo__ms_modelInfoPtrs"]),
+          "and indexes CModelInfo::ms_modelInfoPtrs (0x00406557)")
+    check(img.section(consts["CModelInfo__ms_modelInfoPtrs"]) is not None, "ms_modelInfoPtrs is in the image")
+    check(img.read(0x50DC85, 10) == b"\xC7\x83" + le(consts["PED_OFF_HEALTH"]) + le(0x42C80000),
+          "a new ped's health is 100.0f at ped+0x354 (0x0050DC85)")
+    check(img.read(0x50DC93, 10) == b"\xC7\x80" + le(consts["PED_OFF_ARMOUR"]) + le(0),
+          "and its armour is 0 at ped+0x358 (0x0050DC93)")
+    check(img.read(0x4ED857, 10) == b"\xC7\x80" + le(consts["PED_OFF_ARMOUR"]) + le(0x42C80000),
+          "the armour cheat stores 100.0f at +0x358 (0x004ED857)")
+    call = img.read(0x43122A, 5)
+    rel = struct.unpack("<i", call[1:])[0] if call and call[0] == 0xE8 else None
+    check(rel is not None and (0x43122A + 5 + rel) & 0xFFFFFFFF == consts["FindPlayerVehicle"],
+          "the fix-the-car cheat calls FindPlayerVehicle (0x0043122A)")
+    check(img.read(0x43122F, 10) == b"\xC7\x80" + le(consts["VEHICLE_OFF_HEALTH"]) + le(0x447A0000),
+          "and stores 1000.0f at vehicle+0x204 (0x0043122F)")
+
+    print("\nentity flags and scan code")
+    sc = le(consts["CWorld__ms_nCurrentScanCode"])[:2]
+    check(img.read(0x4BC324, 4) == b"\x66\x8B\x53" + bytes([consts["ENTITY_OFF_SCAN_CODE"]]) and
+          img.read(0x4BC328, 2) == b"\x66\xA1" and img.read(0x4BC32A, 2) == sc,
+          "the scan code is a uint16 at entity+0x58 compared with ms_nCurrentScanCode (0x004BC324)")
+    check(img.read(0x4BC337, 5) == b"\x8A\x43" + bytes([consts["ENTITY_OFF_FLAGS_A"]]) + b"\x24" + bytes([consts["ENTITY_USES_COLLISION"]]),
+          "bUsesCollision is bit 0 of entity+0x51 (0x004BC337)")
+    check(img.read(0x4BC342, 7) == b"\x8A\x43" + bytes([consts["ENTITY_OFF_FLAGS"]]) + b"\x24\x07\x3C\x02",
+          "m_type is the low three bits of entity+0x50 (0x004BC342)")
+    check(img.read(0x4BC359, 6) == b"\x8A\x43" + bytes([consts["ENTITY_OFF_FLAGS"]]) + b"\xC0\xE8\x03",
+          "and m_status is what is left after shr 3 (0x004BC359)")
+
     print("\n%s" % ("all checks passed" if not failures else "FAIL (%d failures)" % failures))
     return 1 if failures else 0
 
